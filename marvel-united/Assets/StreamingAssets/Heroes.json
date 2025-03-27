@@ -1,0 +1,628 @@
+{
+  "heroes": [
+    {
+      "id": "black_panther",
+      "name": "Black Panther",
+      "description": "Monarch of the secluded but technologically advanced African nation of Wakanda. King T'Challa is the Black Panther, a sacred title that must be both inherited & earned by the current Wakandan ruler. Granted superhuman powers by ceremonially consuming a mystical heart-shaped herb, the Panther is responsible for defending his people, and the world, from any threats.",
+      "imagepath": "Art/BlackPanther",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Move"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Heroic"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "black_panther_special_1",
+          "special_description": "Black Panther can use additional Heroic and Attack action",
+          "special_name": "Panther Habit",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "black_panther_special_2",
+          "special_description": "Black Panther can use additional Move and Attack action",
+          "special_name": "Panther Habit",
+          "symbols": ["Heroic"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "black_panther_special_3",
+          "special_description": "Black Panther can use additional Move and Heroic action",
+          "special_name": "Panther Habit",
+          "symbols": ["Attack"]
+        }
+      ]
+    },
+{
+      "id": "captain_america",
+      "name": "Captain America",
+      "description": "During WWII, the frail but courageous Steve Rogers was injected with an experimental Super-Soldier serum, emerging from the treatment as the pinnacle of human physical potential. Outfitted with a patriotic costume and iconic shield, he became the legendary Captain America!",
+      "imagepath":"Art/CaptainAmerica",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "captain_america_special_1",
+          "special_description": "Give a Wild token from the pool to another Hero",
+          "special_name": "Leadership",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "captain_america_special_1",
+          "special_description": "Give a Wild token from the pool to another Hero",
+          "special_name": "Leadership",
+          "symbols": ["Heroic"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "captain_america_special_1",
+          "special_description": "Give a Wild token from the pool to another Hero",
+          "special_name": "Leadership",
+          "symbols": ["Attack"]
+  }
+  ]
+},
+{
+      "id": "captain_marvel",
+      "name": "Captain Marvel",
+      "description": "A chance encounter with an alien being granted ace U.S. Air Force pilot Carol Danvers incredible powers. Endeavoring to use her fantastic new abilities for the forces of good, Danvers joined the Super Hero community in their ongoing struggle against evil. After years served protecting the planet. she began a new chapter in her heroic story when she took on the legendary mantle of Captain Marvel, earth's mightiest hero!",
+      "imagepath":"Art/CaptainMarvel",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Move"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Heroic"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "captain_marvel_special_1",
+          "special_description": "Attack two Times in one adjacent Location",
+          "special_name": "Photon Blast",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "captain_marvel_special_1",
+          "special_description": "Attack two Times in one adjacent Location",
+          "special_name": "Photon Blast",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "captain_marvel_special_1",
+          "special_description": "Attack two Times in one adjacent Location",
+          "special_name": "Photon Blast",
+          "symbols": ["Attack"]
+        }
+      ]
+    },
+{
+      "id": "iron_man",
+      "name": "Iron Man",
+      "description": "During a violent kidnapping at the hands of terrorists intent on forcing him to build a bomb, billionaire industrialist Tony Stark suffered a near-fatal chest wound. Instead of the weapon his captors had in mind, Stark constructed a sophisticated metal suit that both stabilized his injury and allowed him to escape.",
+      "imagepath":"Art/IronMan",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Heroic"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "iron_man_special_1",
+          "special_description": "Distribute 2 Attack tokens from the pool among any number of Heroes",
+          "special_name": "Advanced Combat Analysis",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "iron_man_special_2",
+          "special_description": "You may draw cards until you have 3 in your hand",
+          "special_name": "Power Recharge",
+          "symbols": ["Heroic"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "iron_man_special_3",
+          "special_description": "Distribute 2 Move tokens from the pool among any number of Heroes",
+          "special_name": "Stark Resources",
+          "symbols": ["Attack"]
+        }
+      ]
+    },
+{
+      "id": "spider-man",
+      "name": "Spider-Man",
+      "description": "Once a shy science nerd, Peter Parker's life was changed forever when the bite of a radioactive spider granted him amazing arachnid-like abilities. After the tragic death of his beloved Uncle Ben, Peter realized that with great power, there must also come great responsibility.",
+      "imagepath":"Art/Spider-Man",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Heroic"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Heroic"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack", "Attack"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "spider-man_special_1",
+          "special_description": "3 Attack tokens. For each Thug defeated with this Special Effect, gain 1 Heroic token",
+          "special_name": "Great Power",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "spider-man_special_2",
+          "special_description": "Rescue up to 3 Civilians in your Location. For each Civilian rescued with this Special Effect, gain 1 Attack token",
+          "special_name": "Great Responsibility",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "spider-man_special_3",
+          "special_description": "Gain 2 Move tokens",
+          "special_name": "Webslinging",
+          "symbols": ["Move"]
+        }
+      ]
+    },
+{
+      "id": "wasp",
+      "name": "Wasp",
+      "description": "Endowed with the amazing ability to shrink in size and fly, Hope van Dyne is the newest heroine to bear the name Wasp. Along with her partner Scott Lang (the Astonishing Wasp), Wasp battles evil on any scale, proving that true heroism comes in even the smallest sizes.",
+      "imagepath": "Art/Wasp",
+      "cards": [
+        {
+          "id": "card_1",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_2",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_3",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_4",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Move", "Attack"]
+        },
+	{
+          "id": "card_5",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic"]
+        },
+	{
+          "id": "card_6",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Heroic", "Heroic"]
+        },
+	{
+          "id": "card_7",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_8",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild"]
+        },
+	{
+          "id": "card_9",
+          "special": false,
+          "special_ability": "",
+          "special_description": "",
+          "special_name": "",
+          "symbols": ["Wild", "Wild"]
+        },
+	{
+          "id": "card_10",
+          "special": true,
+          "special_ability": "wasp_special_1",
+          "special_description": "You may move yourself and any number of Heroes from your Location to any other Location ",
+          "special_name": "Wings",
+          "symbols": ["Move"]
+        },
+	{
+          "id": "card_11",
+          "special": true,
+          "special_ability": "wasp_special_2",
+          "special_description": "You can move to any Location and Attack there.",
+          "special_name": "Energy Projection",
+          "symbols": ["Attack"]
+        },
+	{
+          "id": "card_12",
+          "special": true,
+          "special_ability": "wasp_special_3",
+          "special_description": "You cannot take any damage until the beginning of your next turn.",
+          "special_name": "Shrink",
+          "symbols": ["Wild"]
+        }
+      ]
+    }
+   ]
+}
