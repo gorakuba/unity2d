@@ -71,5 +71,6 @@
       "slots": 3,
       "starting_tokens": ["Civilian", "Civilian", "Thug"],
       "image_path": "Assets/_Project/Resources/Locations/location_008.png"
-    },
-
+    }
+  ]
+}
