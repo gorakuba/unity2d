@@ -4316,6 +4316,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Location 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6616746776506483860, guid: 4899655ef07fd2c4b8d1d8fbdfc8af66, type: 3}
+      propertyPath: m_Name
+      value: Location_Slot_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618590425485827760, guid: 4899655ef07fd2c4b8d1d8fbdfc8af66, type: 3}
+      propertyPath: delay
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
