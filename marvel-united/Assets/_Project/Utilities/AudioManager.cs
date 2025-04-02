@@ -4,11 +4,32 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager instance;
     public AudioMixer audioMixer;
     public Slider volumeSlider;
+    public AudioSource backgroundMusic;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
 
     void Start()
     {
+        if (!backgroundMusic.isPlaying)
+        {
+            backgroundMusic.Play();
+        }
+
         // Ustawienie wartości suwaka na podstawie zapisanych ustawień
         if (PlayerPrefs.HasKey("MusicVolume"))
         {
