@@ -1,76 +1,68 @@
 {
   "locations": [
     {
-      "id": "location_001",
+      "id": "Location_1",
       "name": "S.H.I.E.L.D. Headquarters",
-      "script": "location_001",
+      "script": "Location_1",
       "end_turn": "You may discard 1 card from your hand to the bottom of your deck to remove 1 Crisis token from anywhere",
       "slots": 4,
-      "starting_tokens": ["Civilian", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_001.png"
+      "starting_tokens": ["Civilian", "Thug"]
     },
     {
-      "id": "location_002",
+      "id": "Location_2",
       "name": "Stark Labs",
-      "script": "location_002",
+      "script": "Location_2",
       "end_turn": "You may swap 1 card from your hand with 1 of your cards in the Storyline.",
       "slots": 4,
-      "starting_tokens": ["Civilian", "Thug", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_002.png"
+      "starting_tokens": ["Civilian", "Thug", "Thug"]
     },
     {
-      "id": "location_003",
+      "id": "Location_3",
       "name": "Central Park",
-      "script": "location_003",
+      "script": "Location_3",
       "end_turn": "You may move up to 2 Civilians or Thugs, in any combination, from this Location to any other Location(s)",
       "slots": 5,
-      "starting_tokens": ["Civilian", "Civilian", "Thug", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_003.png"
+      "starting_tokens": ["Civilian", "Civilian", "Thug", "Thug"]
     },
     {
-      "id": "location_004",
+      "id": "Location_4",
       "name": "Avengers Mansion",
-      "script": "location_004",
+      "script": "Location_4",
       "end_turn": "You may draw cards until you have 3 in your hand.",
       "slots": 3,
-      "starting_tokens": ["Civilian"],
-      "image_path": "Assets/_Project/Resources/Locations/location_004.png"
+      "starting_tokens": ["Civilian"]
     },
     {
-      "id": "location_005",
+      "id": "Location_5",
       "name": "Times Square",
-      "script": "location_005",
+      "script": "Location_5",
       "end_turn": "You may rescue 1 Civilian from this Location",
       "slots": 5,
-      "starting_tokens": ["Civilian", "Civilian", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_005.png"
+      "starting_tokens": ["Civilian", "Civilian", "Thug"]
     },
     {
-      "id": "location_006",
+      "id": "Location_6",
       "name": "Avengers Tower",
-      "script": "location_006",
+      "script": "Location_6",
       "end_turn": "You may search your deck for 1 card and set it aside. Then, shuffle your deck and place that card on top",
       "slots": 3,
-      "starting_tokens": ["Civilian"],
-      "image_path": "Assets/_Project/Resources/Locations/location_006.png"
+      "starting_tokens": ["Civilian"]
     },
     {
-      "id": "location_007",
+      "id": "Location_7",
       "name": "S.H.I.E.L.D. Helicarrier",
-      "script": "location_007",
+      "script": "Location_7",
       "end_turn": "You may move to any other Location",
       "slots": 4,
-      "starting_tokens": ["Civilian", "Thug", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_007.png"
+      "starting_tokens": ["Civilian", "Thug", "Thug"]
     },
     {
-      "id": "location_008",
+      "id": "Location_8",
       "name": "New York Police Headquarters",
-      "script": "location_008",
+      "script": "Location_8",
       "end_turn": "You may discard 1 Thug from any Location",
       "slots": 3,
-      "starting_tokens": ["Civilian", "Civilian", "Thug"],
-      "image_path": "Assets/_Project/Resources/Locations/location_008.png"
+      "starting_tokens": ["Civilian", "Civilian", "Thug"]
     }
   ]
 }
