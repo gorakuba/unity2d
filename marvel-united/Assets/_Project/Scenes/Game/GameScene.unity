@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 10662885}
   m_Layer: 0
-  m_Name: ThreatPlace_4
+  m_Name: ThreatPlace_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,21 +193,15 @@ MonoBehaviour:
   threatCardPrefab: {fileID: 3800158283944725106, guid: 12569c5df5bbe6649b0d1397c1668907, type: 3}
   threatPlaces:
   - {fileID: 1238768539}
+  - {fileID: 666576705}
   - {fileID: 325356667}
   - {fileID: 1252260423}
   - {fileID: 717926726}
-  - {fileID: 666576705}
   - {fileID: 1821708515}
   textureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
   locationManager: {fileID: 197175210}
   tokenHealthPrefab: {fileID: 1926510363687983682, guid: 64aa2ca5fbff9ad42a0a6e73e4cc67ac, type: 3}
-  locationObjects:
-  - {fileID: 14669983}
-  - {fileID: 425940298}
-  - {fileID: 1180162513}
-  - {fileID: 753171518}
-  - {fileID: 2095301174}
-  - {fileID: 1549602538}
+  locationObjects: []
   villainJson: {fileID: 4900000, guid: 49e90f3d993b0a04f80238ba2aaacafe, type: 3}
 --- !u!4 &23859557
 Transform:
@@ -234,7 +228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 25765581}
   m_Layer: 0
-  m_Name: ThreatPlace_5
+  m_Name: ThreatPlace_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -866,7 +860,7 @@ MonoBehaviour:
     heroSlot1: {fileID: 0}
     heroSlot2: {fileID: 0}
     villainSlot: {fileID: 0}
-  delayBetweenLocations: 0.5
+  delayBetweenLocations: 0.3
   delayBeforeTokens: 1
   spawnedLocationTransforms: []
 --- !u!4 &197175211
@@ -1042,7 +1036,7 @@ GameObject:
   m_Component:
   - component: {fileID: 325356667}
   m_Layer: 0
-  m_Name: Place_2
+  m_Name: Place_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1342,7 +1336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641386054}
   m_Layer: 0
-  m_Name: ThreatPlace_3
+  m_Name: ThreatPlace_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1400,7 +1394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 666576705}
   m_Layer: 0
-  m_Name: Place_5
+  m_Name: Place_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1431,7 +1425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 717926726}
   m_Layer: 0
-  m_Name: Place_4
+  m_Name: Place_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1587,7 +1581,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 879298899}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ac7803cba835bd4cbbbf59150e729c2, type: 3}
+  m_Script: {fileID: 11500000, guid: cdc5168b2bb972b4498b708c3a41cb04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerCharacterPrefab: {fileID: 7907724257384681602, guid: d5a5ff135e9603c44b144dd73896798e, type: 3}
@@ -2705,7 +2699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1190680832}
   m_Layer: 0
-  m_Name: ThreatPlace_2
+  m_Name: ThreatPlace_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2864,7 +2858,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1252260423}
   m_Layer: 0
-  m_Name: Place_3
+  m_Name: Place_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3139,19 +3133,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
   m_PrefabInstance: {fileID: 577704225423383147}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1390825242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1390825237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac13064e90e38b4e940aeba141aa5d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  delay: 1
 --- !u!54 &1390825243
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3200,6 +3181,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0635, y: 0.00022000002, z: 0.0885}
   m_Center: {x: 0, y: 0.00011000001, z: 0}
+--- !u!114 &1390825250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390825237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a16e477ac43634b8241ab749459929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delay: 2
 --- !u!1 &1420601534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
@@ -3807,10 +3801,10 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 836428220}
+  - {fileID: 25765581}
   - {fileID: 1190680832}
   - {fileID: 641386054}
   - {fileID: 10662885}
-  - {fileID: 25765581}
   - {fileID: 220078646}
   m_Father: {fileID: 1057784561}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5005,13 +4999,13 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1390825242}
-    - targetCorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1390825243}
     - targetCorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1390825244}
+    - targetCorrespondingSourceObject: {fileID: 8461451836851586455, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1390825250}
   m_SourcePrefab: {fileID: 100100000, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
 --- !u!4 &577704225423383148 stripped
 Transform:

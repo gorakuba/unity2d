@@ -43,9 +43,9 @@ GameObject:
   - component: {fileID: 601464655507349357}
   - component: {fileID: 3439663398565391271}
   - component: {fileID: 8770211303625340858}
-  - component: {fileID: 8210228718410862575}
   - component: {fileID: 6170168288208742271}
   - component: {fileID: 5014830977339979573}
+  - component: {fileID: 3952293108033008812}
   m_Layer: 0
   m_Name: ThreatCard
   m_TagString: Untagged
@@ -137,19 +137,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frontTexture: {fileID: 0}
   backTexture: {fileID: 0}
---- !u!114 &8210228718410862575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3800158283944725106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac13064e90e38b4e940aeba141aa5d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  delay: 5
 --- !u!54 &6170168288208742271
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -198,3 +185,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0635, y: 0.00022000002, z: 0.0885}
   m_Center: {x: 0, y: 0.00011000001, z: 0}
+--- !u!114 &3952293108033008812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3800158283944725106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a16e477ac43634b8241ab749459929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delay: 2

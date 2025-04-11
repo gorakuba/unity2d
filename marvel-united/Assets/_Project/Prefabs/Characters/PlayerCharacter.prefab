@@ -96,8 +96,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1232166791120540012}
-  - component: {fileID: 6671891299119692659}
-  - component: {fileID: 1266667333137094633}
+  - component: {fileID: 1927728095860051674}
+  - component: {fileID: -7621573314357348752}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -121,7 +121,7 @@ Transform:
   - {fileID: 904123840598292813}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6671891299119692659
+--- !u!114 &1927728095860051674
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,12 +130,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7907724257384681602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2053ad53582e4eb4dbadbc805b1263a7, type: 3}
+  m_Script: {fileID: 11500000, guid: a2028198d0558b340bdb9bd4ca67f0a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   visualRenderer: {fileID: 7655288268438475144}
   visualDatabase: {fileID: 11400000, guid: 7bad1cdcc4267e84482f86e471d31d41, type: 2}
---- !u!114 &1266667333137094633
+--- !u!114 &-7621573314357348752
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,5 +147,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33605e495fa599c4ea76b6b31ce07620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 0.7
+  duration: 0.4
   targetScale: {x: 1, y: 1, z: 1}
