@@ -31,3 +31,6 @@ MonoBehaviour:
   - villainId: red_skull
     threatId: threat_6
     texture: {fileID: 2800000, guid: fcc15d23fd202ec4ea544313f1cd3fb2, type: 3}
+  villainBackTextures:
+  - villainId: red_skull
+    backTexture: {fileID: 2800000, guid: 59153a2c147a15e4b88e9c4374278e71, type: 3}

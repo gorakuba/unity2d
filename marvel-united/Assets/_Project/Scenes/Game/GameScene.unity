@@ -198,7 +198,6 @@ MonoBehaviour:
   - {fileID: 717926726}
   - {fileID: 666576705}
   - {fileID: 1821708515}
-  cardBackTexture: {fileID: 2800000, guid: 59153a2c147a15e4b88e9c4374278e71, type: 3}
   textureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
   locationManager: {fileID: 197175210}
   tokenHealthPrefab: {fileID: 1926510363687983682, guid: 64aa2ca5fbff9ad42a0a6e73e4cc67ac, type: 3}
