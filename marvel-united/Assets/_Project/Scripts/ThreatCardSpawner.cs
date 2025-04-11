@@ -88,16 +88,8 @@ private void OnLocationsReady()
         Debug.Log($"[{threat.id}] minion: {threat.minion}, health: {threat.minion_health} (type: {threat.minion_health?.GetType()})");
 
         GameObject locationObj = locationObjects[index].gameObject;
-       Location location = locationObj.GetComponentInChildren<Location>();
-if (location == null)
-{
-    Debug.LogWarning($"❗Nie znaleziono komponentu Location w prefabie pod: {locationObj.name}");
-}
-else
-{
-    location.AssignThreatCard(instance);
-    Debug.Log($"✅ Przypisano kartę {threat.id} do lokacji: {location.name}");
-}
+        instance.assignedLocation = locationObj;
+        
 
         var display = card.GetComponent<CardDisplay>();
         if (display != null)
@@ -106,20 +98,15 @@ else
             display.backTexture = textureDatabase.GetBackTexture(villainId);
         }
 
-if (locationObj.transform.childCount > 0)
-{
-    location = locationObj.transform.GetChild(0).GetComponent<Location>();
-}
-
-if (location == null)
-{
-    Debug.LogWarning($"❗Nie znaleziono komponentu Location w prefabie pod: {locationObj.name}");
-}
-else
-{
-    location.AssignThreatCard(instance);
-    Debug.Log($"✅ Znaleziono komponent Location: {location.name} → przypisano kartę zagrożenia");
-}
+        Location location = locationObj.GetComponentInChildren<Location>();
+        if (location != null)
+        {
+            location.AssignThreatCard(instance);
+        }
+        else
+        {
+            Debug.LogWarning($"Brak komponentu Location na obiekcie {locationObj.name}");
+        }
 
         // 🔍 Tu debugujemy warunek
         if (threat.minion)
