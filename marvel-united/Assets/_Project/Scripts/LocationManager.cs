@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class LocationManager : MonoBehaviour
 {
@@ -21,13 +22,17 @@ public class LocationManager : MonoBehaviour
 
     private Dictionary<string, LocationData> locationDataDict = new Dictionary<string, LocationData>();
     private List<GameObject> spawnedLocations = new List<GameObject>();
+    public List<Transform> spawnedLocationTransforms = new List<Transform>();
 
     void Start()
     {
         LoadLocationsFromJson();
         StartCoroutine(SpawnLocationsWithDelay());
     }
-
+    public List<Transform> GetSpawnedLocationRoots()
+    {
+    return spawnedLocations.Select(loc => loc.transform).ToList();
+    }
     void LoadLocationsFromJson()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "Locations.json");
@@ -70,6 +75,7 @@ public class LocationManager : MonoBehaviour
             newLocation.transform.localScale = Vector3.one;
 
             spawnedLocations.Add(newLocation);
+            spawnedLocationTransforms.Add(newLocation.transform);
 
             yield return new WaitForSeconds(delayBetweenLocations);
         }
