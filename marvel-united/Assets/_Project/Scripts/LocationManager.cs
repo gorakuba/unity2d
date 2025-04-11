@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
+
+[System.Serializable]
+public class CharacterSlots
+{
+    public Transform heroSlot1;
+    public Transform heroSlot2;
+    public Transform villainSlot;
+}
 
 public class LocationManager : MonoBehaviour
 {
@@ -14,6 +23,7 @@ public class LocationManager : MonoBehaviour
     [Header("Prefaby Żetonów")]
     public GameObject civilianTokenPrefab;
     public GameObject thugTokenPrefab;
+    public CharacterSlots characterSlots = new CharacterSlots();
 
     [Header("Opóźnienia")]
     public float delayBetweenLocations = 0.5f;
@@ -21,19 +31,22 @@ public class LocationManager : MonoBehaviour
 
     private Dictionary<string, LocationData> locationDataDict = new Dictionary<string, LocationData>();
     private List<GameObject> spawnedLocations = new List<GameObject>();
-
+    public List<Transform> spawnedLocationTransforms = new List<Transform>();   
+    public System.Action OnLocationsReady;
     void Start()
     {
         LoadLocationsFromJson();
         StartCoroutine(SpawnLocationsWithDelay());
     }
-
+    public List<Transform> GetSpawnedLocationRoots()
+    {
+    return spawnedLocations.Select(loc => loc.transform).ToList();
+    }
     void LoadLocationsFromJson()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "Locations.json");
         if (!File.Exists(path))
         {
-            Debug.LogError("❌ Nie znaleziono Locations.json w StreamingAssets!");
             return;
         }
 
@@ -44,8 +57,6 @@ public class LocationManager : MonoBehaviour
         {
             locationDataDict[loc.script] = loc;
         }
-
-        Debug.Log($"✅ Załadowano {locationDataDict.Count} lokacji z JSON-a.");
     }
 
     IEnumerator SpawnLocationsWithDelay()
@@ -70,12 +81,26 @@ public class LocationManager : MonoBehaviour
             newLocation.transform.localScale = Vector3.one;
 
             spawnedLocations.Add(newLocation);
+            spawnedLocationTransforms.Add(newLocation.transform);
+
+            // Jeśli to lokacja 1 (index 0) → ZBIR
+            if (i == 0)
+            {
+                characterSlots.villainSlot = FindDeepChild(newLocation.transform, "Villain_Slot");
+            }
+            // Jeśli to lokacja 4 (index 3) → BOHATEROWIE
+            if (i == 3)
+            {
+                characterSlots.heroSlot1 = FindDeepChild(newLocation.transform, "Hero_Slot_1");
+                characterSlots.heroSlot2 = FindDeepChild(newLocation.transform, "Hero_Slot_2");
+            }
 
             yield return new WaitForSeconds(delayBetweenLocations);
         }
 
         // Poczekaj i potem spawnuj żetony
         yield return new WaitForSeconds(delayBeforeTokens);
+        OnLocationsReady?.Invoke();
         StartCoroutine(SpawnAllTokens());
     }
 
@@ -87,12 +112,7 @@ public class LocationManager : MonoBehaviour
 
             if (locationDataDict.TryGetValue(scriptId, out LocationData data))
             {
-                Debug.Log($"🟡 Dodaję tokeny do {scriptId}");
                 yield return StartCoroutine(SpawnTokens(locationGO, data));
-            }
-            else
-            {
-                Debug.LogWarning($"⚠️ Nie znaleziono danych JSON dla {scriptId}");
             }
         }
     }
@@ -106,14 +126,12 @@ public class LocationManager : MonoBehaviour
             Transform tokenSlot = FindDeepChild(locationGO.transform, $"Slot_{i}");
             if (tokenSlot == null)
             {
-                Debug.LogWarning($"⚠️ Brakuje Slot_{i} w {locationGO.name}");
                 continue;
             }
 
             GameObject tokenPrefab = tokenType == "Civilian" ? civilianTokenPrefab : thugTokenPrefab;
             if (tokenPrefab == null)
             {
-                Debug.LogError($"❌ Brakuje przypisanego prefabry dla: {tokenType}");
                 continue;
             }
 
@@ -121,8 +139,6 @@ public class LocationManager : MonoBehaviour
             
             token.transform.localPosition = Vector3.zero;
             token.transform.localRotation = Quaternion.identity;
-
-            Debug.Log($"✅ TOKEN: {token.name} dodany do {tokenSlot.name}");
         }
         // Sprawdź i dodaj threatToken, jeśli slot istnieje
 
@@ -151,4 +167,8 @@ public class LocationManager : MonoBehaviour
             (list[i], list[rand]) = (list[rand], list[i]);
         }
     }
+    public CharacterSlots GetCharacterSlots()
+{
+    return characterSlots;
+}
 }

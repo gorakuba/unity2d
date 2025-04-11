@@ -7,7 +7,6 @@ public class CameraOrbitPingPong : MonoBehaviour
     public float pauseDuration = 1f; // Ile sekund zatrzymania
     private Vector3 offset;
     private bool rotatingForward = true;
-    private bool isPaused = false;
     private float angle = 0f;        // Kąt całkowity obrotu
 
     void Start()
@@ -22,7 +21,6 @@ public class CameraOrbitPingPong : MonoBehaviour
         {
             // Reset kąta
             angle = 0f;
-            isPaused = false;
 
             // Rotacja w jedną stronę (do 180 stopni)
             while (angle < 180f)
@@ -39,7 +37,6 @@ public class CameraOrbitPingPong : MonoBehaviour
             }
 
             // Pauza
-            isPaused = true;
             yield return new WaitForSeconds(pauseDuration);
 
             // Zmieniamy kierunek

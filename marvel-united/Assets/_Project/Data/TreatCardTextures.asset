@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01452d65c5eefb84c90742b11e984723, type: 3}
+  m_Name: TreatCardTextures
+  m_EditorClassIdentifier: 
+  threatTextures:
+  - villainId: red_skull
+    threatId: threat_1
+    texture: {fileID: 2800000, guid: d55fb926413c1bc4ab4578c6f0d61fb4, type: 3}
+  - villainId: red_skull
+    threatId: threat_2
+    texture: {fileID: 2800000, guid: ce74aca739f6216458ee145ee02961b9, type: 3}
+  - villainId: red_skull
+    threatId: threat_3
+    texture: {fileID: 2800000, guid: ebacb989b1d73d246b09aaa4fb271a3e, type: 3}
+  - villainId: red_skull
+    threatId: threat_4
+    texture: {fileID: 2800000, guid: 47ffc9ac165e2434b84bdccd0ef0aabb, type: 3}
+  - villainId: red_skull
+    threatId: threat_5
+    texture: {fileID: 2800000, guid: ed0e44c4b933bf54cb4f01973c49777d, type: 3}
+  - villainId: red_skull
+    threatId: threat_6
+    texture: {fileID: 2800000, guid: fcc15d23fd202ec4ea544313f1cd3fb2, type: 3}
+  villainBackTextures:
+  - villainId: red_skull
+    backTexture: {fileID: 2800000, guid: 59153a2c147a15e4b88e9c4374278e71, type: 3}

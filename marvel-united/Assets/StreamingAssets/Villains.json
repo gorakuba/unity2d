@@ -29,7 +29,7 @@
                 "required_symbols": {},
                 "used_symbols": {},
                 "special":false,
-                "special_ability":""
+                "special_ability":"Redskull_threat_01"
             },
             {
                 "id": "threat_2",
@@ -39,7 +39,7 @@
                 "minion":true,
                 "minion_health": 6,
                 "bam_effect":true,
-                "bam_ability":"Deal 2 damage to each Hero in this Location. Any Hero can prevent this effect by taking 2 Crisis tokens.",
+                "bam_ability":"Redskull_threat_02",
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":false,
@@ -58,7 +58,7 @@
                 "bam_effect":false,
                 "bam_ability":"",
                 "on_stand_effect":true,
-                "on_stand_ability":"Discard all thugs and civilians from this Location and advance the Fear Track by the number of tokens discarded this way.",
+                "on_stand_ability":"Redskull_threat_03",
                 "to_remove":true,
                 "required_symbols": {
                     "Heroic": 3
@@ -74,10 +74,10 @@
                 "name": "Madame Hydra",
                 "effect":"When BAM! deal 1 damage to each Hero in this Location. Any Hero can prevent this effect by taking 1 Crisis token.",
                 "remove_condition":"Beat Madame Hydra",
-                "minion":false,
+                "minion":true,
                 "minion_health": 5,
                 "bam_effect":true,
-                "bam_ability":"Deal 1 damage to each Hero in this Location. Any Hero can prevent this effect by taking 1 Crisis token.",
+                "bam_ability":"Redskull_threat_04",
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":false,
@@ -96,7 +96,7 @@
                 "bam_effect":false,
                 "bam_ability":"",
                 "on_stand_effect":true,
-                "on_stand_ability":"Heroes in this and adjacent Locations take 1 Crisis token each.",
+                "on_stand_ability":"Redskull_threat_05",
                 "to_remove":true,
                 "required_symbols": {
                     "Heroic": 3
@@ -126,7 +126,7 @@
                     "Heroic": 0
                 },
                 "special":true,
-                "special_ability":"Tough_Thug"
+                "special_ability":"Redskull_threat_06"
             }
         ],
         "cards":[
