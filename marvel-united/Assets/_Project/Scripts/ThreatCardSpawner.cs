@@ -8,7 +8,6 @@ public class ThreatCardSpawner : MonoBehaviour
     [Header("References")]
     public GameObject threatCardPrefab;
     public Transform[] threatPlaces;
-    public Texture2D cardBackTexture;
     public ThreatCardTextureDatabase textureDatabase;
     [SerializeField] private LocationManager locationManager;
     public GameObject tokenHealthPrefab;
@@ -91,7 +90,7 @@ public class ThreatCardSpawner : MonoBehaviour
         if (display != null)
         {
             display.frontTexture = textureDatabase.GetTexture(villainId, threat.id);
-            display.backTexture = cardBackTexture;
+            display.backTexture = textureDatabase.GetBackTexture(villainId);
         }
 
         Location location = locationObj.GetComponent<Location>();

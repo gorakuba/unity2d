@@ -22,6 +22,7 @@ public class VillainData
     public List<ThreatCard> threats;
     public List<VillainCard> cards;
     public string imagePath;
+    public string backTexturePath;
 }
 
 [Serializable]

@@ -12,6 +12,7 @@
         "villainous_plot":"Fear Track - When track reaches 20, Heroes lose.",
         "additional_win_condition": true,
         "additional_win_condition_script":"Red_Skull_win_condition",
+        "backTexturePath": "Art/Villains/RedSkull.png",
         "overflow":"If a Civillian or Thug token can't be added to a Location, increase the Fear Track by 1 for each token you couldn't add.",
         "threats": [
             {
@@ -381,8 +382,7 @@
                 "Location_middle":"",
                 "Location_right":""
             }
-        ],
-        "imagePath":"Art/RedSkull"
+        ]
     }
     ]
 }

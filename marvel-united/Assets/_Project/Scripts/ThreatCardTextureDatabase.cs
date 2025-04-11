@@ -1,5 +1,13 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
+[System.Serializable]
+public class VillainBackTextureEntry
+{
+    public string villainId;
+    public Texture2D backTexture;
+}
 
 [CreateAssetMenu(fileName = "ThreatCardTextureDatabase", menuName = "MarvelUnited/ThreatCardTextureDatabase")]
 public class ThreatCardTextureDatabase : ScriptableObject
@@ -13,6 +21,7 @@ public class ThreatCardTextureDatabase : ScriptableObject
     }
 
     public List<ThreatTextureEntry> threatTextures;
+    public List<VillainBackTextureEntry> villainBackTextures;
 
     public Texture2D GetTexture(string villainId, string threatId)
     {
@@ -23,4 +32,11 @@ public class ThreatCardTextureDatabase : ScriptableObject
         }
         return null;
     }
+
+public Texture2D GetBackTexture(string villainId)
+{
+    var entry = villainBackTextures.FirstOrDefault(v => v.villainId == villainId);
+    return entry != null ? entry.backTexture : null;
+}
+
 }
