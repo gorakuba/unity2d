@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -43,7 +42,6 @@ public class HeroToggleGenerator : MonoBehaviour
     private bool isSelectingPlayerOne = true;
     private string playerOneSelectedHeroId = "";
     private string playerTwoSelectedHeroId = "";
-    private bool playerOneConfirmed = false;
     private bool playerTwoConfirmed = false;
 
     private void Start()
@@ -170,7 +168,6 @@ public class HeroToggleGenerator : MonoBehaviour
                 {
                     playerOneSelectedHeroId = pair.Value.id;
                     UpdatePlayerOneHeroUI(pair.Value.imagepath);
-                    playerOneConfirmed = true;
                     isSelectingPlayerOne = false;
                     ResetToggles();
                     backButton.gameObject.SetActive(true);
@@ -209,7 +206,6 @@ public class HeroToggleGenerator : MonoBehaviour
         {
             // Powrót do wyboru gracza 1, resetując wybór gracza 1
             playerOneSelectedHeroId = "";
-            playerOneConfirmed = false;
             UpdatePlayerOneHeroUI(null);
             isSelectingPlayerOne = true;
             backButton.gameObject.SetActive(false);
@@ -219,7 +215,6 @@ public class HeroToggleGenerator : MonoBehaviour
 
     private void StartGame()
     {
-        Debug.Log("Przechodzenie do następnej sceny...");
         GameManager.Instance.playerOneHero = playerOneSelectedHeroId;
         GameManager.Instance.playerTwoHero = playerTwoSelectedHeroId;
         SceneManager.LoadScene("VillainSelectionScreen"); // Wstaw właściwą nazwę sceny
@@ -245,7 +240,6 @@ public class HeroToggleGenerator : MonoBehaviour
     {
         playerOneSelectedHeroId = "";
         playerTwoSelectedHeroId = "";
-        playerOneConfirmed = false;
         playerTwoConfirmed = false;
     }
 

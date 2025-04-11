@@ -16,20 +16,24 @@ public class ThreatCardSpawner : MonoBehaviour
     [Header("JSON")]
     public TextAsset villainJson;
 
-    void Start()
-    {
-        Debug.Log("[START] ThreatCardSpawner wystartował");
-        SpawnThreatCardsForSelectedVillain();
+private void Start()
+{
+    Debug.Log("[START] ThreatCardSpawner wystartował");
 
-        if (locationManager != null)
-        {
-            locationObjects = locationManager.spawnedLocationTransforms.ToArray();
-        }
-        else
-        {
-            Debug.LogWarning("LocationManager nie jest przypisany!");
-        }
+    if (locationManager != null)
+    {
+        locationManager.OnLocationsReady += OnLocationsReady;
     }
+    else
+    {
+        Debug.LogWarning("LocationManager nie jest przypisany!");
+    }
+}
+private void OnLocationsReady()
+{
+    locationObjects = locationManager.spawnedLocationTransforms.ToArray();
+    SpawnThreatCardsForSelectedVillain();
+}
 
     void SpawnThreatCardsForSelectedVillain()
     {
@@ -84,7 +88,16 @@ public class ThreatCardSpawner : MonoBehaviour
         Debug.Log($"[{threat.id}] minion: {threat.minion}, health: {threat.minion_health} (type: {threat.minion_health?.GetType()})");
 
         GameObject locationObj = locationObjects[index].gameObject;
-        instance.assignedLocation = locationObj;
+       Location location = locationObj.GetComponentInChildren<Location>();
+if (location == null)
+{
+    Debug.LogWarning($"❗Nie znaleziono komponentu Location w prefabie pod: {locationObj.name}");
+}
+else
+{
+    location.AssignThreatCard(instance);
+    Debug.Log($"✅ Przypisano kartę {threat.id} do lokacji: {location.name}");
+}
 
         var display = card.GetComponent<CardDisplay>();
         if (display != null)
@@ -93,15 +106,20 @@ public class ThreatCardSpawner : MonoBehaviour
             display.backTexture = textureDatabase.GetBackTexture(villainId);
         }
 
-        Location location = locationObj.GetComponent<Location>();
-        if (location != null)
-        {
-            location.AssignThreatCard(instance);
-        }
-        else
-        {
-            Debug.LogWarning($"Brak komponentu Location na obiekcie {locationObj.name}");
-        }
+if (locationObj.transform.childCount > 0)
+{
+    location = locationObj.transform.GetChild(0).GetComponent<Location>();
+}
+
+if (location == null)
+{
+    Debug.LogWarning($"❗Nie znaleziono komponentu Location w prefabie pod: {locationObj.name}");
+}
+else
+{
+    location.AssignThreatCard(instance);
+    Debug.Log($"✅ Znaleziono komponent Location: {location.name} → przypisano kartę zagrożenia");
+}
 
         // 🔍 Tu debugujemy warunek
         if (threat.minion)
@@ -140,8 +158,6 @@ public class ThreatCardSpawner : MonoBehaviour
         Debug.LogWarning("Brak Slot_Health na karcie!");
         yield break;
     }
-
-    float yOffset = 0.03f;
     for (int i = 0; i < health; i++)
     {
         GameObject token = Instantiate(tokenHealthPrefab, slot);

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16cd4e908270b041b5dc523f3df7fba, type: 3}
+  m_Name: HeroVisualDatabase
+  m_EditorClassIdentifier: 
+  heroVisuals:
+  - heroID: black_panther
+    sprite: {fileID: 21300000, guid: 1d37c1092c770794582ccc42c4c526a6, type: 3}
+  - heroID: captain_america
+    sprite: {fileID: 21300000, guid: 65b77c164814138488a88640bd9bc2f4, type: 3}
+  - heroID: captain_marvel
+    sprite: {fileID: 21300000, guid: 204220f0aa13d4b43ab6aec3f863a3fa, type: 3}
+  - heroID: iron_man
+    sprite: {fileID: 21300000, guid: 0d8413ad1053f5949a4e590c442ba2f1, type: 3}
+  - heroID: spider-man
+    sprite: {fileID: 21300000, guid: 418ef3935b8904c4e97791f9ca206a25, type: 3}
+  - heroID: wasp
+    sprite: {fileID: 21300000, guid: 565f93642c1d7884dbbaeb49a7b8aa89, type: 3}
