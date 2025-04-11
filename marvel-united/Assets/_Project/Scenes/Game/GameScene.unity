@@ -1536,7 +1536,7 @@ GameObject:
   - component: {fileID: 879298901}
   - component: {fileID: 879298903}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameManager2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1549,7 +1549,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879298899}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 773d411220edcce46a49c1f2b9eed397, type: 3}
   m_Name: 
@@ -1586,8 +1586,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCharacterPrefab: {fileID: 7907724257384681602, guid: d5a5ff135e9603c44b144dd73896798e, type: 3}
   villainPrefab: {fileID: 7907724257384681602, guid: 26b6d0aff0fc3b142ac2196bc06c45ec, type: 3}
-  location_1: {fileID: 0}
-  location_4: {fileID: 0}
 --- !u!1001 &912776158
 PrefabInstance:
   m_ObjectHideFlags: 0
