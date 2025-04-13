@@ -421,17 +421,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235447974}
   m_CullTransparentMesh: 1
---- !u!114 &235743247 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7797804000891504194, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
-  m_PrefabInstance: {fileID: 976556799}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &235743250 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4002797281081778310, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
@@ -665,7 +654,7 @@ GameObject:
   - component: {fileID: 379481329}
   - component: {fileID: 379481328}
   m_Layer: 5
-  m_Name: HeroBackPanel
+  m_Name: VillainBackPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1201,17 +1190,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4002797281081778310, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
   m_PrefabInstance: {fileID: 591077897}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &591077899 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7797804000891504194, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
-  m_PrefabInstance: {fileID: 591077897}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &928443380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,7 +1235,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 928443380}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71557c8d5f998594682003b5af5aa152, type: 3}
+  m_Script: {fileID: 11500000, guid: 888381a0030a8a44ea2d8a41d1675036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   togglePrefab: {fileID: 202724434631998824, guid: dbe3e24e948fbc743bbbb7716a2fb660, type: 3}
@@ -1270,8 +1248,8 @@ MonoBehaviour:
   villainBamEffectText: {fileID: 2040654908}
   villainOverflowText: {fileID: 2000945696}
   villainWinConditionText: {fileID: 235447976}
-  confirmButton: {fileID: 235743247}
-  playButton: {fileID: 591077899}
+  confirmButton: {fileID: 1320933452}
+  playButton: {fileID: 1996715474}
 --- !u!1 &944043357
 GameObject:
   m_ObjectHideFlags: 0
@@ -2036,6 +2014,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287882414}
   m_CullTransparentMesh: 1
+--- !u!114 &1320933452 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7797804000891504194, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
+  m_PrefabInstance: {fileID: 976556799}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1559580837
 GameObject:
   m_ObjectHideFlags: 0
@@ -2172,7 +2161,7 @@ GameObject:
   - component: {fileID: 1819142422}
   - component: {fileID: 1819142423}
   m_Layer: 5
-  m_Name: HeroName
+  m_Name: VillainName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2296,6 +2285,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1996715474 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7797804000891504194, guid: 1d48de73d34775948985da1ac5b72679, type: 3}
+  m_PrefabInstance: {fileID: 591077897}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2000945694
 GameObject:
   m_ObjectHideFlags: 0

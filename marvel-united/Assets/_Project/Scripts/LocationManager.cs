@@ -23,11 +23,12 @@ public class LocationManager : MonoBehaviour
     [Header("Prefaby Żetonów")]
     public GameObject civilianTokenPrefab;
     public GameObject thugTokenPrefab;
+    public GameObject threatTokenPrefab;
     public CharacterSlots characterSlots = new CharacterSlots();
 
     [Header("Opóźnienia")]
-    public float delayBetweenLocations = 0.5f;
-    public float delayBeforeTokens = 3.5f;
+    public float delayBetweenLocations = 0.2f;
+    public float delayBeforeTokens = 0.2f;
 
     private Dictionary<string, LocationData> locationDataDict = new Dictionary<string, LocationData>();
     private List<GameObject> spawnedLocations = new List<GameObject>();
@@ -106,6 +107,7 @@ public class LocationManager : MonoBehaviour
 
     IEnumerator SpawnAllTokens()
     {
+        
         foreach (GameObject locationGO in spawnedLocations)
         {
             string scriptId = locationGO.name.Replace("(Clone)", "");
@@ -115,6 +117,7 @@ public class LocationManager : MonoBehaviour
                 yield return StartCoroutine(SpawnTokens(locationGO, data));
             }
         }
+        
     }
 
     IEnumerator SpawnTokens(GameObject locationGO, LocationData data)
@@ -141,9 +144,20 @@ public class LocationManager : MonoBehaviour
             token.transform.localRotation = Quaternion.identity;
         }
         // Sprawdź i dodaj threatToken, jeśli slot istnieje
-
+    
+    
+    
+    Transform threatSlot = FindDeepChild(locationGO.transform, "ThreatSlot");
+    if (threatSlot != null && threatTokenPrefab != null)
+    {
+        GameObject threatToken = Instantiate(threatTokenPrefab, threatSlot);
+        threatToken.transform.localPosition = Vector3.zero;
+        threatToken.transform.localRotation = Quaternion.identity;
+    }
         yield return null;
     }
+
+
 
     Transform FindDeepChild(Transform parent, string name)
     {

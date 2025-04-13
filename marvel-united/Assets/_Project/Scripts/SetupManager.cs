@@ -4,10 +4,6 @@ public class SetupManager : MonoBehaviour
 {
     public GameObject playerCharacterPrefab;
     public GameObject villainPrefab;
-
-    
-    public Transform location_1; // dla Zbira
-    public Transform location_4; // dla bohaterów
 private void Awake()
 {
     LocationManager locMan = FindAnyObjectByType<LocationManager>();

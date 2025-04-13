@@ -124,37 +124,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8076332622997772850}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4823677074359014335
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9147711975843526649}
-  m_Layer: 0
-  m_Name: ThreatSlot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9147711975843526649
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4823677074359014335}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.697, y: 0.004, z: -0.893}
-  m_LocalScale: {x: 4.5, y: 4.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8076332622997772850}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &4926028831328701377
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +155,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8076332622997772850}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5102444836584869865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6319510011116893232}
+  m_Layer: 0
+  m_Name: ThreatSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6319510011116893232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102444836584869865}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.706, y: 0.004, z: -0.898}
+  m_LocalScale: {x: 4.5, y: 4.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8076332622997772850}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &6426440018010336275
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,7 +345,7 @@ PrefabInstance:
       addedObject: {fileID: 4974914891749610511}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9147711975843526649}
+      addedObject: {fileID: 6319510011116893232}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7579843660952553468}
@@ -439,6 +439,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationSprite: {fileID: 21300000, guid: 6f41b67d07cb2b94e8173850f5ee0052, type: 3}
+  locationName: Start Labs
+  locationDescription: You may swap 1 card from your hand with 1 of your cards in
+    the Storyline.
   currentThreat: {fileID: 0}
 --- !u!114 &8464204241968679331
 MonoBehaviour:
