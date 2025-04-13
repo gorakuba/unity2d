@@ -137,7 +137,7 @@ private void OnLocationsReady()
     private IEnumerator SpawnMinionTokens(ThreatCardInstance instance, int health)
 {
     // ⏳ Czekaj 1 sekundę zanim zaczniesz generować żetony
-    yield return new WaitForSeconds(6f);
+    yield return new WaitForSeconds(2.5f);
 
     Transform slot = instance.transform.Find("Slot_Health");
     if (slot == null)
@@ -154,7 +154,7 @@ private void OnLocationsReady()
 
         instance.currentMinionHealth++; // jeśli chcesz zliczać
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
     }
 }
 
