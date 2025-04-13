@@ -443,6 +443,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationSprite: {fileID: 21300000, guid: 12fce59d37a21d34ca13e0e25ac05586, type: 3}
+  locationName: S.H.I.E.L.D. Headquarters
+  locationDescription: You may discard 1 card from your hand to the bottom of your
+    dec to remove 1 Crisis token from anywhere.
   currentThreat: {fileID: 0}
 --- !u!114 &5636817063252138397
 MonoBehaviour:

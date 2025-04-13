@@ -439,6 +439,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationSprite: {fileID: 21300000, guid: 6f41b67d07cb2b94e8173850f5ee0052, type: 3}
+  locationName: Start Labs
+  locationDescription: You may swap 1 card from your hand with 1 of your cards in
+    the Storyline.
   currentThreat: {fileID: 0}
 --- !u!114 &8464204241968679331
 MonoBehaviour:

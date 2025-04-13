@@ -107,6 +107,7 @@ public class LocationManager : MonoBehaviour
 
     IEnumerator SpawnAllTokens()
     {
+        
         foreach (GameObject locationGO in spawnedLocations)
         {
             string scriptId = locationGO.name.Replace("(Clone)", "");
@@ -116,6 +117,7 @@ public class LocationManager : MonoBehaviour
                 yield return StartCoroutine(SpawnTokens(locationGO, data));
             }
         }
+        
     }
 
     IEnumerator SpawnTokens(GameObject locationGO, LocationData data)

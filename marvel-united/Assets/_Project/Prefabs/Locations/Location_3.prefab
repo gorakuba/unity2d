@@ -486,4 +486,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationSprite: {fileID: 21300000, guid: 37ae5d6f4b91c4f4684dbbe98b8fa743, type: 3}
+  locationName: Central Park
+  locationDescription: You may move up to 2 Civillians or Thugs, in any combination,
+    from this Location to any other Location(s).
   currentThreat: {fileID: 0}
