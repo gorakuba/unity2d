@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: spider-man
+  m_EditorClassIdentifier: 
+  m_GroupName: spider-man
+  m_GUID: d723db24a17d3294695b9af0f794c8b6
+  m_SerializeEntries:
+  - m_GUID: 054d8217ae11c4a49a06eabb60dd8f6f
+    m_Address: spider-man/card_11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16ea561554536f342afb5d111be54573
+    m_Address: spider-man/card_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2db5ec439f6eb944f814f6a87ba1dd7a
+    m_Address: spider-man/card_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ded5fee21226184f9c5529ee7c81b5a
+    m_Address: spider-man/card_12
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f7ac674fa848b04b9f4c154cf93914b
+    m_Address: spider-man/card_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69a32606bd73b1342b426783e5160037
+    m_Address: spider-man/card_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d523db56e584454ab7cd6dce4971d82
+    m_Address: spider-man/card_9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 914b94c01b7dfc24885fc025b911802e
+    m_Address: spider-man/card_10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd5acbc07f7254144b6f92407cd5f64b
+    m_Address: spider-man/card_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc764c7acfceae04a967dbf34043cd84
+    m_Address: spider-man/card_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f65c771aadd08464394f49eb32012497
+    m_Address: spider-man/card_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8ff432440a4c0c4da4e4240051dfcdf
+    m_Address: spider-man/card_8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fd7b020e1813ef64db22278bca9f3ae2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 66e20c074dae0304d8504dc56599b8c8, type: 2}
+    - {fileID: 11400000, guid: 693093a1b6bd5e14c809c111dcf62ca0, type: 2}

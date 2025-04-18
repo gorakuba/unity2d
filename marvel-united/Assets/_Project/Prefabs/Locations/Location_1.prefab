@@ -372,6 +372,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5636817063252138397}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2767873285541225767}
   m_SourcePrefab: {fileID: 100100000, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
 --- !u!4 &8076332622997772850 stripped
 Transform:
@@ -443,10 +446,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationSprite: {fileID: 21300000, guid: 12fce59d37a21d34ca13e0e25ac05586, type: 3}
-  locationName: S.H.I.E.L.D. Headquarters
-  locationDescription: You may discard 1 card from your hand to the bottom of your
-    dec to remove 1 Crisis token from anywhere.
   currentThreat: {fileID: 0}
 --- !u!114 &5636817063252138397
 MonoBehaviour:
@@ -461,3 +460,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delay: 1
+--- !u!114 &2767873285541225767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8889882559721111688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23035889ba3b1ed4d93d97371993cce8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    id: 
+    name: 
+    script: 
+    end_turn: 
+    slots: 0
+    starting_tokens: []

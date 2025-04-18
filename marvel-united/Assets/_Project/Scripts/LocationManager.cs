@@ -34,6 +34,7 @@ public class LocationManager : MonoBehaviour
     private List<GameObject> spawnedLocations = new List<GameObject>();
     public List<Transform> spawnedLocationTransforms = new List<Transform>();   
     public System.Action OnLocationsReady;
+    
     void Start()
     {
         LoadLocationsFromJson();
@@ -77,6 +78,17 @@ public class LocationManager : MonoBehaviour
 
             GameObject selectedPrefab = shuffled[i];
             GameObject newLocation = Instantiate(selectedPrefab, slot);
+            
+            string scriptId = selectedPrefab.name;
+if (locationDataDict.TryGetValue(scriptId, out LocationData data))
+{
+    var holder = newLocation.GetComponent<LocationDataHolder>();
+    if (holder != null)
+    {
+        holder.data = data;
+    }
+}
+StartCoroutine(LoadLocationSpriteAsync(data));
             newLocation.transform.localPosition = Vector3.zero;
             newLocation.transform.localRotation = Quaternion.identity;
             newLocation.transform.localScale = Vector3.one;
@@ -185,4 +197,24 @@ public class LocationManager : MonoBehaviour
 {
     return characterSlots;
 }
+private IEnumerator LoadLocationSpriteAsync(LocationData data)
+{
+    // np. Location_3 → Card_3
+    string index = data.id.Split('_')[1]; // "Location_3" → "3"
+    string address = $"Location/Card_{index}";
+
+    var handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>(address);
+    yield return handle;
+
+    if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+    {
+        data.sprite = handle.Result;
+        Debug.Log($"✅ Załadowano sprite dla {data.id} → {address}");
+    }
+    else
+    {
+        Debug.LogError($"❌ Nie udało się załadować sprite dla: {address}");
+    }
+}
+
 }

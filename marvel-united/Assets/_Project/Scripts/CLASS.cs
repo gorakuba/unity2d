@@ -43,6 +43,7 @@ public class ThreatCard
     public Dictionary<string, int> used_symbols;
     public bool special;
     public string special_ability;
+    public Sprite sprite;
 }
 
 [Serializable]
@@ -108,6 +109,8 @@ public class LocationData
     public string end_turn;
     public int slots;
     public List<string> starting_tokens;
+    [NonSerialized]
+    public Sprite sprite;
 }
 
 [System.Serializable]
