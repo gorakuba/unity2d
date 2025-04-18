@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: red_skull_threat
+  m_EditorClassIdentifier: 
+  m_GroupName: red_skull_threat
+  m_GUID: c0e9ef0651cfa584eaf8a93d81cbbbb3
+  m_SerializeEntries:
+  - m_GUID: 47ffc9ac165e2434b84bdccd0ef0aabb
+    m_Address: Villain/red_skull/Threats/Card_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce74aca739f6216458ee145ee02961b9
+    m_Address: Villain/red_skull/Threats/Card_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d55fb926413c1bc4ab4578c6f0d61fb4
+    m_Address: Villain/red_skull/Threats/Card_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebacb989b1d73d246b09aaa4fb271a3e
+    m_Address: Villain/red_skull/Threats/Card_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed0e44c4b933bf54cb4f01973c49777d
+    m_Address: Villain/red_skull/Threats/Card_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcc15d23fd202ec4ea544313f1cd3fb2
+    m_Address: Villain/red_skull/Threats/Card_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fd7b020e1813ef64db22278bca9f3ae2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c604875129542984f8052069c8ec82fa, type: 2}
+    - {fileID: 11400000, guid: e4ae82dc1b81a2f45af43f4810829727, type: 2}

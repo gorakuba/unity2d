@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: captain_marvel_hero
+  m_EditorClassIdentifier: 
+  m_GroupName: captain_marvel_hero
+  m_GUID: 00d3df178aa209a4c82c8c8e5295fc64
+  m_SerializeEntries:
+  - m_GUID: 1219b14116f7c4241aa0102d3d96870c
+    m_Address: captain_marvel/card_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d3ba6e7f1cc9be41abb6bdb99341521
+    m_Address: captain_marvel/card_8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cc6c30f987fffa4a94e92dc5442ec48
+    m_Address: captain_marvel/card_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60afbc67ca8006140aeda10db585451e
+    m_Address: captain_marvel/card_11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c39e77d6f237a0489192753779d92e3
+    m_Address: captain_marvel/card_12
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b802526c034ebb642ad12fe6531b1dfe
+    m_Address: captain_marvel/card_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9e7911b54153b04399cd220a2be1a00
+    m_Address: captain_marvel/card_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c95b03c7fa771b74a92f46bc554dfa39
+    m_Address: captain_marvel/card_10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5bf365faafebef41be49a9bee8078e1
+    m_Address: captain_marvel/card_9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eba8a833b68d2b74482a980a6dc083c6
+    m_Address: captain_marvel/card_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fda785fb00503d44080bd00ff89765ba
+    m_Address: captain_marvel/card_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffd27c2c9c6a7c343a3a3e3cf453672a
+    m_Address: captain_marvel/card_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fd7b020e1813ef64db22278bca9f3ae2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 23735343c88ff294e84fdfb0b0aa4b55, type: 2}
+    - {fileID: 11400000, guid: cb769d2b3dbf0394e8dab93e0503dafc, type: 2}

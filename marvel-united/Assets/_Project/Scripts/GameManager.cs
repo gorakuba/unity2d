@@ -10,9 +10,16 @@ public class GameManager : MonoBehaviour
     public string playerOneHero;
     public string playerTwoHero;
     public string selectedVillain;
-
+    public List<HeroCard> playerOneHand = new List<HeroCard>();
+    public List<HeroCard> playerTwoHand = new List<HeroCard>();
+    public VillainCard firstVillainCard;
     public LocationManager locationManager;
     public ThreatCardSpawner threatCardSpawner;
+    public CardManager cardManager;
+
+public HeroCardDisplay displayPlayer1;
+public HeroCardDisplay displayPlayer2;
+public VillainCardDisplay villainDisplay;
 
     private void Awake()
     {
@@ -56,6 +63,10 @@ public class GameManager : MonoBehaviour
 
         // 4. Uruchom sekwencję ponownie
         locationManager.StartCoroutine("SpawnLocationsWithDelay");
+            cardManager.RollAllCards();
+    displayPlayer1.ShowCards();
+    displayPlayer2.ShowCards();
+    villainDisplay.ShowFirstCard();
     }
     private void OnEnable()
 {
@@ -85,4 +96,5 @@ private IEnumerator AssignSceneReferences()
     if (threatCardSpawner == null)
         threatCardSpawner = Object.FindFirstObjectByType<ThreatCardSpawner>();
 }
+
 }
