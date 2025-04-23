@@ -1,0 +1,812 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &475141290343199933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3067421606158516735}
+  m_Layer: 0
+  m_Name: FearTrack_Slot19
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3067421606158516735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475141290343199933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00736, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1052636701721845936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4959690064836420045}
+  m_Layer: 0
+  m_Name: FearTrack_Slot17
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4959690064836420045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052636701721845936}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00482, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1401852861918885763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2145503847987687885}
+  m_Layer: 0
+  m_Name: FearTrack_Slot8
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2145503847987687885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401852861918885763}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00612, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1714062986275330885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3279491228802610355}
+  m_Layer: 0
+  m_Name: FearTrack_Slot14
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3279491228802610355
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714062986275330885}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00091, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2175597577180525194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3751118821389346819}
+  m_Layer: 0
+  m_Name: Slot_Health
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3751118821389346819
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2175597577180525194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0096165, y: -0.00977, z: -0.000006}
+  m_LocalScale: {x: 0.068171404, y: 0.154181, z: 0.015418099}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2197531508968144692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6317827474398682488}
+  m_Layer: 0
+  m_Name: FearTrack_Slot20
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6317827474398682488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2197531508968144692}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00869, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3014600532646273513
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4004471999785816781}
+  m_Layer: 0
+  m_Name: FearTrack_Slot15
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4004471999785816781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3014600532646273513}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00219, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3401689931582699705
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6371195203746661038}
+  m_Layer: 0
+  m_Name: FearTrack_Slot5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6371195203746661038
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3401689931582699705}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0022, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3928105790644998976
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5332614422500947232}
+  m_Layer: 0
+  m_Name: FearTrack_Slot9
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5332614422500947232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928105790644998976}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00738, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4600085728706469579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8531548147245123366}
+  m_Layer: 0
+  m_Name: FearTrack_Slot4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8531548147245123366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4600085728706469579}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00089, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5175620945296920932
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4166615026522383932}
+  m_Layer: 0
+  m_Name: FearTrack_Slot12
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4166615026522383932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175620945296920932}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00168, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5452725961599977725
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9027532135643859096}
+  m_Layer: 0
+  m_Name: FearTrack_Slot1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9027532135643859096
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5452725961599977725}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.003021, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5587605014073878068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4462784795848700543}
+  m_Layer: 0
+  m_Name: FearTrack_Slot6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4462784795848700543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5587605014073878068}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00348, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6101066274698908974
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5691565285883102376}
+  m_Layer: 0
+  m_Name: FearTrack_Slot7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5691565285883102376
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101066274698908974}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00481, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6176835801434423783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1419925025524422413}
+  m_Layer: 0
+  m_Name: FearTrack_Slot13
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1419925025524422413
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6176835801434423783}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00037, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6776847819264927526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7237260641788483081}
+  m_Layer: 0
+  m_Name: FearTrack_Slot3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7237260641788483081
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6776847819264927526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00039, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6964174643038890375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8037144083811343887}
+  m_Layer: 0
+  m_Name: FearTrack_Slot16
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8037144083811343887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6964174643038890375}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00354, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7288957237443160804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1634998735019806334}
+  m_Layer: 0
+  m_Name: FearTrack_Slot18
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1634998735019806334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7288957237443160804}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00611, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7373450722228591913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5586557075599327192}
+  m_Layer: 0
+  m_Name: FearTrack_Slot10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5586557075599327192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7373450722228591913}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00871, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7801669543327194831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5577785521552255838}
+  m_Layer: 0
+  m_Name: FearTrack_Slot2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5577785521552255838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801669543327194831}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00174, y: -0.00315, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8271681104348681615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 187758471935287652}
+  m_Layer: 0
+  m_Name: FearTrack_Slot0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &187758471935287652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8271681104348681615}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.003021, y: -0.00064, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9103098640675938991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4760389411046779612}
+  m_Layer: 0
+  m_Name: FearTrack_Slot11
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4760389411046779612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103098640675938991}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00305, y: -0.00575, z: 0.000122}
+  m_LocalScale: {x: -0.0009972255, y: -0.0022553918, z: -0.00022553916}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 637697064837489966}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1104287251058115269
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0481
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      propertyPath: m_Name
+      value: red_skull_dashboard
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3751118821389346819}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 187758471935287652}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9027532135643859096}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5577785521552255838}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7237260641788483081}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8531548147245123366}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6371195203746661038}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4462784795848700543}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5691565285883102376}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2145503847987687885}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5332614422500947232}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5586557075599327192}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4760389411046779612}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4166615026522383932}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1419925025524422413}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3279491228802610355}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4004471999785816781}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8037144083811343887}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4959690064836420045}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1634998735019806334}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3067421606158516735}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6317827474398682488}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+--- !u!4 &637697064837489966 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c31bece764e1e14cb446176db188fdf, type: 3}
+  m_PrefabInstance: {fileID: 1104287251058115269}
+  m_PrefabAsset: {fileID: 0}

@@ -13,7 +13,15 @@ public class VillainData
 {
     public string id;
     public string name;
-    public Dictionary<string, int> health_per_players;
+    [System.Serializable]
+    public class HealthPerPlayers
+    {
+        public int _2;
+        public int _3;
+        public int _4;
+    }
+
+public HealthPerPlayers health_per_players;
     public string bam_effect;
     public string villainous_plot;
     public bool additional_win_condition;
@@ -117,4 +125,11 @@ public class LocationData
 public class LocationDataList
 {
     public List<LocationData> locations;
+}
+
+[System.Serializable]
+public class VillainDashboard
+{
+    public string villainName;          // np. "red_skull"
+    public GameObject dashboardPrefab;  // przypisany prefab w Inspectorze
 }
