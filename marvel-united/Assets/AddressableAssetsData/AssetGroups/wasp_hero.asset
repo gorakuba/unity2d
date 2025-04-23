@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: wasp_hero
+  m_EditorClassIdentifier: 
+  m_GroupName: wasp_hero
+  m_GUID: ceb9459e8e8a64f4fbfa87f91e53b3c3
+  m_SerializeEntries:
+  - m_GUID: 13334085e1d2c3b4a9ee6245623a8f80
+    m_Address: wasp/card_11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b805614762cb8146807fea71994365a
+    m_Address: wasp/card_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b9442623e9e2e644902a1077627fce9
+    m_Address: wasp/card_12
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ba87e77ac8c3344bb1efe768b5e3314
+    m_Address: wasp/card_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fca14c1d3ee99d449e121065c52063f
+    m_Address: wasp/card_9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85e6af06941add84a82fef80d1ad3c59
+    m_Address: wasp/card_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3e4a7304e88ecc43bad2d27ddf42bf8
+    m_Address: wasp/card_10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1583ccd0b35a234c857216b93a476ea
+    m_Address: wasp/card_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c976af881715ed347a275a8293b93b6d
+    m_Address: wasp/card_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbea522e7aff9b64fb8b6bbf6141f3ec
+    m_Address: wasp/card_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccb59de0563a9bc4eb6541294e14da5f
+    m_Address: wasp/card_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee1bd89188bf91d4fb065043ebaa0c97
+    m_Address: wasp/card_8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fd7b020e1813ef64db22278bca9f3ae2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: eff85a0e39516cc45876816d6275c9be, type: 2}
+    - {fileID: 11400000, guid: 8c68e034eebc3c74da63e78936bda5c0, type: 2}

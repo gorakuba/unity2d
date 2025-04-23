@@ -4,9 +4,9 @@
         "id": "red_skull",
         "name": "Red Skull",
         "health_per_players": {
-         "2": 4,
-          "3": 8,
-          "4": 11
+         "_2": 4,
+         "_3": 8,
+         "_4": 11
         },
         "bam_effect":"Deal 1 damage to each Hero in Red Skull's Location and increase the Fear Track by 2",
         "villainous_plot":"Fear Track - When track reaches 20, Heroes lose.",

@@ -13,7 +13,15 @@ public class VillainData
 {
     public string id;
     public string name;
-    public Dictionary<string, int> health_per_players;
+    [System.Serializable]
+    public class HealthPerPlayers
+    {
+        public int _2;
+        public int _3;
+        public int _4;
+    }
+
+public HealthPerPlayers health_per_players;
     public string bam_effect;
     public string villainous_plot;
     public bool additional_win_condition;
@@ -43,6 +51,7 @@ public class ThreatCard
     public Dictionary<string, int> used_symbols;
     public bool special;
     public string special_ability;
+    public Sprite sprite;
 }
 
 [Serializable]
@@ -108,10 +117,19 @@ public class LocationData
     public string end_turn;
     public int slots;
     public List<string> starting_tokens;
+    [NonSerialized]
+    public Sprite sprite;
 }
 
 [System.Serializable]
 public class LocationDataList
 {
     public List<LocationData> locations;
+}
+
+[System.Serializable]
+public class VillainDashboard
+{
+    public string villainName;          // np. "red_skull"
+    public GameObject dashboardPrefab;  // przypisany prefab w Inspectorze
 }

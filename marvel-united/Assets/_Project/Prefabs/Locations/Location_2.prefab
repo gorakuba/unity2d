@@ -368,6 +368,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8464204241968679331}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -564364510151565561}
   m_SourcePrefab: {fileID: 100100000, guid: 294dcf1c9ae1507478c0338c51d9ba44, type: 3}
 --- !u!4 &8076332622997772850 stripped
 Transform:
@@ -439,10 +442,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0458f19b3cdc1aa4b866210e67467aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationSprite: {fileID: 21300000, guid: 6f41b67d07cb2b94e8173850f5ee0052, type: 3}
-  locationName: Start Labs
-  locationDescription: You may swap 1 card from your hand with 1 of your cards in
-    the Storyline.
   currentThreat: {fileID: 0}
 --- !u!114 &8464204241968679331
 MonoBehaviour:
@@ -457,3 +456,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delay: 1
+--- !u!114 &-564364510151565561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8889882559721111688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23035889ba3b1ed4d93d97371993cce8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    id: 
+    name: 
+    script: 
+    end_turn: 
+    slots: 0
+    starting_tokens: []

@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: red_skull_villain
+  m_EditorClassIdentifier: 
+  m_GroupName: red_skull_villain
+  m_GUID: 97416d94bb9893d4ebf2fd9b0adac51a
+  m_SerializeEntries:
+  - m_GUID: 02fcd87a32dc15b4ca988129c10e3b59
+    m_Address: red_skull/card_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20e7ff867c403de469008db0dcb64c1c
+    m_Address: red_skull/card_11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3169b20b221dccc4fb0df23d04aa4dc5
+    m_Address: red_skull/card_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35762db91856d7743a8409eabdd1fe06
+    m_Address: red_skull/card_12
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80332c997f4a2b94c8e650026bd27277
+    m_Address: red_skull/card_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9901045d2712fa24bab30502729b285e
+    m_Address: red_skull/card_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9d2fc724e2be664c961c6903090ab71
+    m_Address: red_skull/card_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b01edea8d5bfd7346829171f62a7d062
+    m_Address: red_skull/card_10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c52ef51bbc568ac489a2cd34241df690
+    m_Address: red_skull/card_9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd61e575652088842bafc95aa094ac7b
+    m_Address: red_skull/card_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf57b03d70c807c46ab6602f16e66d75
+    m_Address: red_skull/card_8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9d7dd6f15bf5114a9c96da6713b3f56
+    m_Address: red_skull/card_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fd7b020e1813ef64db22278bca9f3ae2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e7805f4933bb6264f982f9f2ac5ce253, type: 2}
+    - {fileID: 11400000, guid: 93339e570382e7c4387b68bb62cb3468, type: 2}
