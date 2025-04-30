@@ -45,7 +45,9 @@ public class HeroCardLoader
                 List<HeroCard> cards = new List<HeroCard>();
                 foreach (var c in hero.cards)
                 {
-                    cards.Add(new HeroCard(c.id, c.special, c.special_ability, c.special_description, c.special_name, c.symbols));
+                    HeroCard card = new HeroCard(c.id, c.special, c.special_ability, c.special_description, c.special_name, c.symbols);
+card.heroId = hero.id;
+cards.Add(card);
                 }
                 return cards;
             }
@@ -68,7 +70,9 @@ public Hero LoadHeroById(string heroId)
             List<HeroCard> cards = new List<HeroCard>();
             foreach (var c in hero.cards)
             {
-                cards.Add(new HeroCard(c.id, c.special, c.special_ability, c.special_description, c.special_name, c.symbols));
+                HeroCard card = new HeroCard(c.id, c.special, c.special_ability, c.special_description, c.special_name, c.symbols);
+card.heroId = hero.id;
+cards.Add(card);
             }
 
             return new Hero(hero.id, hero.name, hero.description, hero.imagepath, cards);

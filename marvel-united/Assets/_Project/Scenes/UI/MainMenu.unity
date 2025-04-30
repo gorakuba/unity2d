@@ -6288,6 +6288,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 7e9e6b24cb8fde24983b57a65ee353f8, type: 2}
   volumeSlider: {fileID: 1892304492}
+  backgroundMusic: {fileID: 185309090}
 --- !u!4 &1231813081
 Transform:
   m_ObjectHideFlags: 0

@@ -1,23 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class CardManager : MonoBehaviour
 {
     public List<HeroCard> playerOneHand { get; private set; }
     public List<HeroCard> playerTwoHand { get; private set; }
     public VillainCard firstVillainCard { get; private set; }
+
     public HeroCardDisplay displayPlayer1;
-public HeroCardDisplay displayPlayer2;
-public VillainCardDisplay villainDisplay;
-private List<VillainCard> villainDeck = new();
-private int villainCardIndex = 1;
-private void Start()
-{
-    RollAllCards(); // <- losuj na start gry
-    displayPlayer1.ShowCards();
-    displayPlayer2.ShowCards();
-    villainDisplay.ShowFirstCard();
-}
+    public HeroCardDisplay displayPlayer2;
+    public VillainCardDisplay villainDisplay;
+
+    private List<VillainCard> villainDeck = new();
+    private int villainCardIndex = 1;
+
+    private void Start()
+    {
+        RollAllCards();
+        displayPlayer1.ShowCards();
+        displayPlayer2.ShowCards();
+        villainDisplay.ShowFirstCard();
+    }
+
     public void RollAllCards()
     {
         Debug.Log("🔁 Losuję wszystkie karty...");
@@ -56,15 +62,47 @@ private void Start()
             (list[i], list[rand]) = (list[rand], list[i]);
         }
     }
+
     public VillainCard GetNextVillainCard()
-{
-    if (villainCardIndex >= villainDeck.Count)
     {
-        Debug.LogWarning("🛑 Brak więcej kart Zbira!");
-        return null;
+        if (villainCardIndex >= villainDeck.Count)
+        {
+            Debug.LogWarning("🛑 Brak więcej kart Zbira!");
+            return null;
+        }
+
+        return villainDeck[villainCardIndex++];
     }
 
-    return villainDeck[villainCardIndex++];
+public string GetSpritePathForCard(HeroCard card)
+{
+    return $"{card.heroId}/{card.Id}";
+}
+    public Sprite GetCardSprite(HeroCard card)
+    {
+        string spritePath = GetSpritePathForCard(card);
+        var handle = Addressables.LoadAssetAsync<Sprite>(spritePath);
+        handle.WaitForCompletion();
+
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+            return handle.Result;
+
+        Debug.LogWarning($"⚠️ Nie znaleziono sprite'a dla {card.Id} (ścieżka: {spritePath})");
+        return null;
+    }
+    public Sprite GetCardSprite(VillainCard card)
+{
+    string villainId = GameManager.Instance.selectedVillain;
+    string spritePath = $"{villainId}/{card.id}";
+
+    var handle = Addressables.LoadAssetAsync<Sprite>(spritePath);
+    handle.WaitForCompletion();
+
+    if (handle.Status == AsyncOperationStatus.Succeeded)
+        return handle.Result;
+
+    Debug.LogWarning($"❌ Sprite Zbira nie znaleziony: {spritePath}");
+    return null;
 }
 
-}
+} 

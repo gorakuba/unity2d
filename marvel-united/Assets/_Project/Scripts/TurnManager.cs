@@ -2,19 +2,27 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class TurnManager : MonoBehaviour
 {
     public enum GamePhase { VillainTurn, Player1Turn, Player2Turn }
-[Header("UI Villain Flash")]
-public GameObject villainCardFlashPanel;
-public Image villainCardFlashImage;
-public float villainCardFlashTime = 2f;
+
+    [Header("Panele fazy")]
+    public GameObject playerPhasePanel;
+    public GameObject villainPhasePanel;
+    [Header("UI Villain Flash")]
+    public GameObject villainCardFlashPanel;
+    public Image villainCardFlashImage;
+    public float villainCardFlashTime = 2f;
+
     [Header("UI")]
     public GameObject preparingUI;
     public GameObject villainTurnUI;
     public GameObject playerTurnUI;
+    public TMPro.TextMeshProUGUI villainPhaseText;
     public TMPro.TextMeshProUGUI playerPhaseText;
+
 
     [Header("Prefaby kart")]
     public GameObject villainCardPrefab;
@@ -41,6 +49,16 @@ public float villainCardFlashTime = 2f;
     private int player1CardDrawIndex = 3;
     private int player2CardDrawIndex = 3;
     private bool isFirstVillainTurn = true;
+
+    [Header("UI Gracza")]
+    public HeroHandUI heroHandUI;
+    public Button confirmButton;
+    public Button endTurnButton;
+    private HeroCard selectedCard;
+    private int nextPlayer = 1; // 1 = G1, 2 = G2
+    private bool hasCardBeenPlayedThisTurn = false;
+
+
     private void Awake()
     {
         cardManager = FindFirstObjectByType<CardManager>();
@@ -54,6 +72,8 @@ public float villainCardFlashTime = 2f;
 
     public void StartVillainTurn()
     {
+        playerTurnUI.SetActive(false);
+        villainTurnUI.SetActive(true);
         StartCoroutine(VillainTurnSequence());
     }
 
@@ -61,46 +81,33 @@ public float villainCardFlashTime = 2f;
     {
         currentPhase = GamePhase.VillainTurn;
 
-        villainTurnUI.SetActive(true);
-        
-        FadeOutUI fade = villainTurnUI.GetComponent<FadeOutUI>();
-        float fadeDuration = fade != null ? fade.delay + fade.duration : 1f;
-        yield return new WaitForSeconds(fadeDuration);
+        yield return ShowPhasePanel(villainPhasePanel);
 
         yield return new WaitForSeconds(pauseBeforeCardSpawn);
 
         VillainCard card;
+        if (isFirstVillainTurn)
+        {
+            card = cardManager.firstVillainCard;
+            isFirstVillainTurn = false;
+        }
+        else
+        {
+            card = cardManager.GetNextVillainCard();
+        }
 
-if (isFirstVillainTurn)
-{
-    card = cardManager.firstVillainCard;
-    isFirstVillainTurn = false;
-}
-else
-{
-    card = cardManager.GetNextVillainCard();
-}
         if (card != null)
         {
-            string villainId = GameManager.Instance.selectedVillain;
-            string spritePath = $"{villainId}/{card.id}";
+            Sprite sprite = cardManager.GetCardSprite(card); // Requires overloaded method for VillainCard
 
-            var handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>(spritePath);
-            yield return handle;
+            AutoHideImage flash = villainCardFlashPanel.GetComponent<AutoHideImage>();
+            if (flash != null)
+            {
+                flash.ShowForDuration(sprite);
+                yield return new WaitForSeconds(flash.displayTime);
+            }
 
-if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
-{
-    Sprite sprite = handle.Result;
-
-    AutoHideImage flash = villainCardFlashPanel.GetComponent<AutoHideImage>();
-    if (flash != null)
-    {
-        flash.ShowForDuration(sprite);
-        yield return new WaitForSeconds(flash.displayTime); // poczekaj na wyświetlenie
-    }
-
-    SpawnCardAndReturnObject(villainCardPrefab, sprite);
-}
+            SpawnCardAndReturnObject(villainCardPrefab, sprite);
         }
 
         yield return new WaitForSeconds(pauseAfterCardSpawn);
@@ -108,9 +115,119 @@ if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperati
         if (card != null)
             yield return ExecuteVillainCardEffects(card);
 
-        villainTurnUI.SetActive(false);
-        StartCoroutine(PlayerTurnSequence(1));
+        StartCoroutine(PlayerTurnSequence(nextPlayer));
     }
+
+    private IEnumerator PlayerTurnSequence(int playerIndex)
+    {
+        hasCardBeenPlayedThisTurn = false;
+        villainTurnUI.SetActive(false);
+        playerTurnUI.SetActive(true);
+        confirmButton.gameObject.SetActive(false);
+        endTurnButton.gameObject.SetActive(false);
+        confirmButton.interactable = false;
+        endTurnButton.interactable = false;
+        selectedCard = null;
+
+        currentPhase = (playerIndex == 1) ? GamePhase.Player1Turn : GamePhase.Player2Turn;
+
+        string heroId = (playerIndex == 1) ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
+        HeroCardLoader loader = new HeroCardLoader();
+        Hero hero = loader.LoadHeroById(heroId);
+        playerPhaseText.text = $"{hero?.Name ?? heroId} Phase";
+        List<HeroCard> currentHand = (playerIndex == 1) ? cardManager.playerOneHand : cardManager.playerTwoHand;
+        List<HeroCard> fullDeck = loader.LoadHeroDeck(heroId);
+        int drawIndex = (playerIndex == 1) ? player1CardDrawIndex : player2CardDrawIndex;
+        List<GameObject> afterPanelObjects = new()
+{
+    heroHandUI.gameObject,
+};
+
+// ukryj je najpierw (na wszelki wypadek)
+foreach (var go in afterPanelObjects)
+    go.SetActive(false);
+
+// wyświetl panel fazy, a potem te elementy
+yield return ShowPhasePanel(playerPhasePanel, 1.5f, afterPanelObjects);
+confirmButton.gameObject.SetActive(false);
+endTurnButton.gameObject.SetActive(false);
+
+if (drawIndex < fullDeck.Count)
+{
+    currentHand.Add(fullDeck[drawIndex]);
+
+    if (playerIndex == 1) player1CardDrawIndex++;
+    else player2CardDrawIndex++;
+}
+
+        
+        heroHandUI.ShowHand(currentHand, OnPlayerCardSelected);
+
+        confirmButton.interactable = false;
+        endTurnButton.interactable = false;
+        selectedCard = null;
+    }
+
+    private void OnPlayerCardSelected(HeroCard card)
+    {
+        if (hasCardBeenPlayedThisTurn) return;
+        selectedCard = card;
+        confirmButton.gameObject.SetActive(true);
+        confirmButton.interactable = true;
+    }
+
+public void OnConfirmCardClick()
+{
+    if (selectedCard == null) return;
+
+    // usuń z ręki gracza
+    List<HeroCard> currentHand = (currentPhase == GamePhase.Player1Turn) ? 
+        cardManager.playerOneHand : 
+        cardManager.playerTwoHand;
+
+    if (currentHand.Contains(selectedCard))
+    {
+        currentHand.Remove(selectedCard);
+    }
+
+    // zaktualizuj wyświetlaną rękę
+    heroHandUI.ShowHand(currentHand, OnPlayerCardSelected);
+
+    // zagraj kartę
+    Sprite sprite = cardManager.GetCardSprite(selectedCard);
+    SpawnCardAndReturnObject(heroCardPrefab, sprite);
+
+    // dezaktywuj wybór
+    confirmButton.gameObject.SetActive(false);
+    endTurnButton.gameObject.SetActive(true);
+    endTurnButton.interactable = true;
+    hasCardBeenPlayedThisTurn = true;
+}
+
+
+public void OnEndTurnButtonClicked()
+{
+    playerTurnUI.SetActive(false);
+    villainTurnUI.SetActive(false);
+
+    playerTurnCounter++;
+
+    if (currentPhase == GamePhase.Player1Turn || currentPhase == GamePhase.Player2Turn)
+    {
+        // co 3 tury graczy: tura Zbira
+        nextPlayer = (nextPlayer == 1) ? 2 : 1;
+        if (playerTurnCounter % 3 == 0)
+        {
+            StartVillainTurn();
+        }
+        else
+        {
+            // naprzemiennie G1 <-> G2
+            StartCoroutine(PlayerTurnSequence(nextPlayer));
+        }
+    }
+}
+
 
     private IEnumerator ExecuteVillainCardEffects(VillainCard card)
     {
@@ -166,59 +283,6 @@ if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperati
         yield return null;
     }
 
-    public void StartPlayerTurn(int playerIndex)
-    {
-        currentPhase = (playerIndex == 1) ? GamePhase.Player1Turn : GamePhase.Player2Turn;
-
-        var hand = (playerIndex == 1) ? cardManager.playerOneHand : cardManager.playerTwoHand;
-        int drawIndex = (playerIndex == 1) ? player1CardDrawIndex : player2CardDrawIndex;
-
-        HeroCardLoader loader = new HeroCardLoader();
-        var fullDeck = loader.LoadHeroDeck((playerIndex == 1) ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero);
-
-        if (drawIndex < fullDeck.Count)
-        {
-            hand.Add(fullDeck[drawIndex]);
-
-            if (playerIndex == 1) player1CardDrawIndex++;
-            else player2CardDrawIndex++;
-        }
-
-        Debug.Log($"🎮 Start tury Gracza {playerIndex}. Karty na ręce: {hand.Count}");
-    }
-
-    public void OnPlayerCardPlayed(Sprite cardSprite)
-    {
-        SpawnCardAndReturnObject(heroCardPrefab, cardSprite);
-    }
-
-    public void OnEndTurnButtonClicked()
-    {
-        if (currentPhase == GamePhase.Player1Turn)
-        {
-            playerTurnCounter++;
-            if (playerTurnCounter % 3 == 0)
-                StartVillainTurn();
-            else
-                StartPlayerTurn(2);
-        }
-        else if (currentPhase == GamePhase.Player2Turn)
-        {
-            playerTurnCounter++;
-            if (playerTurnCounter % 3 == 0)
-                StartVillainTurn();
-            else
-                StartPlayerTurn(1);
-        }
-    }
-
-    private IEnumerator NextTurnAfterDelay(GamePhase nextPhase)
-    {
-        yield return new WaitForSeconds(1.5f);
-        if (nextPhase == GamePhase.Player1Turn)
-            StartPlayerTurn(1);
-    }
-
     private Texture2D ConvertSpriteToTexture(Sprite sprite)
     {
         if (sprite == null) return null;
@@ -258,22 +322,20 @@ if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperati
         currentCardIndex++;
         return card;
     }
+private IEnumerator ShowPhasePanel(GameObject panel, float duration = 1.5f, List<GameObject> objectsToEnableAfter = null)
+{
+    panel.SetActive(true);
+    yield return new WaitForSeconds(duration);
+    panel.SetActive(false);
 
-    private IEnumerator PlayerTurnSequence(int playerIndex)
+    if (objectsToEnableAfter != null)
     {
-        currentPhase = (playerIndex == 1) ? GamePhase.Player1Turn : GamePhase.Player2Turn;
-
-        string heroId = (playerIndex == 1) ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
-        HeroCardLoader loader = new HeroCardLoader();
-        Hero hero = loader.LoadHeroById(heroId);
-        playerPhaseText.text = $"{hero?.Name ?? heroId} Phase";
-
-        playerTurnUI.SetActive(true);
-        FadeOutUI fade = playerTurnUI.GetComponent<FadeOutUI>();
-        float fadeDuration = fade != null ? fade.delay + fade.duration : 1f;
-        yield return new WaitForSeconds(fadeDuration);
-
-        playerTurnUI.SetActive(false);
-        StartPlayerTurn(playerIndex);
+        foreach (var go in objectsToEnableAfter)
+            go.SetActive(true);
     }
 }
+
+
+
+
+} 

@@ -92,6 +92,7 @@ public class Hero
 public class HeroCard
 {
     public string Id { get; private set; }
+    public string heroId;
     public bool Special { get; private set; }
     public string SpecialAbility { get; private set; }
     public string SpecialDescription { get; private set; }
