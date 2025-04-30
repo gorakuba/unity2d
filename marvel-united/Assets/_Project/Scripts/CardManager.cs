@@ -9,7 +9,8 @@ public class CardManager : MonoBehaviour
     public HeroCardDisplay displayPlayer1;
 public HeroCardDisplay displayPlayer2;
 public VillainCardDisplay villainDisplay;
-
+private List<VillainCard> villainDeck = new();
+private int villainCardIndex = 1;
 private void Start()
 {
     RollAllCards(); // <- losuj na start gry
@@ -41,7 +42,9 @@ private void Start()
         {
             var cards = new List<VillainCard>(villain.cards);
             Shuffle(cards);
-            firstVillainCard = cards[0];
+            villainDeck = cards;
+            firstVillainCard = villainDeck[0];
+            villainCardIndex = 1;
         }
     }
 
@@ -53,4 +56,15 @@ private void Start()
             (list[i], list[rand]) = (list[rand], list[i]);
         }
     }
+    public VillainCard GetNextVillainCard()
+{
+    if (villainCardIndex >= villainDeck.Count)
+    {
+        Debug.LogWarning("🛑 Brak więcej kart Zbira!");
+        return null;
+    }
+
+    return villainDeck[villainCardIndex++];
+}
+
 }
