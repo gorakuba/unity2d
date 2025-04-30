@@ -46,8 +46,8 @@ public class HeroCardLoader
                 foreach (var c in hero.cards)
                 {
                     HeroCard card = new HeroCard(c.id, c.special, c.special_ability, c.special_description, c.special_name, c.symbols);
-card.heroId = hero.id;
-cards.Add(card);
+                    card.heroId = hero.id;
+                    cards.Add(card);
                 }
                 return cards;
             }
