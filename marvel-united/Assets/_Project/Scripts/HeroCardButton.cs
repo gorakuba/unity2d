@@ -8,18 +8,26 @@ public class HeroCardButton : MonoBehaviour
     private HeroCard cardData;
     private System.Action<HeroCard> callback;
 
-    public Image image; // przypisz w prefabie (Image na tym samym GameObject)
+    public Image image; // podłącz w prefabie
 
-    public void Setup(HeroCard card, System.Action<HeroCard> onClick)
+    /// <summary>
+    /// heroId: identyfikator bohatera, np. "iron_man"
+    /// card: obiekt HeroCard
+    /// onClick: callback, gdy gracz kliknie w tę kartę
+    /// </summary>
+    public void Setup(string heroId, HeroCard card, System.Action<HeroCard> onClick)
     {
         cardData = card;
         callback = onClick;
 
+        // Ukryj do czasu załadowania tekstury
         gameObject.SetActive(false);
-        // Załaduj sprite przez CardManager
-        string path = FindFirstObjectByType<CardManager>().GetSpritePathForCard(card);
 
+        // Pobierz ścieżkę i ładuj sprite
+        var cardManager = FindFirstObjectByType<CardManager>();
+        string path = cardManager.GetSpritePathForCard(heroId, cardData);
         var handle = Addressables.LoadAssetAsync<Sprite>(path);
+
         handle.Completed += (AsyncOperationHandle<Sprite> h) =>
         {
             if (h.Status == AsyncOperationStatus.Succeeded)
@@ -28,11 +36,14 @@ public class HeroCardButton : MonoBehaviour
                 gameObject.SetActive(true);
             }
             else
-                Debug.LogWarning($"❌ Sprite nie znaleziony: {path}");
+            {
+                Debug.LogWarning($"❌ Nie znaleziono sprite'a pod kluczem `{path}`");
+            }
         };
 
-        GetComponent<Button>().onClick.RemoveAllListeners();
-        GetComponent<Button>().onClick.AddListener(() => callback?.Invoke(cardData));
+        // Podłącz callback przycisku
+        var btn = GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() => callback?.Invoke(cardData));
     }
-    
 }

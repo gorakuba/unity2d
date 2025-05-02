@@ -1,28 +1,34 @@
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class TurnManager : MonoBehaviour
 {
     public enum GamePhase { VillainTurn, Player1Turn, Player2Turn }
+    [Header("Symbol Panel")]
+    public GameObject symbolPanel; 
+    public SymbolPanelUI symbolPanelUI;
+
+    // przechowujemy symbole poprzedniej karty drugiego gracza
+    private List<string> lastPlayedSymbolsP1 = new();
+    private List<string> lastPlayedSymbolsP2 = new();
 
     [Header("Panele fazy")]
     public GameObject playerPhasePanel;
     public GameObject villainPhasePanel;
+
     [Header("UI Villain Flash")]
     public GameObject villainCardFlashPanel;
     public Image villainCardFlashImage;
     public float villainCardFlashTime = 2f;
 
-    [Header("UI")]
+    [Header("UI główne")]
     public GameObject preparingUI;
     public GameObject villainTurnUI;
     public GameObject playerTurnUI;
     public TMPro.TextMeshProUGUI villainPhaseText;
     public TMPro.TextMeshProUGUI playerPhaseText;
-
 
     [Header("Prefaby kart")]
     public GameObject villainCardPrefab;
@@ -34,34 +40,36 @@ public class TurnManager : MonoBehaviour
     [Header("Inne komponenty")]
     public VillainCardDisplay villainCardDisplay;
     public ThreatCardTextureDatabase threatCardTextureDatabase;
+    public HeroHandUI heroHandUI;
 
-    [Header("Czas trwania fazy Zbira")]
+    [Header("UI Gracza")]
+    public Button confirmButton;
+    public Button endTurnButton;
+
+    [Header("Selection UI")]
+    public GameObject selectionPanel;
+    public Image selectedImage;
+    public Button backgroundBlocker;
+
+    [Header("Czasy faz")]
     public float pauseBeforeCardSpawn = 1f;
     public float pauseAfterCardSpawn = 1.5f;
     public float pauseBetweenCardEffects = 1f;
 
     private CardManager cardManager;
-
     private int currentCardIndex = 0;
     private int playerTurnCounter = 0;
     private GamePhase currentPhase;
-
-    private int player1CardDrawIndex = 3;
-    private int player2CardDrawIndex = 3;
     private bool isFirstVillainTurn = true;
-
-    [Header("UI Gracza")]
-    public HeroHandUI heroHandUI;
-    public Button confirmButton;
-    public Button endTurnButton;
+    private int nextPlayer = 1; // 1 = Gracz1, 2 = Gracz2
     private HeroCard selectedCard;
-    private int nextPlayer = 1; // 1 = G1, 2 = G2
     private bool hasCardBeenPlayedThisTurn = false;
-
 
     private void Awake()
     {
         cardManager = FindFirstObjectByType<CardManager>();
+        backgroundBlocker.onClick.AddListener(OnBackgroundClicked);
+        symbolPanelUI.onSymbolClicked += OnSymbolUsed;
     }
 
     public void OnPlayButtonClicked()
@@ -81,32 +89,25 @@ public class TurnManager : MonoBehaviour
     {
         currentPhase = GamePhase.VillainTurn;
 
+        // Pokaż panel fazy Zbira
         yield return ShowPhasePanel(villainPhasePanel);
 
         yield return new WaitForSeconds(pauseBeforeCardSpawn);
 
-        VillainCard card;
-        if (isFirstVillainTurn)
-        {
-            card = cardManager.firstVillainCard;
-            isFirstVillainTurn = false;
-        }
-        else
-        {
-            card = cardManager.GetNextVillainCard();
-        }
+        VillainCard card = isFirstVillainTurn
+            ? cardManager.firstVillainCard
+            : cardManager.GetNextVillainCard();
+        isFirstVillainTurn = false;
 
         if (card != null)
         {
-            Sprite sprite = cardManager.GetCardSprite(card); // Requires overloaded method for VillainCard
-
-            AutoHideImage flash = villainCardFlashPanel.GetComponent<AutoHideImage>();
+            Sprite sprite = cardManager.GetCardSprite(card);
+            var flash = villainCardFlashPanel.GetComponent<AutoHideImage>();
             if (flash != null)
             {
                 flash.ShowForDuration(sprite);
                 yield return new WaitForSeconds(flash.displayTime);
             }
-
             SpawnCardAndReturnObject(villainCardPrefab, sprite);
         }
 
@@ -120,174 +121,230 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator PlayerTurnSequence(int playerIndex)
     {
-        hasCardBeenPlayedThisTurn = false;
-        villainTurnUI.SetActive(false);
-        playerTurnUI.SetActive(true);
+        // --- RESET WSZYSTKIEGO ---
+        selectionPanel.SetActive(false);
+        backgroundBlocker.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(false);
         endTurnButton.gameObject.SetActive(false);
         confirmButton.interactable = false;
         endTurnButton.interactable = false;
+        hasCardBeenPlayedThisTurn = false;
         selectedCard = null;
+        villainTurnUI.SetActive(false);
+        playerTurnUI.SetActive(true);
 
+        // **WYŁĄCZ HAND UI zanim pojawi się panel fazy**
+        heroHandUI.gameObject.SetActive(false);
+
+        // ustaw aktualną fazę
         currentPhase = (playerIndex == 1) ? GamePhase.Player1Turn : GamePhase.Player2Turn;
 
-        string heroId = (playerIndex == 1) ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
+        // przygotuj tekst fazy
+        string heroId = (playerIndex == 1)
+            ? GameManager.Instance.playerOneHero
+            : GameManager.Instance.playerTwoHero;
         HeroCardLoader loader = new HeroCardLoader();
         Hero hero = loader.LoadHeroById(heroId);
         playerPhaseText.text = $"{hero?.Name ?? heroId} Phase";
-        List<HeroCard> currentHand = (playerIndex == 1) ? cardManager.playerOneHand : cardManager.playerTwoHand;
-        List<HeroCard> fullDeck = loader.LoadHeroDeck(heroId);
-        int drawIndex = (playerIndex == 1) ? player1CardDrawIndex : player2CardDrawIndex;
-        List<GameObject> afterPanelObjects = new()
+
+        // Pokaż panel fazy i rękę
+        List<GameObject> afterPanel = new() { heroHandUI.gameObject };
+        yield return ShowPhasePanel(playerPhasePanel, 1.5f, afterPanel);
+
+        // Dobierz nową kartę bez powtórzeń
+        List<HeroCard> hand = (playerIndex == 1)
+            ? cardManager.playerOneHand
+            : cardManager.playerTwoHand;
+        HeroCard newCard = cardManager.DrawHeroCard(playerIndex);
+        if (newCard != null)
+            hand.Add(newCard);
+
+         heroHandUI.ShowHand(heroId, hand, OnPlayerCardSelected);
+    }
+
+private void OnPlayerCardSelected(HeroCard card)
 {
-    heroHandUI.gameObject,
-};
+    if (hasCardBeenPlayedThisTurn) 
+        return;
 
-// ukryj je najpierw (na wszelki wypadek)
-foreach (var go in afterPanelObjects)
-    go.SetActive(false);
+    selectedCard = card;
 
-// wyświetl panel fazy, a potem te elementy
-yield return ShowPhasePanel(playerPhasePanel, 1.5f, afterPanelObjects);
-confirmButton.gameObject.SetActive(false);
-endTurnButton.gameObject.SetActive(false);
+    // Wyciągamy heroId tylko raz
+    string heroId = (currentPhase == GamePhase.Player1Turn)
+        ? GameManager.Instance.playerOneHero
+        : GameManager.Instance.playerTwoHero;
 
-if (drawIndex < fullDeck.Count)
-{
-    currentHand.Add(fullDeck[drawIndex]);
+    // Wczytujemy sprite
+    selectedImage.sprite = cardManager.GetCardSprite(heroId, card);
 
-    if (playerIndex == 1) player1CardDrawIndex++;
-    else player2CardDrawIndex++;
+    // Pokaż panel selekcji + blocker
+    selectionPanel.SetActive(true);
+    backgroundBlocker.gameObject.SetActive(true);
+
+    // Odblokuj Confirm
+    confirmButton.gameObject.SetActive(true);
+    confirmButton.interactable = true;
 }
-
-        
-        heroHandUI.ShowHand(currentHand, OnPlayerCardSelected);
-
-        confirmButton.interactable = false;
-        endTurnButton.interactable = false;
-        selectedCard = null;
-    }
-
-    private void OnPlayerCardSelected(HeroCard card)
-    {
-        if (hasCardBeenPlayedThisTurn) return;
-        selectedCard = card;
-        confirmButton.gameObject.SetActive(true);
-        confirmButton.interactable = true;
-    }
 
 public void OnConfirmCardClick()
 {
-    if (selectedCard == null) return;
+    if (selectedCard == null) 
+        return;
 
-    // usuń z ręki gracza
-    List<HeroCard> currentHand = (currentPhase == GamePhase.Player1Turn) ? 
-        cardManager.playerOneHand : 
-        cardManager.playerTwoHand;
+    hasCardBeenPlayedThisTurn = true;
+    // 0) upewnij się, że panel jest aktywny
+    symbolPanel.SetActive(true);
 
-    if (currentHand.Contains(selectedCard))
-    {
-        currentHand.Remove(selectedCard);
-    }
+    // 1) Wybierz odpowiednią rękę i heroId
+    List<HeroCard> hand = (currentPhase == GamePhase.Player1Turn)
+        ? cardManager.playerOneHand
+        : cardManager.playerTwoHand;
 
-    // zaktualizuj wyświetlaną rękę
-    heroHandUI.ShowHand(currentHand, OnPlayerCardSelected);
+    string heroId = (currentPhase == GamePhase.Player1Turn)
+        ? GameManager.Instance.playerOneHero
+        : GameManager.Instance.playerTwoHero;
 
-    // zagraj kartę
-    Sprite sprite = cardManager.GetCardSprite(selectedCard);
+    // 2) Usuń kartę z ręki i odśwież UI
+    hand.Remove(selectedCard);
+    heroHandUI.ShowHand(heroId, hand, OnPlayerCardSelected);
+
+    // 3) Zagraj kartę na stole
+    Sprite sprite = cardManager.GetCardSprite(heroId, selectedCard);
     SpawnCardAndReturnObject(heroCardPrefab, sprite);
 
-    // dezaktywuj wybór
+    // ────────────────
+    // 4) SYMBOL PANEL
+    // 4a) Current symbols
+    var currentSymbols = selectedCard.Symbols;
+    symbolPanelUI.ShowCurrentSymbols(currentSymbols);
+
+    // 4b) Previous symbols (ostatnie zagrane przez drugiego gracza)
+    var previous = (currentPhase == GamePhase.Player1Turn)
+        ? lastPlayedSymbolsP2
+        : lastPlayedSymbolsP1;
+    symbolPanelUI.ShowPreviousSymbols(previous);
+
+    symbolPanel.SetActive(true);
+
+    // // 4c) Persistent symbols (ze specjalnych zdolności)
+    // if (selectedCard.Special)
+    // {
+    //     // zakładam, że masz List<string> SpecialSymbols w HeroCard
+    //     symbolPanelUI.AddPersistentSymbols(selectedCard.SpecialSymbols);
+    // }
+
+    // 4d) Zapamiętaj co teraz zagrał TEN gracz
+    if (currentPhase == GamePhase.Player1Turn)
+        lastPlayedSymbolsP1 = new List<string>(currentSymbols);
+    else
+        lastPlayedSymbolsP2 = new List<string>(currentSymbols);
+    // ────────────────
+
+    // 5) Schowaj selekcję, pokaż EndTurn
+    selectionPanel.SetActive(false);
+    backgroundBlocker.gameObject.SetActive(false);
     confirmButton.gameObject.SetActive(false);
+
     endTurnButton.gameObject.SetActive(true);
     endTurnButton.interactable = true;
-    hasCardBeenPlayedThisTurn = true;
+
+    selectedCard = null;
 }
 
 
-public void OnEndTurnButtonClicked()
-{
-    playerTurnUI.SetActive(false);
-    villainTurnUI.SetActive(false);
 
-    playerTurnCounter++;
-
-    if (currentPhase == GamePhase.Player1Turn || currentPhase == GamePhase.Player2Turn)
+    public void OnEndTurnButtonClicked()
     {
-        // co 3 tury graczy: tura Zbira
-        nextPlayer = (nextPlayer == 1) ? 2 : 1;
-        if (playerTurnCounter % 3 == 0)
-        {
-            StartVillainTurn();
-        }
-        else
-        {
-            // naprzemiennie G1 <-> G2
-            StartCoroutine(PlayerTurnSequence(nextPlayer));
-        }
-    }
-}
+        symbolPanel.SetActive(false);
+        playerTurnUI.SetActive(false);
+        villainTurnUI.SetActive(false);
+        symbolPanelUI.currentlySelectedImage.sprite = null;
 
+        playerTurnCounter++;
+        nextPlayer = (nextPlayer == 1) ? 2 : 1;
+
+        if (playerTurnCounter % 3 == 0)
+            StartVillainTurn();
+        else
+            StartCoroutine(PlayerTurnSequence(nextPlayer));
+    }
 
     private IEnumerator ExecuteVillainCardEffects(VillainCard card)
     {
         if (card.move > 0)
         {
-            yield return ExecuteMove(card.move);
+            Debug.Log($"🔁 Zbir porusza się o {card.move} pola.");
             yield return new WaitForSeconds(pauseBetweenCardEffects);
         }
-
         if (card.BAM_effect)
         {
-            yield return ExecuteBAM();
+            Debug.Log("💥 Efekt BAM!");
             yield return new WaitForSeconds(pauseBetweenCardEffects);
         }
-
         if (card.special)
         {
-            yield return ExecuteSpecial(card.special_name, card.special_description);
+            Debug.Log($"🌟 Special: {card.special_name}");
             yield return new WaitForSeconds(pauseBetweenCardEffects);
         }
-
-        if (!string.IsNullOrEmpty(card.Location_left) || !string.IsNullOrEmpty(card.Location_middle) || !string.IsNullOrEmpty(card.Location_right))
+        if (!string.IsNullOrEmpty(card.Location_left) ||
+            !string.IsNullOrEmpty(card.Location_middle) ||
+            !string.IsNullOrEmpty(card.Location_right))
         {
-            yield return ExecuteTokenPlacement(card);
+            Debug.Log("🎯 Umieszczanie żetonów…");
             yield return new WaitForSeconds(pauseBetweenCardEffects);
         }
     }
 
-    private IEnumerator ExecuteMove(int steps)
+    private GameObject SpawnCardAndReturnObject(GameObject prefab, Sprite sprite)
     {
-        Debug.Log($"🔁 Zbir porusza się o {steps} pola.");
-        yield return null;
+        if (currentCardIndex >= cardSpawnPoints.Length)
+        {
+            Debug.LogWarning("🔴 Brak miejsc na karty!");
+            return null;
+        }
+
+        Transform spawn = cardSpawnPoints[currentCardIndex++];
+        GameObject go = Instantiate(prefab, spawn.position, spawn.rotation);
+        go.transform.SetParent(spawn, true);
+
+        var display = go.GetComponent<CardDisplay>();
+        if (display != null)
+        {
+            display.frontTexture = ConvertSpriteToTexture(sprite);
+            display.backTexture = threatCardTextureDatabase.GetBackTexture(
+                GameManager.Instance.selectedVillain);
+            display.ApplyTextures();
+        }
+
+        return go;
     }
 
-    private IEnumerator ExecuteBAM()
+    private IEnumerator ShowPhasePanel(
+        GameObject panel,
+        float duration = 1.5f,
+        List<GameObject> toEnable = null)
     {
-        Debug.Log("💥 Efekt BAM!");
-        yield return null;
+        panel.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        panel.SetActive(false);
+
+        if (toEnable != null)
+            toEnable.ForEach(go => go.SetActive(true));
     }
 
-    private IEnumerator ExecuteSpecial(string name, string description)
+    private void OnBackgroundClicked()
     {
-        Debug.Log($"🌟 Special: {name} — {description}");
-        yield return null;
-    }
-
-    private IEnumerator ExecuteTokenPlacement(VillainCard card)
-    {
-        Debug.Log("🎯 Umieszczanie żetonów w lokacjach:");
-        if (!string.IsNullOrEmpty(card.Location_left)) Debug.Log($"- LEFT: {card.Location_left}");
-        if (!string.IsNullOrEmpty(card.Location_middle)) Debug.Log($"- MIDDLE: {card.Location_middle}");
-        if (!string.IsNullOrEmpty(card.Location_right)) Debug.Log($"- RIGHT: {card.Location_right}");
-        yield return null;
+        selectionPanel.SetActive(false);
+        backgroundBlocker.gameObject.SetActive(false);
+        confirmButton.gameObject.SetActive(false);
+        selectedCard = null;
     }
 
     private Texture2D ConvertSpriteToTexture(Sprite sprite)
     {
-        if (sprite == null) return null;
-
-        Texture2D tex = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+        var tex = new Texture2D(
+            (int)sprite.rect.width,
+            (int)sprite.rect.height);
         var pixels = sprite.texture.GetPixels(
             (int)sprite.textureRect.x,
             (int)sprite.textureRect.y,
@@ -297,45 +354,9 @@ public void OnEndTurnButtonClicked()
         tex.Apply();
         return tex;
     }
-
-    private GameObject SpawnCardAndReturnObject(GameObject prefab, Sprite sprite)
-    {
-        if (currentCardIndex >= cardSpawnPoints.Length)
-        {
-            Debug.LogWarning("🔴 Brak wolnych miejsc na karty!");
-            return null;
-        }
-
-        var spawnPoint = cardSpawnPoints[currentCardIndex];
-        GameObject card = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
-        card.transform.SetParent(spawnPoint, true);
-
-        var display = card.GetComponent<CardDisplay>();
-        if (display != null)
-        {
-            display.frontTexture = ConvertSpriteToTexture(sprite);
-            string villainId = GameManager.Instance.selectedVillain;
-            display.backTexture = threatCardTextureDatabase.GetBackTexture(villainId);
-            display.ApplyTextures();
-        }
-
-        currentCardIndex++;
-        return card;
-    }
-private IEnumerator ShowPhasePanel(GameObject panel, float duration = 1.5f, List<GameObject> objectsToEnableAfter = null)
+    private void OnSymbolUsed(string symbolId)
 {
-    panel.SetActive(true);
-    yield return new WaitForSeconds(duration);
-    panel.SetActive(false);
-
-    if (objectsToEnableAfter != null)
-    {
-        foreach (var go in objectsToEnableAfter)
-            go.SetActive(true);
-    }
+    Debug.Log("Użyto symbolu: " + symbolId);
+    // tu dorzuć logikę ruchu / ataku / czegokolwiek
 }
-
-
-
-
-} 
+}

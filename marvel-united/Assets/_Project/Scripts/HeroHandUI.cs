@@ -10,15 +10,20 @@ public class HeroHandUI : MonoBehaviour
 
     private List<GameObject> spawnedButtons = new();
 
-    public void ShowHand(List<HeroCard> hand, Action<HeroCard> onCardSelected)
+    /// <summary>
+    /// heroId – identyfikator bohatera ("iron_man", "captain_america", itp.),
+    /// hand – lista kart gracza,
+    /// onCardSelected – callback dla wybranej karty.
+    /// </summary>
+    public void ShowHand(string heroId, List<HeroCard> hand, Action<HeroCard> onCardSelected)
     {
         ClearHandUI();
 
         foreach (var card in hand)
         {
             GameObject button = Instantiate(cardButtonPrefab, handPanel);
-            HeroCardButton handler = button.GetComponent<HeroCardButton>();
-            handler.Setup(card, onCardSelected);
+            var handler = button.GetComponent<HeroCardButton>();
+            handler.Setup(heroId, card, onCardSelected);
             spawnedButtons.Add(button);
         }
     }
