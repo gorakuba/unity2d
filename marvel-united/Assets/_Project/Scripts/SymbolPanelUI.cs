@@ -105,6 +105,7 @@ void InstantiateIcon(Transform parent, string id)
         {
             // 3a) Ustaw sprite w panelu „CurrentlySelectedSymbol”
             currentlySelectedImage.sprite = sprite;
+            currentlySelectedImage.gameObject.SetActive(true);
             // 3b) (Opcjonalnie) wyślij event dalej
             onSymbolClicked?.Invoke(id);
         });
@@ -126,4 +127,13 @@ void InstantiateIcon(Transform parent, string id)
         [Tooltip("sprite ikony tego symbolu")]
         public Sprite sprite;
     }
+    public void ClearSelectedSymbol()
+{
+    if (currentlySelectedImage != null)
+    {
+        currentlySelectedImage.sprite = null;
+        currentlySelectedImage.gameObject.SetActive(false);
+    }
+}
+
 }

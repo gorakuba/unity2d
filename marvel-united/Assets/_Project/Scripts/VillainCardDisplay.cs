@@ -9,8 +9,12 @@ public class VillainCardDisplay : MonoBehaviour
     public GameManager gameManager;
     public Image villainCardImage;
 
+    private bool initialized = false; // <- Flaga
+
     public async void ShowFirstCard()
     {
+        if (!initialized) return; // <- Sprawdzenie, czy gotowe (dzięki Initialize)
+
         var card = cardManager.firstVillainCard;
         var villainId = gameManager.selectedVillain;
         if (card == null) return;
@@ -20,5 +24,15 @@ public class VillainCardDisplay : MonoBehaviour
         await handle.Task;
         if (handle.Status == AsyncOperationStatus.Succeeded)
             villainCardImage.sprite = handle.Result;
+    }
+
+    public void Initialize(GameManager gameManager, CardManager cardManager)
+    {
+        this.gameManager = gameManager;
+        this.cardManager = cardManager;
+
+        initialized = true;  // <- oznacz jako zainicjalizowane!
+
+        ShowFirstCard(); // <- możesz od razu odpalić bezpiecznie
     }
 }

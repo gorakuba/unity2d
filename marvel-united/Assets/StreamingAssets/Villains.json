@@ -138,7 +138,7 @@
                 "special_ability":"Red_Skull_Special_1",
                 "special_name":"Hail Hydra!",
                 "special_description":"Discard all civillians from Locations with Heroes and deal 1 damage to each of those Heroes. Advance the Fear Track by the numver of civillians discarded this way.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -151,7 +151,7 @@
                 "special_ability":"Red_Skull_Special_2",
                 "special_name":"Hydra Insurgency",
                 "special_description":"For each Crisis token the Heroes have, advance the Fear Track by 1.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -164,7 +164,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Civillian"
@@ -190,7 +190,7 @@
                 "special_ability":"Red_Skull_Special_2",
                 "special_name":"Hydra Insurgency",
                 "special_description":"For each Crisis token the Heroes have, advance the Fear Track by 1.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -203,7 +203,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Civillian",
@@ -233,7 +233,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Thug"
@@ -259,7 +259,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Thug"
@@ -285,7 +285,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Civillian"
@@ -311,7 +311,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Thug"
@@ -337,7 +337,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
                     {
                         "symbol_1":"Civillian"
@@ -363,7 +363,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -376,7 +376,7 @@
                 "special_ability":"Red_Skull_Special_1",
                 "special_name":"Hail Hydra!",
                 "special_description":"Discard all civillians from Locations with Heroes and deal 1 damage to each of those Heroes. Advance the Fear Track by the numver of civillians discarded this way.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""

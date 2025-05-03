@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,19 +6,18 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Wybrane postacie")]
     public string playerOneHero;
     public string playerTwoHero;
     public string selectedVillain;
-    public List<HeroCard> playerOneHand = new List<HeroCard>();
-    public List<HeroCard> playerTwoHand = new List<HeroCard>();
-    public VillainCard firstVillainCard;
-    public LocationManager locationManager;
-    public ThreatCardSpawner threatCardSpawner;
-    public CardManager cardManager;
 
-public HeroCardDisplay displayPlayer1;
-public HeroCardDisplay displayPlayer2;
-public VillainCardDisplay villainDisplay;
+    [Header("Referencje do managerów i UI")]
+    public LocationManager    locationManager;
+    public ThreatCardSpawner  threatCardSpawner;
+    public CardManager        cardManager;
+    public HeroCardDisplay    displayPlayer1;
+    public HeroCardDisplay    displayPlayer2;
+    public VillainCardDisplay villainDisplay;
 
     private void Awake()
     {
@@ -28,73 +26,123 @@ public VillainCardDisplay villainDisplay;
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        else Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Wywołaj np. z przycisku „Reset”
+    /// </summary>
     public void ResetGame()
     {
-        // 1. Wyczyść poprzednie lokacje
-        foreach (Transform slot in locationManager.locationSlots)
-        {
-            foreach (Transform child in slot)
-            {
-                Destroy(child.gameObject);
-            }
-        }
+        // 1) resetujemy lokacje + threat‐karty (poprzez eventy)
+        locationManager.ResetSpawnedLocations();
 
-        // 2. Wyczyść Threat Cardy
-        foreach (Transform place in threatCardSpawner.threatPlaces)
-        {
-            foreach (Transform child in place)
-            {
-                Destroy(child.gameObject);
-            }
-        }
-
-        // 3. Wyczyść listy
-        locationManager.spawnedLocationTransforms.Clear();
-
-        typeof(LocationManager)
-            .GetField("spawnedLocations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            .SetValue(locationManager, new List<GameObject>());
-
-        // 4. Uruchom sekwencję ponownie
-        locationManager.StartCoroutine("SpawnLocationsWithDelay");
-            cardManager.RollAllCards();
-    displayPlayer1.ShowCards();
-    displayPlayer2.ShowCards();
-    villainDisplay.ShowFirstCard();
+        // 2) odpalamy ponowny spawn i po nim odświeżamy UI
+        StartCoroutine(ResetAndSetupRoutine());
     }
-    private void OnEnable()
-{
-    SceneManager.sceneLoaded += OnSceneLoaded;
-}
-private void OnDisable()
-{
-    SceneManager.sceneLoaded -= OnSceneLoaded;
-}
-private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    // Opcjonalnie: tylko jeśli to GameScene
-    if (scene.name == "GameScene") 
+
+    private IEnumerator ResetAndSetupRoutine()
     {
+        // a) Spawn lokacji, tokenów i threat‐kart
+        yield return StartCoroutine(locationManager.SpawnLocationsWithDelay());
+
+        // b) odświeżamy ręce graczy i pierwszy card zbira
+        cardManager.RollAllCards();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "GameScene") return;
         StartCoroutine(AssignSceneReferences());
     }
-}
 
-private IEnumerator AssignSceneReferences()
+    private IEnumerator AssignSceneReferences()
+    {
+        yield return null;
+        if (locationManager == null)    locationManager   = FindAnyObjectByType<LocationManager>();
+        if (threatCardSpawner == null)  threatCardSpawner = FindAnyObjectByType<ThreatCardSpawner>();
+        if (cardManager == null)        cardManager       = FindAnyObjectByType<CardManager>();
+
+        GameObject hero1 = FindObjectInScene("Hero1CardsInfo");
+        if (hero1 != null)
+        {
+            displayPlayer1 = hero1.GetComponentInChildren<HeroCardDisplay>(true);
+            displayPlayer1?.Initialize(this, cardManager);
+            displayPlayer1?.ShowCards();
+        }
+        else
+            Debug.LogError("Nie znaleziono Hero1CardsInfo!");
+
+        GameObject hero2 = FindObjectInScene("Hero2CardsInfo");
+        if (hero2 != null)
+        {
+            displayPlayer2 = hero2.GetComponentInChildren<HeroCardDisplay>(true);
+            displayPlayer2?.Initialize(this, cardManager);
+            displayPlayer2?.ShowCards();
+        }
+        else
+            Debug.LogError("Nie znaleziono Hero2CardsInfo!");
+
+        GameObject villain = FindObjectInScene("VillainCardInfo");
+        if (villain != null)
+        {
+            villainDisplay = villain.GetComponentInChildren<VillainCardDisplay>(true);
+            villainDisplay?.Initialize(this, cardManager);
+            villainDisplay?.ShowFirstCard();
+        }
+
+        else
+            Debug.LogError("Nie znaleziono VillainCardInfo!");
+
+    }
+    public string GetHeroName(string heroId)
 {
-    // Poczekaj jedną klatkę aż scena się wczyta
-    yield return null;
-
-    if (locationManager == null)
-        locationManager = Object.FindFirstObjectByType<LocationManager>();
-
-    if (threatCardSpawner == null)
-        threatCardSpawner = Object.FindFirstObjectByType<ThreatCardSpawner>();
+    switch (heroId)
+    {
+        case "iron_man": return "Iron Man";
+        case "spider-man": return "Spider-Man";
+        case "black_panther": return "Black Panther";
+        case "wasp": return "Wasp";
+        case "captain_marvel": return "Captain Marvel";
+        case "captain_america": return "Captain America";
+        
+        default: return heroId;
+    }
 }
+private GameObject FindObjectInScene(string name)
+{
+    Scene activeScene = SceneManager.GetActiveScene();
+    GameObject[] rootObjects = activeScene.GetRootGameObjects();
 
+    foreach (var root in rootObjects)
+    {
+        GameObject result = FindChildRecursive(root.transform, name);
+        if (result != null)
+            return result;
+    }
+    return null;
+}
+private GameObject FindChildRecursive(Transform parent, string name)
+{
+    if (parent.name == name)
+        return parent.gameObject;
+
+    foreach (Transform child in parent)
+    {
+        GameObject result = FindChildRecursive(child, name);
+        if (result != null)
+            return result;
+    }
+    return null;
+}
 }

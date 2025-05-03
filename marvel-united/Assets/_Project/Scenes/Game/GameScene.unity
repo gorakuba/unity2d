@@ -266,17 +266,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   threatCardPrefab: {fileID: 3800158283944725106, guid: 12569c5df5bbe6649b0d1397c1668907, type: 3}
-  threatPlaces:
-  - {fileID: 1238768539}
-  - {fileID: 666576705}
-  - {fileID: 325356667}
-  - {fileID: 1252260423}
-  - {fileID: 717926726}
-  - {fileID: 1821708515}
-  textureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
-  locationManager: {fileID: 197175210}
   tokenHealthPrefab: {fileID: 1926510363687983682, guid: 64aa2ca5fbff9ad42a0a6e73e4cc67ac, type: 3}
-  locationObjects: []
+  textureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
   villainJson: {fileID: 4900000, guid: 49e90f3d993b0a04f80238ba2aaacafe, type: 3}
 --- !u!4 &23859557
 Transform:
@@ -1384,9 +1375,7 @@ MonoBehaviour:
     heroSlot1: {fileID: 0}
     heroSlot2: {fileID: 0}
     villainSlot: {fileID: 0}
-  delayBetweenLocations: 0.2
-  delayBeforeTokens: 1.3
-  spawnedLocationTransforms: []
+  delayBetweenLocations: 0.05
 --- !u!4 &197175211
 Transform:
   m_ObjectHideFlags: 0
@@ -1431,7 +1420,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62595c55b9ac60d499f6181e75f01ec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoPanel: {fileID: 197175212}
   locationManager: {fileID: 197175210}
   locationButtons:
   - {fileID: 807594059}
@@ -1440,7 +1428,6 @@ MonoBehaviour:
   - {fileID: 1212175370}
   - {fileID: 1183084589}
   - {fileID: 1916607995}
-  locationObject: {fileID: 0}
 --- !u!1 &211831432
 GameObject:
   m_ObjectHideFlags: 0
@@ -3705,7 +3692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardManager: {fileID: 237543614}
-  gameManager: {fileID: 879298904}
+  gameManager: {fileID: 0}
   card1Image: {fileID: 211831434}
   card2Image: {fileID: 1621048908}
   card3Image: {fileID: 248967899}
@@ -5356,7 +5343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardManager: {fileID: 237543614}
-  gameManager: {fileID: 879298904}
+  gameManager: {fileID: 0}
   card1Image: {fileID: 1921161675}
   card2Image: {fileID: 1467846621}
   card3Image: {fileID: 2022300656}
@@ -5498,7 +5485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardManager: {fileID: 237543614}
-  gameManager: {fileID: 879298904}
+  gameManager: {fileID: 0}
   villainCardImage: {fileID: 775953811}
 --- !u!114 &765018808
 MonoBehaviour:
@@ -6237,7 +6224,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 879298902}
-  - component: {fileID: 879298903}
   - component: {fileID: 879298904}
   m_Layer: 0
   m_Name: GameManager2
@@ -6261,20 +6247,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &879298903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 879298899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdc5168b2bb972b4498b708c3a41cb04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCharacterPrefab: {fileID: 7907724257384681602, guid: d5a5ff135e9603c44b144dd73896798e, type: 3}
-  villainPrefab: {fileID: 7907724257384681602, guid: 26b6d0aff0fc3b142ac2196bc06c45ec, type: 3}
 --- !u!114 &879298904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6290,20 +6262,6 @@ MonoBehaviour:
   playerOneHero: wasp
   playerTwoHero: iron_man
   selectedVillain: red_skull
-  playerOneHand: []
-  playerTwoHand: []
-  firstVillainCard:
-    id: 
-    move: 0
-    BAM_effect: 0
-    special: 0
-    special_ability: 
-    special_name: 
-    special_description: 
-    effect_on_stand: 0
-    Location_left: 
-    Location_middle: 
-    Location_right: 
   locationManager: {fileID: 0}
   threatCardSpawner: {fileID: 0}
   cardManager: {fileID: 237543614}
@@ -10354,7 +10312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1305541961
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10645,6 +10603,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
         m_MethodName: OnPlayButtonClicked
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1042002449}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11856,7 +11826,7 @@ MonoBehaviour:
   - {fileID: 1183084589}
   - {fileID: 1916607995}
   - {fileID: 580841186}
-  disableDuration: 7
+  disableDuration: 4.5
 --- !u!1 &1500557355
 GameObject:
   m_ObjectHideFlags: 0
@@ -12812,6 +12782,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2173763562509732573, guid: 841bb12e0cbdd71499ad3ca550e93117, type: 3}
   m_PrefabInstance: {fileID: 998939999}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1641390059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1641390061}
+  - component: {fileID: 1641390060}
+  m_Layer: 0
+  m_Name: SetupManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1641390060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641390059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc5168b2bb972b4498b708c3a41cb04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCharacterPrefab: {fileID: 7907724257384681602, guid: d5a5ff135e9603c44b144dd73896798e, type: 3}
+  villainPrefab: {fileID: 7907724257384681602, guid: 26b6d0aff0fc3b142ac2196bc06c45ec, type: 3}
+--- !u!4 &1641390061
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641390059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.000000059604645, y: 0, z: -0.00000011920929}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1645034333 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5049366382084430902, guid: 6a8bbc8e24e63be4e85abb3175ec18c9, type: 3}
@@ -13483,7 +13499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1724707024
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16111,18 +16127,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c770a97a9c3d94488c256901338994a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  symbolPanel: {fileID: 979912874}
   symbolPanelUI: {fileID: 979912876}
-  playerPhasePanel: {fileID: 1305541960}
-  villainPhasePanel: {fileID: 494611212}
-  villainCardFlashPanel: {fileID: 1188995179}
-  villainCardFlashImage: {fileID: 1921419}
-  villainCardFlashTime: 2
-  preparingUI: {fileID: 1042002449}
   villainTurnUI: {fileID: 1150226755}
   playerTurnUI: {fileID: 344938578}
   villainPhaseText: {fileID: 1291214983}
   playerPhaseText: {fileID: 1917613344}
+  villainCardFlashPanel: {fileID: 1188995179}
+  villainCardFlashImage: {fileID: 1921419}
+  villainCardFlashTime: 2
   villainCardPrefab: {fileID: 3800158283944725106, guid: 9a8c69cb9ef6dfe458960f42359a9114, type: 3}
   heroCardPrefab: {fileID: 3800158283944725106, guid: 9a8c69cb9ef6dfe458960f42359a9114, type: 3}
   cardSpawnPoints:
@@ -16150,17 +16162,19 @@ MonoBehaviour:
   - {fileID: 1307940470}
   - {fileID: 750436675}
   - {fileID: 651516227}
-  villainCardDisplay: {fileID: 765018807}
-  threatCardTextureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
   heroHandUI: {fileID: 1724707026}
   confirmButton: {fileID: 626960828}
   endTurnButton: {fileID: 635183276}
-  selectionPanel: {fileID: 2009520160}
-  selectedImage: {fileID: 1848978923}
   backgroundBlocker: {fileID: 418712498}
+  symbolPanel: {fileID: 979912874}
+  selectionPanel: {fileID: 2009520160}
+  selectedCardImage: {fileID: 1848978923}
   pauseBeforeCardSpawn: 1
   pauseAfterCardSpawn: 1.5
   pauseBetweenCardEffects: 1
+  phaseTextDuration: 1.5
+  villainPhaseContainer: {fileID: 494611212}
+  playerPhaseContainer: {fileID: 1305541960}
 --- !u!1001 &2020647378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17967,3 +17981,4 @@ SceneRoots:
   - {fileID: 197175211}
   - {fileID: 168786238}
   - {fileID: 2019135183}
+  - {fileID: 1641390061}

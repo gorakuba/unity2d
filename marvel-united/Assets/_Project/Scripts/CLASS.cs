@@ -61,13 +61,15 @@ public class VillainCard
     public int move;
     public bool BAM_effect;
     public bool special;
-    public string special_ability;
     public string special_name;
     public string special_description;
-    public bool effect_on_stand;
-    public string Location_left;  // domyślnie string, bo niektóre są pustymi stringami
+    public string Location_left;
     public string Location_middle;
     public string Location_right;
+    public bool HasSpawn =>
+        !string.IsNullOrEmpty(Location_left) ||
+        !string.IsNullOrEmpty(Location_middle) ||
+        !string.IsNullOrEmpty(Location_right);
 }
 [System.Serializable]
 public class Hero

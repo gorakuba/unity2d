@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.IO;
-using System.Linq;
 
 [System.Serializable]
 public class CharacterSlots
@@ -24,163 +24,165 @@ public class LocationManager : MonoBehaviour
     public GameObject civilianTokenPrefab;
     public GameObject thugTokenPrefab;
     public GameObject threatTokenPrefab;
+
+    [Header("Sloty postaci")]
     public CharacterSlots characterSlots = new CharacterSlots();
 
-    [Header("Opóźnienia")]
-    public float delayBetweenLocations = 0.2f;
-    public float delayBeforeTokens = 0.2f;
+    [Header("Opóźnienia (sekundy)")]
+    [Tooltip("Czas między kolejnymi spawnami lokacji")]
+    public float delayBetweenLocations = 0.05f;
 
+    // dane z JSON
     private Dictionary<string, LocationData> locationDataDict = new Dictionary<string, LocationData>();
+
+    // runtime lists
     private List<GameObject> spawnedLocations = new List<GameObject>();
-    public List<Transform> spawnedLocationTransforms = new List<Transform>();   
-    public System.Action OnLocationsReady;
-    
+    private List<Transform> spawnedLocationTransforms = new List<Transform>();
+
+    /// <summary>
+    /// Wywoływane, kiedy wszystkie 8 lokacji zostało już wstawionych,
+    /// ale przed spawnem żetonów
+    /// </summary>
+    public event System.Action OnLocationsReady;
+
+    /// <summary>
+    /// Wywoływane, kiedy lokacje + żetony są już gotowe
+    /// </summary>
+    public event System.Action OnLocationsAndTokensReady;
+
+    public IReadOnlyList<Transform> LocationRoots => spawnedLocationTransforms;
+
+    public IReadOnlyList<Transform> VillainSlots =>
+        spawnedLocationTransforms
+            .Select(root => FindDeepChild(root, "Villain_Slot"))
+            .Where(t => t != null)
+            .ToArray();
+
     void Start()
     {
         LoadLocationsFromJson();
         StartCoroutine(SpawnLocationsWithDelay());
     }
-    public List<Transform> GetSpawnedLocationRoots()
+
+    public void ResetSpawnedLocations()
     {
-    return spawnedLocations.Select(loc => loc.transform).ToList();
+        foreach (var go in spawnedLocations)
+            if (go != null) Destroy(go);
+
+        spawnedLocations.Clear();
+        spawnedLocationTransforms.Clear();
+
+        characterSlots = new CharacterSlots();
     }
-    void LoadLocationsFromJson()
+
+    private void LoadLocationsFromJson()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "Locations.json");
-        if (!File.Exists(path))
-        {
-            return;
-        }
-
+        if (!File.Exists(path)) return;
         string json = File.ReadAllText(path);
-        LocationDataList dataList = JsonUtility.FromJson<LocationDataList>(json);
-
+        var dataList = JsonUtility.FromJson<LocationDataList>(json);
         foreach (var loc in dataList.locations)
-        {
             locationDataDict[loc.script] = loc;
-        }
     }
 
-    IEnumerator SpawnLocationsWithDelay()
+    public IEnumerator SpawnLocationsWithDelay()
     {
-        List<GameObject> shuffled = new List<GameObject>(locationPrefabs);
+        spawnedLocations.Clear();
+        spawnedLocationTransforms.Clear();
+
+        var shuffled = new List<GameObject>(locationPrefabs);
         Shuffle(shuffled);
 
         for (int i = 0; i < locationSlots.Length; i++)
         {
-            Transform slot = locationSlots[i];
+            var slot = locationSlots[i];
 
-            // Usuń placeholdery
-            foreach (Transform child in slot)
-            {
-                Destroy(child.gameObject);
-            }
+            foreach (Transform c in slot)
+                Destroy(c.gameObject);
 
-            GameObject selectedPrefab = shuffled[i];
-            GameObject newLocation = Instantiate(selectedPrefab, slot);
-            
-            string scriptId = selectedPrefab.name;
-if (locationDataDict.TryGetValue(scriptId, out LocationData data))
-{
-    var holder = newLocation.GetComponent<LocationDataHolder>();
-    if (holder != null)
-    {
-        holder.data = data;
-    }
-}
-StartCoroutine(LoadLocationSpriteAsync(data));
+            var prefab = shuffled[i];
+            var newLocation = Instantiate(prefab, slot);
             newLocation.transform.localPosition = Vector3.zero;
             newLocation.transform.localRotation = Quaternion.identity;
             newLocation.transform.localScale = Vector3.one;
 
+            if (locationDataDict.TryGetValue(prefab.name, out var data))
+            {
+                var holder = newLocation.GetComponent<LocationDataHolder>();
+                if (holder != null) holder.data = data;
+                yield return LoadLocationSpriteAsync(data);
+            }
+
             spawnedLocations.Add(newLocation);
             spawnedLocationTransforms.Add(newLocation.transform);
 
-            // Jeśli to lokacja 1 (index 0) → ZBIR
             if (i == 0)
-            {
                 characterSlots.villainSlot = FindDeepChild(newLocation.transform, "Villain_Slot");
-            }
-            // Jeśli to lokacja 4 (index 3) → BOHATEROWIE
             if (i == 3)
             {
                 characterSlots.heroSlot1 = FindDeepChild(newLocation.transform, "Hero_Slot_1");
                 characterSlots.heroSlot2 = FindDeepChild(newLocation.transform, "Hero_Slot_2");
             }
 
-            yield return new WaitForSeconds(delayBetweenLocations);
+            if (delayBetweenLocations > 0f)
+                yield return new WaitForSeconds(delayBetweenLocations);
         }
 
-        // Poczekaj i potem spawnuj żetony
-        yield return new WaitForSeconds(delayBeforeTokens);
+        // Lokacje gotowe
         OnLocationsReady?.Invoke();
+
+        // Start spawn żetonów
         StartCoroutine(SpawnAllTokens());
     }
 
-    IEnumerator SpawnAllTokens()
+    private IEnumerator SpawnAllTokens()
     {
-        
-        foreach (GameObject locationGO in spawnedLocations)
+        foreach (var loc in spawnedLocations)
         {
-            string scriptId = locationGO.name.Replace("(Clone)", "");
-
-            if (locationDataDict.TryGetValue(scriptId, out LocationData data))
-            {
-                yield return StartCoroutine(SpawnTokens(locationGO, data));
-            }
+            var id = loc.name.Replace("(Clone)", "");
+            if (locationDataDict.TryGetValue(id, out var data))
+                yield return StartCoroutine(SpawnTokens(loc, data));
         }
-        
+
+        // Żetony gotowe, lokacje pełne → wysyłamy sygnał
+        StartCoroutine(DelayBeforeThreatCards());
     }
 
-    IEnumerator SpawnTokens(GameObject locationGO, LocationData data)
+    private IEnumerator SpawnTokens(GameObject go, LocationData data)
     {
         for (int i = 0; i < data.starting_tokens.Count; i++)
         {
-            string tokenType = data.starting_tokens[i];
+            var slot = FindDeepChild(go.transform, $"Slot_{i}");
+            var prefab = data.starting_tokens[i] == "Civilian"
+                         ? civilianTokenPrefab
+                         : thugTokenPrefab;
 
-            Transform tokenSlot = FindDeepChild(locationGO.transform, $"Slot_{i}");
-            if (tokenSlot == null)
+            if (slot != null && prefab != null)
             {
-                continue;
+                var tok = Instantiate(prefab, slot);
+                tok.transform.localPosition = Vector3.zero;
+                tok.transform.localRotation = Quaternion.identity;
             }
-
-            GameObject tokenPrefab = tokenType == "Civilian" ? civilianTokenPrefab : thugTokenPrefab;
-            if (tokenPrefab == null)
-            {
-                continue;
-            }
-
-            GameObject token = Instantiate(tokenPrefab, tokenSlot);
-            
-            token.transform.localPosition = Vector3.zero;
-            token.transform.localRotation = Quaternion.identity;
         }
-        // Sprawdź i dodaj threatToken, jeśli slot istnieje
-    
-    
-    
-    Transform threatSlot = FindDeepChild(locationGO.transform, "ThreatSlot");
-    if (threatSlot != null && threatTokenPrefab != null)
-    {
-        GameObject threatToken = Instantiate(threatTokenPrefab, threatSlot);
-        threatToken.transform.localPosition = Vector3.zero;
-        threatToken.transform.localRotation = Quaternion.identity;
-    }
+
+        var threatSlot = FindDeepChild(go.transform, "ThreatSlot");
+        if (threatSlot != null && threatTokenPrefab != null)
+        {
+            var t = Instantiate(threatTokenPrefab, threatSlot);
+            t.transform.localPosition = Vector3.zero;
+            t.transform.localRotation = Quaternion.identity;
+        }
+
         yield return null;
     }
 
-
-
     Transform FindDeepChild(Transform parent, string name)
     {
-        foreach (Transform child in parent)
+        foreach (Transform c in parent)
         {
-            if (child.name == name)
-                return child;
-
-            Transform result = FindDeepChild(child, name);
-            if (result != null)
-                return result;
+            if (c.name == name) return c;
+            var r = FindDeepChild(c, name);
+            if (r != null) return r;
         }
         return null;
     }
@@ -189,32 +191,32 @@ StartCoroutine(LoadLocationSpriteAsync(data));
     {
         for (int i = list.Count - 1; i > 0; i--)
         {
-            int rand = Random.Range(0, i + 1);
-            (list[i], list[rand]) = (list[rand], list[i]);
+            int r = Random.Range(0, i + 1);
+            (list[i], list[r]) = (list[r], list[i]);
         }
     }
-    public CharacterSlots GetCharacterSlots()
-{
-    return characterSlots;
-}
-private IEnumerator LoadLocationSpriteAsync(LocationData data)
-{
-    // np. Location_3 → Card_3
-    string index = data.id.Split('_')[1]; // "Location_3" → "3"
-    string address = $"Location/Card_{index}";
 
-    var handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>(address);
-    yield return handle;
-
-    if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+    private IEnumerator LoadLocationSpriteAsync(LocationData data)
     {
-        data.sprite = handle.Result;
-        Debug.Log($"✅ Załadowano sprite dla {data.id} → {address}");
-    }
-    else
-    {
-        Debug.LogError($"❌ Nie udało się załadować sprite dla: {address}");
-    }
-}
+        var index = data.id.Split('_')[1];
+        var address = $"Location/Card_{index}";
+        var handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>(address);
+        yield return handle;
 
+        if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+        {
+            data.sprite = handle.Result;
+            Debug.Log($"✅ Załadowano sprite dla {data.id}");
+        }
+        else
+        {
+            Debug.LogError($"❌ Błąd ładowania sprite {address}");
+        }
+    }
+    private IEnumerator DelayBeforeThreatCards()
+{
+    yield return new WaitForSeconds(delayBetweenLocations*18); // ⬅️ tutaj ustawiasz ile sekund ma być opóźnienia
+
+    OnLocationsAndTokensReady?.Invoke();
+}
 }

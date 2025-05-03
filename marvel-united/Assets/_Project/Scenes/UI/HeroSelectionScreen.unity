@@ -393,6 +393,12 @@ MonoBehaviour:
   playerOneHero: 
   playerTwoHero: 
   selectedVillain: 
+  locationManager: {fileID: 0}
+  threatCardSpawner: {fileID: 0}
+  cardManager: {fileID: 0}
+  displayPlayer1: {fileID: 0}
+  displayPlayer2: {fileID: 0}
+  villainDisplay: {fileID: 0}
 --- !u!4 &229684983
 Transform:
   m_ObjectHideFlags: 0

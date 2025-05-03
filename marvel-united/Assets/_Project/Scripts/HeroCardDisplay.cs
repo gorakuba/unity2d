@@ -10,9 +10,10 @@ public class HeroCardDisplay : MonoBehaviour
     public GameManager gameManager;
     public Image card1Image, card2Image, card3Image;
     public bool isPlayerTwo = false;
-
+    private bool initialized = false;
     public async void ShowCards()
     {
+        if (!initialized) return;
         var heroId = isPlayerTwo ? gameManager.playerTwoHero : gameManager.playerOneHero;
         var hand = isPlayerTwo ? cardManager.playerTwoHand : cardManager.playerOneHand;
 
@@ -40,6 +41,13 @@ public class HeroCardDisplay : MonoBehaviour
     {
         Debug.LogError("❌ Nie udało się załadować sprite: " + address);
     }
+}
+public void Initialize(GameManager gameManager, CardManager cardManager)
+{
+    this.gameManager = gameManager;
+    this.cardManager = cardManager;
+    initialized = true;
+    ShowCards();
 }
 
 }
