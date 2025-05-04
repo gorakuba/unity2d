@@ -7,12 +7,40 @@ public class VillainsRoot
 {
     public List<VillainData> villains;
 }
+    public class BAMController : MonoBehaviour
+    {
+        public static bool BamInProgress = false;
+        private static int playersPendingDamage = 0;
+
+        public static void StartBAM(int playersToDamage)
+        {
+            playersPendingDamage = playersToDamage;
+            BamInProgress = playersPendingDamage > 0;
+
+            Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
+        }
+
+        public static void PlayerFinishedDamage()
+        {
+            playersPendingDamage--;
+            Debug.Log($"[BAM] Gracz skończył obrażenia. Pozostało: {playersPendingDamage}");
+
+            if (playersPendingDamage <= 0)
+            {
+                BamInProgress = false;
+                Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
+            }
+        }
+    }
+
+
 
 [Serializable]
 public class VillainData
 {
     public string id;
     public string name;
+    public string bam;
     [System.Serializable]
     public class HealthPerPlayers
     {

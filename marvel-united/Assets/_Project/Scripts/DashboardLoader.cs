@@ -7,15 +7,27 @@ public class DashboardLoader : MonoBehaviour
     [System.Serializable]
     public class VillainDashboardEntry
     {
-        public string villainName; // np. "red_skull"
+        public string villainName;
         public GameObject dashboardPrefab;
     }
 
-    public List<VillainDashboardEntry> dashboardPrefabs; // przypisujesz w Inspectorze
-    public Transform dashboardParent;                    // gdzie wstawić dashboard
+    [Header("Dashboard Settings")]
+    public List<VillainDashboardEntry> dashboardPrefabs;
+    public Transform dashboardParent;
     public GameObject healthTokenPrefab;
-    public int playerCount = 2;
     public GameObject fearTrackCubePrefab;
+    public int playerCount = 2;
+
+    public static DashboardLoader Instance;
+
+    private GameObject currentDashboard;
+    private GameObject fearTrackCubeInstance;
+    private int fearTrackIndex = 0;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -36,25 +48,34 @@ public class DashboardLoader : MonoBehaviour
             }
         }
 
+        if (prefabToUse == null)
+        {
+            Debug.LogError($"Brak dashboardPrefab dla villain: {selectedVillain}");
+            return;
+        }
 
-        GameObject dashboard = Instantiate(prefabToUse, dashboardParent);
+        currentDashboard = Instantiate(prefabToUse, dashboardParent);
 
-        Transform fearSlot = dashboard.transform.Find("FearTrack_Slot0");
+        // --------- Fear Track ----------
+        Transform fearSlot = currentDashboard.transform.Find("FearTrack_Slot0");
 
-if (fearSlot != null)
-{
-    GameObject fearCube = Instantiate(fearTrackCubePrefab, fearSlot);
-    fearCube.transform.localPosition = Vector3.zero;
-    fearCube.transform.localRotation = Quaternion.identity;
-    fearCube.transform.localScale = fearTrackCubePrefab.transform.localScale;
+        if (fearSlot != null)
+        {
+            fearTrackCubeInstance = Instantiate(fearTrackCubePrefab, fearSlot);
+            fearTrackCubeInstance.transform.localPosition = Vector3.zero;
+            fearTrackCubeInstance.transform.localRotation = Quaternion.identity;
+            fearTrackCubeInstance.transform.localScale = fearTrackCubePrefab.transform.localScale;
 
-    Debug.Log("Zainstancjonowano FearTrackCube.");
-}
-else
-{
-    Debug.Log("Brak FearTrack_Slot0 – przeciwnik nie używa Fear Tracka.");
-}
-        // Wczytanie JSON i ustawienie tokenów
+            fearTrackIndex = 0;
+
+            Debug.Log("✅ Zainstancjonowano FearTrackCube.");
+        }
+        else
+        {
+            Debug.Log("❗ Brak FearTrack_Slot0 – ten villain może nie używać Fear Tracka.");
+        }
+
+        // --------- Health Tokens ----------
         string path = Path.Combine(Application.streamingAssetsPath, "Villains.json");
         string json = File.ReadAllText(path);
         VillainsRoot root = JsonUtility.FromJson<VillainsRoot>(json);
@@ -67,13 +88,14 @@ else
         }
 
         int health = playerCount switch
-{
-    2 => villain.health_per_players._2,
-    3 => villain.health_per_players._3,
-    4 => villain.health_per_players._4,
-    _ => 0
-};
-        Transform slotHealth = dashboard.transform.Find("Slot_Health");
+        {
+            2 => villain.health_per_players._2,
+            3 => villain.health_per_players._3,
+            4 => villain.health_per_players._4,
+            _ => 0
+        };
+
+        Transform slotHealth = currentDashboard.transform.Find("Slot_Health");
 
         if (slotHealth == null)
         {
@@ -82,16 +104,47 @@ else
         }
 
         float spacing = 0.00424f;
-Vector3 originalScale = healthTokenPrefab.transform.localScale;
+        Vector3 originalScale = healthTokenPrefab.transform.localScale;
 
-for (int i = 0; i < health; i++)
-{
-    GameObject token = Instantiate(healthTokenPrefab, slotHealth);
-    token.transform.localPosition = new Vector3(0, 0, i*spacing);
-    token.transform.localRotation = Quaternion.identity;
-    token.transform.localScale = originalScale; // 👈 używa dokładnej skali z prefaba
-}
+        for (int i = 0; i < health; i++)
+        {
+            GameObject token = Instantiate(healthTokenPrefab, slotHealth);
+            token.transform.localPosition = new Vector3(0, 0, i * spacing);
+            token.transform.localRotation = Quaternion.identity;
+            token.transform.localScale = originalScale;
+        }
+    }
 
+    /// <summary>
+    /// Przesuwa Fear Track o podaną liczbę punktów.
+    /// </summary>
+    public void MoveFearTrack(int amount)
+    {
+        if (fearTrackCubeInstance == null)
+        {
+            Debug.LogWarning("Brak instancji FearTrackCube!");
+            return;
+        }
 
+        fearTrackIndex += amount;
+
+        if (fearTrackIndex > 20)
+            fearTrackIndex = 20;
+
+        string slotName = $"FearTrack_Slot{fearTrackIndex}";
+        Transform targetSlot = currentDashboard.transform.Find(slotName);
+
+        if (targetSlot != null)
+        {
+            fearTrackCubeInstance.transform.SetParent(targetSlot, false);
+            fearTrackCubeInstance.transform.localPosition = Vector3.zero;
+            fearTrackCubeInstance.transform.localRotation = Quaternion.identity;
+
+            Debug.Log($"➡️ Przesunięto FearTrackCube na slot {fearTrackIndex}");
+        }
+        else
+        {
+            Debug.LogWarning($"Brak slota {slotName} dla FearTrack");
+        }
     }
 }

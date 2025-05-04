@@ -25,6 +25,10 @@ public class CardManager : MonoBehaviour
     private List<HeroCard> heroDeck1;
     private List<HeroCard> heroDeck2;
 
+    // Dostęp do aktualnych talii bohaterów (potrzebne np. do wrzucania kart na spód)
+    public List<HeroCard> playerOneDeck => heroDeck1;
+    public List<HeroCard> playerTwoDeck => heroDeck2;
+
     private void Start()
     {
         RollAllCards();

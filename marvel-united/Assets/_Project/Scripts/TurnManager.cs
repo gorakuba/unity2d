@@ -58,6 +58,7 @@ public class TurnManager : MonoBehaviour
     private HeroCard _pendingSelectedCard;
     private List<string> _pendingSelectedSymbols;
     private List<string> _lastSymbols;
+    
 
     void Awake()
     {
@@ -328,6 +329,8 @@ private void OnConfirmPlay()
         if (currentPhase == GamePhase.VillainTurn)
         {
             yield return StartCoroutine(VillainTurnSequence());
+            while (BAMController.BamInProgress)
+        yield return null;
             
             // Ustaw kolejnego gracza po villainie poprawnie
             nextPlayer = lastPlayerBeforeVillainTurn == 1 ? 2 : 1;

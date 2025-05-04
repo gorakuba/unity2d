@@ -8,6 +8,11 @@ public class SetupManager : MonoBehaviour
 
     private LocationManager _locMan;
 
+    public static HeroController hero1Controller;
+    public static HeroController hero2Controller;
+    public static VillainController villainController;
+    
+
     private void Awake()
     {
         _locMan = FindAnyObjectByType<LocationManager>();
@@ -26,30 +31,29 @@ public class SetupManager : MonoBehaviour
     private void InitSpawn()
     {
         var slots = _locMan.characterSlots;
-        if (slots.heroSlot1 == null || slots.heroSlot2 == null || slots.villainSlot == null)
-        {
-            Debug.LogError("SetupManager: któryś ze slotów jest NULL!");
-            return;
-        }
 
-        // Spawn bohaterów
-        SpawnHero(GameManager.Instance.playerOneHero, slots.heroSlot1);
-        SpawnHero(GameManager.Instance.playerTwoHero, slots.heroSlot2);
-
-        // Spawn zbira
-        SpawnVillain(GameManager.Instance.selectedVillain, slots.villainSlot);
+        hero1Controller = SpawnHero(GameManager.Instance.playerOneHero, slots.heroSlot1, false);
+        hero2Controller = SpawnHero(GameManager.Instance.playerTwoHero, slots.heroSlot2, true);
+        villainController = SpawnVillain(GameManager.Instance.selectedVillain, slots.villainSlot);
     }
 
-    private void SpawnHero(string heroId, Transform slot)
-    {
-        var go = Instantiate(playerCharacterPrefab, slot.position, Quaternion.identity, slot);
-        go.GetComponent<HeroController>()?.Initialize(heroId);
-    }
+    private HeroController SpawnHero(string heroId, Transform slot, bool isPlayerTwo)
+{
+    var go = Instantiate(playerCharacterPrefab, slot.position, Quaternion.identity, slot);
+    var hc = go.GetComponent<HeroController>();
+    var cm = FindAnyObjectByType<CardManager>();
 
-    private void SpawnVillain(string villainId, Transform slot)
+    hc.Initialize(heroId, GameManager.Instance, cm, isPlayerTwo);
+
+    return hc;
+}
+
+
+    private VillainController SpawnVillain(string villainId, Transform slot)
     {
         var go = Instantiate(villainPrefab, slot.position, Quaternion.identity, slot);
         var vc = go.GetComponent<VillainController>();
-        vc.Initialize(villainId, /*startIndex=*/0);
+        vc.Initialize(villainId, 0);
+        return vc;
     }
 }
