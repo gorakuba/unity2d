@@ -1,162 +1,145 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections;
 
 public class ThreatCardSpawner : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Prefaby i dane JSON")]
     public GameObject threatCardPrefab;
-    public Transform[] threatPlaces;
-    public ThreatCardTextureDatabase textureDatabase;
-    [SerializeField] private LocationManager locationManager;
     public GameObject tokenHealthPrefab;
-    [SerializeField] private Transform[] locationObjects;
-
-    [Header("JSON")]
+    public ThreatCardTextureDatabase textureDatabase;
     public TextAsset villainJson;
 
-private void Start()
-{
-    Debug.Log("[START] ThreatCardSpawner wystartował");
+    private LocationManager _locMan;
 
-    if (locationManager != null)
+    private void Awake()
     {
-        locationManager.OnLocationsReady += OnLocationsReady;
+        _locMan = FindAnyObjectByType<LocationManager>();
+        if (_locMan == null)
+        {
+            Debug.LogError("ThreatCardSpawner: nie znalazłem LocationManager!");
+        }
+        else
+        {
+            // 👇 Teraz zamiast OnLocationsReady -> OnLocationsAndTokensReady (DUŻO lepsze miejsce!)
+            _locMan.OnLocationsAndTokensReady += () => StartCoroutine(DelayedThreatSpawn());
+        }
     }
-    else
-    {
-        Debug.LogWarning("LocationManager nie jest przypisany!");
-    }
-}
-private void OnLocationsReady()
-{
-    locationObjects = locationManager.spawnedLocationTransforms.ToArray();
-    SpawnThreatCardsForSelectedVillain();
-}
 
-    void SpawnThreatCardsForSelectedVillain()
+    private void OnDestroy()
     {
+        if (_locMan != null)
+            _locMan.OnLocationsAndTokensReady -= () => StartCoroutine(DelayedThreatSpawn());
+    }
+
+    // ✅ Dodatkowe opóźnienie dla płynności (opcjonalne)
+    private IEnumerator DelayedThreatSpawn()
+    {
+        yield return new WaitForSeconds(0.5f); // lekkie opóźnienie, żeby plansza była już całkiem widoczna
+        SpawnAllThreatCards();
+    }
+
+    private void SpawnAllThreatCards()
+    {
+        Debug.Log("▶ ThreatCardSpawner: Start spawnów");
+
         if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManager.Instance is null!");
+            Debug.LogError("ThreatCardSpawner: GameManager.Instance jest null");
             return;
         }
 
         string villainId = GameManager.Instance.selectedVillain;
-        Debug.Log($"Wybrany Zbir: {villainId}");
-
         if (string.IsNullOrEmpty(villainId))
         {
-            Debug.LogError("Brak ID Zbira w GameManager");
+            Debug.LogError("ThreatCardSpawner: selectedVillain jest pusty");
             return;
         }
 
-        VillainsRoot data = JsonUtility.FromJson<VillainsRoot>(villainJson.text);
-        VillainData villain = data.villains.FirstOrDefault(v => v.id == villainId);
-
+        // 1) Wczytanie i losowanie 6 kart
+        var rootData = JsonUtility.FromJson<VillainsRoot>(villainJson.text);
+        var villain = rootData.villains.FirstOrDefault(v => v.id == villainId);
         if (villain == null)
         {
-            Debug.LogError($"Nie znaleziono Zbira o ID: {villainId}");
+            Debug.LogError($"ThreatCardSpawner: nie ma villain ID={villainId}");
             return;
         }
 
-        List<ThreatCard> selectedThreats = villain.threats.OrderBy(x => Random.value).Take(6).ToList();
-        Debug.Log($"Wylosowano {selectedThreats.Count} kart zagrożeń");
+        var threats = villain.threats.OrderBy(x => Random.value).Take(6).ToList();
 
-        for (int i = 0; i < 6; i++)
+        // 2) Pobierz świeże lokacje i wyczyść stare threatSlot-y
+        var roots = _locMan.LocationRoots;
+        foreach (var root in roots)
         {
-            SpawnSingleThreatCard(selectedThreats[i], i, villainId);
-        }
-    }
+            var slot = FindDeepChild(root, "ThreatCardSlot");
+            if (slot == null) continue;
 
-    void SpawnSingleThreatCard(ThreatCard threat, int index, string villainId)
-    {
-        if (index >= threatPlaces.Length || index >= locationObjects.Length)
-        {
-            Debug.LogWarning($"Index {index} poza zakresem!");
-            return;
+            for (int i = slot.childCount - 1; i >= 0; i--)
+                Destroy(slot.GetChild(i).gameObject);
         }
 
-        GameObject card = Instantiate(threatCardPrefab);
-        card.transform.SetParent(threatPlaces[index], false);
-        card.transform.localPosition = Vector3.zero;
-        card.transform.localRotation = Quaternion.identity;
-
-        ThreatCardInstance instance = card.AddComponent<ThreatCardInstance>();
-        instance.data = threat;
-        Debug.Log($"[{threat.id}] minion: {threat.minion}, health: {threat.minion_health} (type: {threat.minion_health?.GetType()})");
-
-        GameObject locationObj = locationObjects[index].gameObject;
-        instance.assignedLocation = locationObj;
-        
-
-        var display = card.GetComponent<CardDisplay>();
-        if (display != null)
+        // 3) Instancjonuj 6 kart
+        for (int i = 0; i < threats.Count; i++)
         {
-            display.frontTexture = textureDatabase.GetTexture(villainId, threat.id);
-            display.backTexture = textureDatabase.GetBackTexture(villainId);
-        }
+            var threat = threats[i];
+            var root = roots[i];
+            var slot = FindDeepChild(root, "ThreatCardSlot");
+            if (slot == null) continue;
 
-        Location location = locationObj.GetComponentInChildren<Location>();
-        if (location != null)
-        {
-            location.AssignThreatCard(instance);
-        }
-        else
-        {
-            Debug.LogWarning($"Brak komponentu Location na obiekcie {locationObj.name}");
-        }
+            var go = Instantiate(threatCardPrefab, slot, false);
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localRotation = Quaternion.identity;
 
-        // 🔍 Tu debugujemy warunek
-        if (threat.minion)
-        {
-            Debug.Log($"[{threat.id}] to minion!");
+            var inst = go.AddComponent<ThreatCardInstance>();
+            inst.data = threat;
+            inst.assignedLocation = root.gameObject;
 
-            if (!string.IsNullOrEmpty(threat.minion_health))
+            var disp = go.GetComponent<CardDisplay>();
+            if (disp != null)
             {
-                Debug.Log($"minion_health is not null or empty: {threat.minion_health}");
+                disp.frontTexture = textureDatabase.GetTexture(villainId, threat.id);
+                disp.backTexture = textureDatabase.GetBackTexture(villainId);
+            }
 
-                if (int.TryParse(threat.minion_health, out int health))
-                {
-                    Debug.Log($"[TOKEN] Wywołuję coroutine dla {threat.id}, health: {health}");
-                    StartCoroutine(SpawnMinionTokens(instance, health));
-                }
-                else
-                {
-                    Debug.LogWarning($"Nie udało się sparsować minion_health '{threat.minion_health}' dla {threat.id}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"minion_health jest puste dla {threat.id}");
-            }
+            var locComp = root.GetComponentInChildren<Location>();
+            if (locComp != null)
+                locComp.AssignThreatCard(inst);
+
+            if (threat.minion && int.TryParse(threat.minion_health, out int hp) && hp > 0)
+                StartCoroutine(SpawnMinionTokens(go.transform, hp));
         }
     }
 
-    private IEnumerator SpawnMinionTokens(ThreatCardInstance instance, int health)
-{
-    // ⏳ Czekaj 1 sekundę zanim zaczniesz generować żetony
-    yield return new WaitForSeconds(2.5f);
-
-    Transform slot = instance.transform.Find("Slot_Health");
-    if (slot == null)
+    private IEnumerator SpawnMinionTokens(Transform card, int health)
     {
-        Debug.LogWarning("Brak Slot_Health na karcie!");
-        yield break;
+        yield return new WaitForSeconds(0.5f);
+
+        var slot = card.Find("Slot_Health");
+        if (slot == null)
+        {
+            Debug.LogWarning("ThreatCardSpawner: brak Slot_Health na karcie!");
+            yield break;
+        }
+
+        for (int i = 0; i < health; i++)
+        {
+            var tok = Instantiate(tokenHealthPrefab, slot);
+            tok.transform.localPosition = new Vector3(0, 0, i * 0.00004f);
+            tok.transform.localRotation = Quaternion.identity;
+            tok.transform.localScale = Vector3.one;
+            yield return new WaitForSeconds(0.1f);
+        }
     }
-    for (int i = 0; i < health; i++)
+
+    private Transform FindDeepChild(Transform parent, string name)
     {
-        GameObject token = Instantiate(tokenHealthPrefab, slot);
-        token.transform.localPosition = new Vector3(0, 0, i * 0.0000424f);
-        token.transform.localRotation = Quaternion.identity;
-        token.transform.localScale = Vector3.one;
-
-        instance.currentMinionHealth++; // jeśli chcesz zliczać
-
-        yield return new WaitForSeconds(0.2f);
+        foreach (Transform c in parent)
+        {
+            if (c.name == name) return c;
+            var r = FindDeepChild(c, name);
+            if (r != null) return r;
+        }
+        return null;
     }
-}
-
-
 }

@@ -1,72 +1,61 @@
+// LocationButtonAutoBinder.cs
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using System.Collections;
 
 public class LocationButtonAutoBinder : MonoBehaviour
 {
-    public LocationInfoPanel infoPanel;
+    [Header("Referencje")]
     public LocationManager locationManager;
     public Button[] locationButtons;
-        public GameObject locationObject;
 
-private void Start()
-{
-    ClearButtonBindings(); // wyzeruj stare przypisania
-    StartCoroutine(InitButtonsWithDelay());
-
-}
-
-private IEnumerator InitButtonsWithDelay()
-{
-    
-    yield return new WaitForSeconds(5f); // ⏱️ Czekamy 5 sekund
-
-    var locationManager = FindAnyObjectByType<LocationManager>();
-    if (locationManager == null)
+    void Awake()
     {
-        Debug.LogError("Nie znaleziono LocationManager!");
-        yield break;
+        if (locationManager == null)
+            locationManager = FindAnyObjectByType<LocationManager>();
+        if (locationManager != null)
+            locationManager.OnLocationsReady += BindButtons;
+        else
+            Debug.LogError("LocationButtonAutoBinder: nie znaleziono LocationManager");
     }
 
-    if (locationButtons.Length != locationManager.spawnedLocationTransforms.Count)
+    void OnDestroy()
     {
-        Debug.LogError($"Mismatch: {locationButtons.Length} przycisków, " +
-                       $"{locationManager.spawnedLocationTransforms.Count} lokacji!");
+        if (locationManager != null)
+            locationManager.OnLocationsReady -= BindButtons;
     }
 
-    for (int i = 0; i < locationButtons.Length; i++)
+    private void BindButtons()
     {
-        if (i >= locationManager.spawnedLocationTransforms.Count)
+        ClearButtonBindings();
+        var roots = locationManager.LocationRoots;
+        int count = Mathf.Min(locationButtons.Length, roots.Count);
+
+        for (int i = 0; i < count; i++)
         {
-            Debug.LogError($"❌ Brakuje zespawnowanej lokacji dla przycisku {i + 1}");
-            continue;
+            var btn = locationButtons[i];
+            var handler = btn.GetComponent<LocationButtonHandler>();
+            if (handler == null)
+            {
+                Debug.LogWarning($"Brakuje LocationButtonHandler na przycisku {i}");
+                continue;
+            }
+            handler.locationObject = roots[i].gameObject;
         }
 
-        var handler = locationButtons[i].GetComponent<LocationButtonHandler>();
-        if (handler == null)
-        {
-            Debug.LogError($"❌ Brakuje LocationButtonHandler na przycisku {i + 1}");
-            continue;
-        }
+        Debug.Log("LocationButtonAutoBinder: przypisano przyciski");
+    }
 
-        handler.locationObject = locationManager.spawnedLocationTransforms[i].gameObject;
-        Debug.Log($"✅ Przypisano lokację {handler.locationObject.name} do przycisku {i + 1}");
-    }
-}
-public void RebindButtons()
-{
-    StartCoroutine(InitButtonsWithDelay());
-}
-public void ClearButtonBindings()
-{
-    foreach (var button in locationButtons)
+    private void ClearButtonBindings()
     {
-        var handler = button.GetComponent<LocationButtonHandler>();
-        if (handler != null)
+        foreach (var btn in locationButtons)
         {
-            handler.locationObject = null;
+            var handler = btn.GetComponent<LocationButtonHandler>();
+            if (handler != null)
+                handler.locationObject = null;
         }
     }
-}
+        public void RebindButtons()
+    {
+        BindButtons();
+    }
 }

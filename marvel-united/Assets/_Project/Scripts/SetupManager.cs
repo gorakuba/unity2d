@@ -2,36 +2,58 @@ using UnityEngine;
 
 public class SetupManager : MonoBehaviour
 {
+    [Header("Prefaby postaci")]
     public GameObject playerCharacterPrefab;
     public GameObject villainPrefab;
-private void Awake()
-{
-    LocationManager locMan = FindAnyObjectByType<LocationManager>();
-    locMan.OnLocationsReady += InitSpawn;
-}
-void InitSpawn()
-{
-    CharacterSlots slots = FindAnyObjectByType<LocationManager>().GetCharacterSlots();
 
-    if (slots.heroSlot1 == null || slots.heroSlot2 == null || slots.villainSlot == null)
+    private LocationManager _locMan;
+
+    public static HeroController hero1Controller;
+    public static HeroController hero2Controller;
+    public static VillainController villainController;
+    
+
+    private void Awake()
     {
-        Debug.LogError("❌ Jeden z slotów postaci jest NULL!");
-        return;
+        _locMan = FindAnyObjectByType<LocationManager>();
+        if (_locMan == null)
+            Debug.LogError("SetupManager: nie znaleziono LocationManager!");
+        else
+            _locMan.OnLocationsReady += InitSpawn;
     }
 
-    SpawnHero(GameManager.Instance.playerOneHero, slots.heroSlot1);
-    SpawnHero(GameManager.Instance.playerTwoHero, slots.heroSlot2);
-    SpawnVillain(GameManager.Instance.selectedVillain, slots.villainSlot);
-}
-    void SpawnHero(string heroName, Transform location)
+    private void OnDestroy()
     {
-        GameObject heroGO = Instantiate(playerCharacterPrefab, location.position, Quaternion.identity, location);
-        heroGO.GetComponent<HeroController>()?.Initialize(heroName);
+        if (_locMan != null)
+            _locMan.OnLocationsReady -= InitSpawn;
     }
 
-void SpawnVillain(string villainName, Transform location)
+    private void InitSpawn()
+    {
+        var slots = _locMan.characterSlots;
+
+        hero1Controller = SpawnHero(GameManager.Instance.playerOneHero, slots.heroSlot1, false);
+        hero2Controller = SpawnHero(GameManager.Instance.playerTwoHero, slots.heroSlot2, true);
+        villainController = SpawnVillain(GameManager.Instance.selectedVillain, slots.villainSlot);
+    }
+
+    private HeroController SpawnHero(string heroId, Transform slot, bool isPlayerTwo)
 {
-    GameObject villainGO = Instantiate(villainPrefab, location.position, Quaternion.identity, location);
-    villainGO.GetComponent<VillainController>()?.Initialize(villainName);
+    var go = Instantiate(playerCharacterPrefab, slot.position, Quaternion.identity, slot);
+    var hc = go.GetComponent<HeroController>();
+    var cm = FindAnyObjectByType<CardManager>();
+
+    hc.Initialize(heroId, GameManager.Instance, cm, isPlayerTwo);
+
+    return hc;
 }
+
+
+    private VillainController SpawnVillain(string villainId, Transform slot)
+    {
+        var go = Instantiate(villainPrefab, slot.position, Quaternion.identity, slot);
+        var vc = go.GetComponent<VillainController>();
+        vc.Initialize(villainId, 0);
+        return vc;
+    }
 }

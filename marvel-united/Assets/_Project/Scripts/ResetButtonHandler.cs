@@ -17,7 +17,7 @@ public class ResetButtonHandler : MonoBehaviour
         // Dezaktywuj przycisk
         resetButton.interactable = false;
         // Odpal opóźnione ponowne włączenie
-        StartCoroutine(ReactivateButtonAfterDelay(7f));
+        StartCoroutine(ReactivateButtonAfterDelay(4.5f));
         
             if (buttonDisabler != null)
         buttonDisabler.DisableForSeconds();
@@ -35,7 +35,7 @@ public class ResetButtonHandler : MonoBehaviour
 {
     resetButton.interactable = false;
 
-    StartCoroutine(EnableButtonAfterStartDelay(7f));
+    StartCoroutine(EnableButtonAfterStartDelay(4.5f));
 }
 
 IEnumerator EnableButtonAfterStartDelay(float delay)

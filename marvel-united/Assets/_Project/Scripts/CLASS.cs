@@ -7,12 +7,40 @@ public class VillainsRoot
 {
     public List<VillainData> villains;
 }
+    public class BAMController : MonoBehaviour
+    {
+        public static bool BamInProgress = false;
+        private static int playersPendingDamage = 0;
+
+        public static void StartBAM(int playersToDamage)
+        {
+            playersPendingDamage = playersToDamage;
+            BamInProgress = playersPendingDamage > 0;
+
+            Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
+        }
+
+        public static void PlayerFinishedDamage()
+        {
+            playersPendingDamage--;
+            Debug.Log($"[BAM] Gracz skończył obrażenia. Pozostało: {playersPendingDamage}");
+
+            if (playersPendingDamage <= 0)
+            {
+                BamInProgress = false;
+                Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
+            }
+        }
+    }
+
+
 
 [Serializable]
 public class VillainData
 {
     public string id;
     public string name;
+    public string bam;
     [System.Serializable]
     public class HealthPerPlayers
     {
@@ -61,13 +89,15 @@ public class VillainCard
     public int move;
     public bool BAM_effect;
     public bool special;
-    public string special_ability;
     public string special_name;
     public string special_description;
-    public bool effect_on_stand;
-    public string Location_left;  // domyślnie string, bo niektóre są pustymi stringami
-    public string Location_middle;
-    public string Location_right;
+    public List<LocationSpawnSymbol> Location_left;
+    public List<LocationSpawnSymbol> Location_middle;
+    public List<LocationSpawnSymbol> Location_right;
+    public bool HasSpawn =>
+        (Location_left != null && Location_left.Count > 0) ||
+        (Location_middle != null && Location_middle.Count > 0) ||
+        (Location_right != null && Location_right.Count > 0);
 }
 [System.Serializable]
 public class Hero
@@ -92,6 +122,7 @@ public class Hero
 public class HeroCard
 {
     public string Id { get; private set; }
+    public string heroId;
     public bool Special { get; private set; }
     public string SpecialAbility { get; private set; }
     public string SpecialDescription { get; private set; }
@@ -132,4 +163,11 @@ public class VillainDashboard
 {
     public string villainName;          // np. "red_skull"
     public GameObject dashboardPrefab;  // przypisany prefab w Inspectorze
+}
+
+[Serializable]
+public class LocationSpawnSymbol
+{
+    public string symbol;
+    public int count;
 }

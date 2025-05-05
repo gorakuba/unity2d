@@ -3,6 +3,7 @@
       {
         "id": "red_skull",
         "name": "Red Skull",
+        "bam" : "red_skull",
         "health_per_players": {
          "2": 4,
           "3": 8,
