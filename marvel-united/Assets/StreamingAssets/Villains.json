@@ -167,20 +167,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {
@@ -206,24 +199,16 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Civillian","count":1},
+                    {"symbol":"Thug","count":1} 
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian",
-                        "symbol_3":"Thug",
-                        "symbol_4":"Thug"
-                    }
+                        {"symbol":"Civillian","count":2},
+                        {"symbol":"Thug","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Civillian","count":1},
+                    {"symbol":"Thug","count":1} 
                 ]
             },
             {
@@ -236,20 +221,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1} 
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2} 
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -262,20 +240,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2} 
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -288,20 +259,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {
@@ -314,20 +278,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -340,20 +297,13 @@
                 "special_description":"",
                 "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {

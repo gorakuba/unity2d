@@ -91,13 +91,13 @@ public class VillainCard
     public bool special;
     public string special_name;
     public string special_description;
-    public string Location_left;
-    public string Location_middle;
-    public string Location_right;
+    public List<LocationSpawnSymbol> Location_left;
+    public List<LocationSpawnSymbol> Location_middle;
+    public List<LocationSpawnSymbol> Location_right;
     public bool HasSpawn =>
-        !string.IsNullOrEmpty(Location_left) ||
-        !string.IsNullOrEmpty(Location_middle) ||
-        !string.IsNullOrEmpty(Location_right);
+        (Location_left != null && Location_left.Count > 0) ||
+        (Location_middle != null && Location_middle.Count > 0) ||
+        (Location_right != null && Location_right.Count > 0);
 }
 [System.Serializable]
 public class Hero
@@ -163,4 +163,11 @@ public class VillainDashboard
 {
     public string villainName;          // np. "red_skull"
     public GameObject dashboardPrefab;  // przypisany prefab w Inspectorze
+}
+
+[Serializable]
+public class LocationSpawnSymbol
+{
+    public string symbol;
+    public int count;
 }

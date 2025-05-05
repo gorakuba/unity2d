@@ -211,17 +211,132 @@ private void ExecuteBAM()
     // ============================
     // 4️⃣ Spawn Tokens
     // ============================
-    public IEnumerator ExecuteSpawn(VillainCard card)
+public IEnumerator ExecuteSpawn(VillainCard card)
     {
-        bool hasSpawn = !string.IsNullOrEmpty(card.Location_left)
-                     || !string.IsNullOrEmpty(card.Location_middle)
-                     || !string.IsNullOrEmpty(card.Location_right);
-        if (hasSpawn)
+        if (!card.HasSpawn)
+            yield break;
+
+        Debug.Log("🎯 Spawn tokens START");
+
+        var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
+        var locations = locMan.LocationRoots;
+
+        int villainIndex = _currentIndex;
+        int leftIndex = (villainIndex - 1 + locations.Count) % locations.Count;
+        int middleIndex = villainIndex;
+        int rightIndex = (villainIndex + 1) % locations.Count;
+
+        yield return StartCoroutine(SpawnTokensForLocation(card.Location_left, locations[leftIndex], "LEFT"));
+        yield return StartCoroutine(SpawnTokensForLocation(card.Location_middle, locations[middleIndex], "MIDDLE"));
+        yield return StartCoroutine(SpawnTokensForLocation(card.Location_right, locations[rightIndex], "RIGHT"));
+    }
+
+private IEnumerator SpawnTokensForLocation(List<LocationSpawnSymbol> spawnGroups, Transform locationRoot, string locationName)
+    {
+        if (spawnGroups == null || spawnGroups.Count == 0)
+            yield break;
+
+        List<Transform> freeSlots = GetAllFreeTokenSlots(locationRoot);
+
+        int totalToSpawn = 0;
+        foreach (var group in spawnGroups)
+            totalToSpawn += group.count;
+
+        Debug.Log($"[DEBUG] {locationName} → Free slots available: {freeSlots.Count}, Tokens to spawn: {totalToSpawn}");
+
+        foreach (var group in spawnGroups)
         {
-            Debug.Log("🎯 Spawn tokens");
-            yield return new WaitForSeconds(0.5f);
+            for (int i = 0; i < group.count; i++)
+            {
+                yield return StartCoroutine(SpawnToken(group.symbol, locationRoot, locationName, freeSlots));
+            }
         }
     }
+
+private IEnumerator SpawnToken(string type, Transform locationRoot, string locationName, List<Transform> freeSlots)
+{
+    var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
+    GameObject prefab = null;
+
+    if (type == "Civillian")
+        prefab = locMan.civilianTokenPrefab;
+    else if (type == "Thug")
+        prefab = locMan.thugTokenPrefab;
+
+    if (prefab != null)
+    {
+        if (freeSlots.Count > 0)
+        {
+            var slot = freeSlots[0];
+            freeSlots.RemoveAt(0);
+
+            // ✅ INSTANCJA → dokładnie tak jak Prepare Game (ustawia automatycznie parent i lokalną skalę)
+            GameObject token = Instantiate(prefab, slot.position, slot.rotation, slot);
+            token.transform.localPosition = Vector3.zero;
+            token.transform.localRotation = Quaternion.identity;
+
+            // ✅ TokenDrop → jeżeli jest w prefabie to Start() zrobi swoje, jak nie ma → możesz dodać
+            if (token.GetComponent<TokenDrop>() == null)
+            {
+                token.AddComponent<TokenDrop>();
+            }
+
+            Debug.Log($"[SPAWN OK] {locationName} → Spawned {type} in {locationRoot.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[SPAWN FAIL] {locationName} → No free slot for {type} in {locationRoot.name}");
+
+            if (type == "Civillian")
+            {
+                Debug.LogWarning($"[OVERFLOW] Civillian → 1 Fear Track ");
+                DashboardLoader.Instance.MoveFearTrack(1);
+            }
+            else if (type == "Thug")
+            {
+                Debug.LogWarning($"[OVERFLOW] Thug → 1 Fear Track.");
+                DashboardLoader.Instance.MoveFearTrack(1);
+            }
+        }
+    }
+    else
+    {
+        Debug.LogError($"[SPAWN ERROR] Invalid token type: {type}");
+    }
+
+    yield return new WaitForSeconds(0.3f);
+}
+
+
+private List<Transform> GetAllFreeTokenSlots(Transform locationRoot)
+    {
+        List<Transform> freeSlots = new List<Transform>();
+
+        for (int i = 0; i < 6; i++)
+        {
+            var slot = FindDeepChild(locationRoot, $"Slot_{i}");
+            if (slot != null && slot.childCount == 0)
+                freeSlots.Add(slot);
+        }
+
+        return freeSlots;
+    }
+
+private Transform FindDeepChild(Transform parent, string name)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == name)
+                return child;
+
+            var result = FindDeepChild(child, name);
+            if (result != null)
+                return result;
+        }
+
+        return null;
+    }
+
 
     // ============================
     // 5️⃣ Special Ability
