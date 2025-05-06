@@ -89,6 +89,7 @@ public class VillainCard
     public int move;
     public bool BAM_effect;
     public bool special;
+    public string special_ability;
     public string special_name;
     public string special_description;
     public List<LocationSpawnSymbol> Location_left;

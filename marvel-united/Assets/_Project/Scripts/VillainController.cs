@@ -24,6 +24,7 @@ public class VillainController : MonoBehaviour
     private Dictionary<string, Func<IEnumerator>> bamEffects = new Dictionary<string, Func<IEnumerator>>();
 
     private string currentBAMId;
+    private IVillainSpecials specialHandler;
 
     // Villains data loaded from StreamingAssets
     private VillainsRoot loadedVillainData;
@@ -44,6 +45,14 @@ public class VillainController : MonoBehaviour
 
         // Pobierz aktualny BAM ID
         currentBAMId = GetBAMIdForCurrentVillain();
+        string villainId = GameManager.Instance.selectedVillain;
+        switch (villainId)
+    {
+        case "red_skull":
+            specialHandler = new RedSkullSpecials();
+            break;
+        // tu dodajesz kolejnych zbirów
+    }
     }
 
     private void LoadVillainJson()
@@ -343,12 +352,20 @@ private Transform FindDeepChild(Transform parent, string name)
     // ============================
     public IEnumerator ExecuteAbility(VillainCard card)
     {
-        if (card.special)
+          if (!card.special)
+        yield break;
+
+    if (specialHandler == null)
         {
-            Debug.Log($"🌟 Special: {card.special_name}");
+            Debug.LogWarning("Special handler nie ustawiony dla Zbira!");
+            yield break;
+        }
+
+        Debug.Log($"[SPECIAL] Wywołano → {card.special_ability}");
+
+        yield return specialHandler.ExecuteSpecial(card.special_ability);
             yield return new WaitForSeconds(0.5f);
         }
-    }
     
     private Transform GetLocationRoot(Transform t)
     {

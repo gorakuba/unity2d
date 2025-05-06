@@ -7,6 +7,7 @@ public class HeroController : MonoBehaviour
 
     private HeroDamageHandler heroDamageHandler;
     private string heroId;
+    public string HeroId => heroId;
 
     public void Initialize(string heroID, GameManager gameManager, CardManager cardManager, bool isPlayerTwo)
     {
