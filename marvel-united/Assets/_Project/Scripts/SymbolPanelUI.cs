@@ -21,6 +21,8 @@ public class SymbolPanelUI : MonoBehaviour
     // Pulka trwałych tokenów: ID → ilość
     Dictionary<string,int> persistentPool = new();
     [Header("Panel wybranego symbolu")]
+    [Header("Panel Crisis Tokens")]
+    public CrisisTokenUI crisisTokenUI;
 public Image currentlySelectedImage;
 
     // jeżeli chcesz reagować w TurnManagerze
@@ -40,6 +42,7 @@ public Image currentlySelectedImage;
         Clear(currentContainer);
         foreach(var id in symbols)
             InstantiateIcon(currentContainer, id);
+        UpdateCrisisTokens();
     }
 
     // 2) Poprzednie symbole drugiego gracza
@@ -135,5 +138,10 @@ void InstantiateIcon(Transform parent, string id)
         currentlySelectedImage.gameObject.SetActive(false);
     }
 }
+private void UpdateCrisisTokens()
+{
+    if (crisisTokenUI != null)
+        crisisTokenUI.UpdateUI(CrisisTokenManager.Instance.GetTotalCrisisTokens());
+} 
 
 }
