@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System;
 public class SymbolPanelUI : MonoBehaviour
 {
+    public HeroActionHandler actionHandler;
     [Header("Kontenery (ustaw w Inspectorze)")]
     public Transform currentContainer;
     public Transform previousContainer;
@@ -15,6 +16,12 @@ public class SymbolPanelUI : MonoBehaviour
 
     [Header("Mapowanie ID → Sprite")]
     public List<SymbolEntry> symbolEntries;
+    private Button lastClickedButton;
+    private string lastClickedSymbolId;
+    private bool symbolActionInProgress = false;
+    
+    private List<GameObject> activeSymbolButtons = new();
+
 
     Dictionary<string, Sprite> lookup;
 
@@ -37,10 +44,12 @@ public Image currentlySelectedImage;
     }
 
     // 1) Bieżące symbole
+
     public void ShowCurrentSymbols(List<string> symbols)
     {
+        currentSymbolsList = new List<string>(symbols);
         Clear(currentContainer);
-        foreach(var id in symbols)
+        foreach (var id in symbols)
             InstantiateIcon(currentContainer, id);
         UpdateCrisisTokens();
     }
@@ -92,28 +101,33 @@ void InstantiateIcon(Transform parent, string id)
         return;
     }
 
-    // 1) Instancja
     var go = Instantiate(symbolIconPrefab, parent);
+    activeSymbolButtons.Add(go); // ← zapamiętaj button
 
-    // 2) Podmień obrazek
     var img = go.GetComponent<Image>();
     img.sprite = sprite;
 
-    // 3) Dodaj Button.onClick
     var btn = go.GetComponent<Button>();
     if (btn != null)
     {
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(() =>
         {
-            // 3a) Ustaw sprite w panelu „CurrentlySelectedSymbol”
+            if (lastClickedButton != null && lastClickedButton != btn)
+                lastClickedButton.interactable = true;
+
+            lastClickedButton = btn;
+            lastClickedSymbolId = id;
+
             currentlySelectedImage.sprite = sprite;
             currentlySelectedImage.gameObject.SetActive(true);
-            // 3b) (Opcjonalnie) wyślij event dalej
+
             onSymbolClicked?.Invoke(id);
+            actionHandler?.HandleAction(id, go); // ← przekaż button
         });
     }
 }
+
 
 
     void Clear(Transform t)
@@ -143,5 +157,63 @@ private void UpdateCrisisTokens()
     if (crisisTokenUI != null)
         crisisTokenUI.UpdateUI(CrisisTokenManager.Instance.GetTotalCrisisTokens());
 } 
+
+private List<string> currentSymbolsList = new();
+
+
+public void ConsumeAndRemoveSymbol(string id)
+{
+    int index = currentSymbolsList.IndexOf(id);
+    if (index != -1)
+    {
+        currentSymbolsList.RemoveAt(index);
+        Clear(currentContainer);
+
+        foreach (var symbol in currentSymbolsList)
+            InstantiateIcon(currentContainer, symbol);
+
+        if (lastClickedSymbolId == id)
+        {
+            lastClickedButton = null;
+            lastClickedSymbolId = null;
+        }
+
+        ClearSelectedSymbol();
+    }
+}
+
+
+
+public void ReactivateLastClickedSymbol()
+{
+    if (lastClickedButton != null)
+    {
+        lastClickedButton.interactable = true;
+        lastClickedButton = null;
+        lastClickedSymbolId = null;
+    }
+}
+    public void FinishSymbolAction(string id)
+{
+    symbolActionInProgress = false;
+
+    if (currentSymbolsList.Contains(id))
+    {
+        currentSymbolsList.Remove(id);
+        RefreshSymbolUI();
+    }
+
+    lastClickedButton = null;
+    lastClickedSymbolId = null;
+    ClearSelectedSymbol();
+}
+private void RefreshSymbolUI()
+{
+    Clear(currentContainer);
+    foreach (var id in currentSymbolsList)
+        InstantiateIcon(currentContainer, id);
+}
+
+
 
 }

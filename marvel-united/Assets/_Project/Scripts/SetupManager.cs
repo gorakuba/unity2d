@@ -11,6 +11,9 @@ public class SetupManager : MonoBehaviour
     public static HeroController hero1Controller;
     public static HeroController hero2Controller;
     public static VillainController villainController;
+
+    [Header("Hero Movement System")]
+    public HeroMovementManager movementManager;
     
 
     private void Awake()
@@ -35,6 +38,16 @@ public class SetupManager : MonoBehaviour
         hero1Controller = SpawnHero(GameManager.Instance.playerOneHero, slots.heroSlot1, false);
         hero2Controller = SpawnHero(GameManager.Instance.playerTwoHero, slots.heroSlot2, true);
         villainController = SpawnVillain(GameManager.Instance.selectedVillain, slots.villainSlot);
+
+        if (movementManager != null)
+        {
+            movementManager.playerOneObject = hero1Controller.transform;
+            movementManager.playerTwoObject = hero2Controller.transform;
+        }
+        else
+        {
+            Debug.LogError("SetupManager: Brakuje referencji do HeroMovementManager!");
+        }
     }
 
     private HeroController SpawnHero(string heroId, Transform slot, bool isPlayerTwo)

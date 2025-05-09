@@ -99,6 +99,7 @@ public class TurnManager : MonoBehaviour
     {
         GamePhase currentPhase = GamePhase.VillainTurn;
         nextPlayer = 1;
+        GameManager.Instance.CurrentPlayerIndex = nextPlayer;
         playerTurnsCounter = 0;
 
         while (true)
@@ -126,6 +127,7 @@ public class TurnManager : MonoBehaviour
                 {
                     nextPlayer = nextPlayer == 1 ? 2 : 1;
                     currentPhase = nextPlayer == 1 ? GamePhase.Player1Turn : GamePhase.Player2Turn;
+                    GameManager.Instance.CurrentPlayerIndex = nextPlayer;
                 }
             }
         }

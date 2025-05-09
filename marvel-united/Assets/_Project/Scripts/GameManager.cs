@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [HideInInspector]
+    public int CurrentPlayerIndex = 1;
     public static GameManager Instance;
 
     [Header("Wybrane postacie")]

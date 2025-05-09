@@ -130,6 +130,20 @@ public class LocationManager : MonoBehaviour
 
         // Lokacje gotowe
         OnLocationsReady?.Invoke();
+        for (int i = 0; i < spawnedLocations.Count; i++)
+        {
+            var ctrl = spawnedLocations[i].GetComponent<LocationController>();
+            if (ctrl == null) continue;
+
+            int prev = (i - 1 + spawnedLocations.Count) % spawnedLocations.Count;
+            int next = (i + 1) % spawnedLocations.Count;
+
+            ctrl.neighbors = new List<LocationController>
+            {
+                spawnedLocations[prev].GetComponent<LocationController>(),
+                spawnedLocations[next].GetComponent<LocationController>()
+            };
+        }
 
         // Start spawn żetonów
         StartCoroutine(SpawnAllTokens());
