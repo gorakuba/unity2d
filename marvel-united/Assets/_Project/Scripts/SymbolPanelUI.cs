@@ -18,7 +18,6 @@ public class SymbolPanelUI : MonoBehaviour
     public List<SymbolEntry> symbolEntries;
     private Button lastClickedButton;
     private string lastClickedSymbolId;
-    private bool symbolActionInProgress = false;
     
     private List<GameObject> activeSymbolButtons = new();
 
@@ -34,6 +33,7 @@ public Image currentlySelectedImage;
 
     // jeżeli chcesz reagować w TurnManagerze
     public event Action<string> onSymbolClicked;
+    private List<string> currentSymbolsList = new();
     void Awake()
     {
         // zbuduj słownik do szybkiego lookup
@@ -157,63 +157,5 @@ private void UpdateCrisisTokens()
     if (crisisTokenUI != null)
         crisisTokenUI.UpdateUI(CrisisTokenManager.Instance.GetTotalCrisisTokens());
 } 
-
-private List<string> currentSymbolsList = new();
-
-
-public void ConsumeAndRemoveSymbol(string id)
-{
-    int index = currentSymbolsList.IndexOf(id);
-    if (index != -1)
-    {
-        currentSymbolsList.RemoveAt(index);
-        Clear(currentContainer);
-
-        foreach (var symbol in currentSymbolsList)
-            InstantiateIcon(currentContainer, symbol);
-
-        if (lastClickedSymbolId == id)
-        {
-            lastClickedButton = null;
-            lastClickedSymbolId = null;
-        }
-
-        ClearSelectedSymbol();
-    }
-}
-
-
-
-public void ReactivateLastClickedSymbol()
-{
-    if (lastClickedButton != null)
-    {
-        lastClickedButton.interactable = true;
-        lastClickedButton = null;
-        lastClickedSymbolId = null;
-    }
-}
-    public void FinishSymbolAction(string id)
-{
-    symbolActionInProgress = false;
-
-    if (currentSymbolsList.Contains(id))
-    {
-        currentSymbolsList.Remove(id);
-        RefreshSymbolUI();
-    }
-
-    lastClickedButton = null;
-    lastClickedSymbolId = null;
-    ClearSelectedSymbol();
-}
-private void RefreshSymbolUI()
-{
-    Clear(currentContainer);
-    foreach (var id in currentSymbolsList)
-        InstantiateIcon(currentContainer, id);
-}
-
-
 
 }

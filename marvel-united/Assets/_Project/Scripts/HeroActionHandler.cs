@@ -7,8 +7,8 @@ public class HeroActionHandler : MonoBehaviour
 
     public void HandleAction(string symbolId, GameObject symbolButton)
     {
-        // Odblokuj poprzedni przycisk, jeśli kliknięto inny
-        symbolPanelUI.ReactivateLastClickedSymbol();
+
+        movementManager.CancelHeroMovement();
 
         switch (symbolId.ToLower())
         {

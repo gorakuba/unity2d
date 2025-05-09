@@ -70,4 +70,12 @@ public class HeroMovementManager : MonoBehaviour
             }
         }
     }
+    public void CancelHeroMovement()
+    {
+        if (currentLocation == null) return;
+
+        foreach (var neighbor in currentLocation.neighbors)
+            neighbor.DisableMoveButton();
+    }
+
 }
