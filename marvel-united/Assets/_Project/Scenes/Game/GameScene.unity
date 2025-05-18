@@ -7173,6 +7173,10 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: f4322b67dc1ff4b4d85e7d84659cf011, type: 3}
   - id: Wild
     sprite: {fileID: 21300000, guid: a3ad92286243a034dba1e1313421aed2, type: 3}
+  moveSymbolPrefab: {fileID: 2293238289568129257, guid: 5d64f1f397db4564e8b77efc2cd73de1, type: 3}
+  attackSymbolPrefab: {fileID: 6937918514642934543, guid: 9bf5e449483e28243851ac6b4f4b4d2b, type: 3}
+  heroicSymbolPrefab: {fileID: 4103869682229363191, guid: a3f14890373562744ac3eb12833ba266, type: 3}
+  wildSymbolPrefab: {fileID: 1307029696469039459, guid: 5c237f05c6e397143a360efede0d97b3, type: 3}
   crisisTokenUI: {fileID: 1886970427}
   currentlySelectedImage: {fileID: 223987808}
 --- !u!1 &988636206 stripped
@@ -8635,6 +8639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementManager: {fileID: 1088304248}
   symbolPanelUI: {fileID: 979912876}
+  missionTokenSlot: {fileID: 0}
 --- !u!4 &1088304247
 Transform:
   m_ObjectHideFlags: 0

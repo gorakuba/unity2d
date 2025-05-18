@@ -61,12 +61,12 @@
                 "on_stand_effect":true,
                 "on_stand_ability":"Redskull_threat_03",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
                 "special":false,
                 "special_ability":""
             },
@@ -99,12 +99,12 @@
                 "on_stand_effect":true,
                 "on_stand_ability":"Redskull_threat_05",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
                 "special":false,
                 "special_ability":""
             },
@@ -120,12 +120,12 @@
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
                 "special":true,
                 "special_ability":"Redskull_threat_06"
             }

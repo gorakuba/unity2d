@@ -77,5 +77,26 @@ public class HeroMovementManager : MonoBehaviour
         foreach (var neighbor in currentLocation.neighbors)
             neighbor.DisableMoveButton();
     }
+        public LocationController GetCurrentLocation()
+        {
+            var slot = playerIndex == 1
+                ? GameManager.Instance.locationManager.characterSlots.heroSlot1
+                : GameManager.Instance.locationManager.characterSlots.heroSlot2;
+
+            foreach (var loc in GameManager.Instance.locationManager.LocationRoots)
+            {
+                var ctrl = loc.GetComponent<LocationController>();
+                if (ctrl == null) continue;
+
+                var heroSlot = ctrl.GetHeroSlot(playerIndex);
+                if (heroSlot == slot)
+                    return ctrl;
+            }
+
+            Debug.LogWarning("GetCurrentLocation: nie znaleziono lokacji dla aktywnego gracza!");
+            return null;
+        }
+
+
 
 }

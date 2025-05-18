@@ -112,6 +112,7 @@ public class TurnManager : MonoBehaviour
 
                 nextPlayer = lastPlayerBeforeVillainTurn == 1 ? 2 : 1;
                 currentPhase = nextPlayer == 1 ? GamePhase.Player1Turn : GamePhase.Player2Turn;
+                GameManager.Instance.CurrentPlayerIndex = nextPlayer;
                 playerTurnsCounter = 0;
             }
             else

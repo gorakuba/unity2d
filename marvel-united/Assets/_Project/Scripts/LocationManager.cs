@@ -51,6 +51,7 @@ public class LocationManager : MonoBehaviour
     public event System.Action OnLocationsAndTokensReady;
 
     public IReadOnlyList<Transform> LocationRoots => spawnedLocationTransforms;
+    
 
     public IReadOnlyList<Transform> VillainSlots =>
         spawnedLocationTransforms
@@ -171,7 +172,7 @@ public class LocationManager : MonoBehaviour
                          ? civilianTokenPrefab
                          : thugTokenPrefab;
 
-            if (slot != null && prefab != null)
+           if (slot != null && prefab != null)
             {
                 var tok = Instantiate(prefab, slot);
                 tok.transform.localPosition = Vector3.zero;

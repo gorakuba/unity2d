@@ -21,6 +21,12 @@ public class SymbolPanelUI : MonoBehaviour
     
     private List<GameObject> activeSymbolButtons = new();
 
+    [Header("Prefaby symboli (do spawnowania np. na kartach)")]
+    public GameObject moveSymbolPrefab;
+    public GameObject attackSymbolPrefab;
+    public GameObject heroicSymbolPrefab;
+    public GameObject wildSymbolPrefab;
+
 
     Dictionary<string, Sprite> lookup;
 
@@ -113,9 +119,7 @@ void InstantiateIcon(Transform parent, string id)
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(() =>
         {
-            if (lastClickedButton != null && lastClickedButton != btn)
-                lastClickedButton.interactable = true;
-
+            Debug.Log($"[SymbolPanelUI] Kliknięto symbol: {id} | Button={btn.gameObject.name}");
             lastClickedButton = btn;
             lastClickedSymbolId = id;
 
@@ -123,10 +127,12 @@ void InstantiateIcon(Transform parent, string id)
             currentlySelectedImage.gameObject.SetActive(true);
 
             onSymbolClicked?.Invoke(id);
-            actionHandler?.HandleAction(id, go); // ← przekaż button
+            actionHandler?.HandleAction(id, btn.gameObject); // 🧠 <-- ważne
         });
+
     }
 }
+
 
 
 
@@ -157,5 +163,31 @@ private void UpdateCrisisTokens()
     if (crisisTokenUI != null)
         crisisTokenUI.UpdateUI(CrisisTokenManager.Instance.GetTotalCrisisTokens());
 } 
+public void RemoveCurrentSymbol(string id)
+{
+    int index = currentSymbolsList.IndexOf(id);
+    if (index != -1)
+    {
+        currentSymbolsList.RemoveAt(index);
+        Clear(currentContainer);
+        foreach (var sym in currentSymbolsList)
+            InstantiateIcon(currentContainer, sym);
+
+        ClearSelectedSymbol();
+    }
+}
+public GameObject GetSymbolPrefab(string id)
+{
+    // Przykład mapowania symbolu na prefab
+    return id switch
+    {
+        "move" => moveSymbolPrefab,
+        "attack" => attackSymbolPrefab,
+        "heroic" => heroicSymbolPrefab,
+        "wild" => wildSymbolPrefab,
+        _ => null
+    };
+}
+
 
 }
