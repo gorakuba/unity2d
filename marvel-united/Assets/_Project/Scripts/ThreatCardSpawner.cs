@@ -15,16 +15,11 @@ public class ThreatCardSpawner : MonoBehaviour
 
     private void Awake()
     {
-        // Używamy w pełni kwalifikowanej nazwy, żeby uniknąć kolizji System.Object vs UnityEngine.Object
         _locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
         if (_locMan == null)
-        {
             Debug.LogError("ThreatCardSpawner: nie znalazłem LocationManager!");
-        }
         else
-        {
             _locMan.OnLocationsAndTokensReady += () => StartCoroutine(DelayedThreatSpawn());
-        }
     }
 
     private void OnDestroy()
@@ -56,6 +51,7 @@ public class ThreatCardSpawner : MonoBehaviour
             return;
         }
 
+        // 1) Wczytujemy i losujemy 6 threatów z JSONa
         var rootData = JsonUtility.FromJson<VillainsRoot>(villainJson.text);
         var villain  = rootData.villains.FirstOrDefault(v => v.id == villainId);
         if (villain == null)
@@ -64,8 +60,12 @@ public class ThreatCardSpawner : MonoBehaviour
             return;
         }
 
-        var threats = villain.threats.OrderBy(x => UnityEngine.Random.value).Take(6).ToList();
+        var threats = villain.threats
+                             .OrderBy(_ => UnityEngine.Random.value)
+                             .Take(6)
+                             .ToList();
 
+        // 2) Czyścimy każdy ThreatCardSlot
         var roots = _locMan.LocationRoots;
         foreach (var root in roots)
         {
@@ -75,6 +75,7 @@ public class ThreatCardSpawner : MonoBehaviour
                 Destroy(slot.GetChild(i).gameObject);
         }
 
+        // 3) Instancjonujemy i przypinamy
         for (int i = 0; i < threats.Count && i < roots.Count; i++)
         {
             var threat = threats[i];
@@ -82,19 +83,33 @@ public class ThreatCardSpawner : MonoBehaviour
             var slot   = FindDeepChild(root, "ThreatCardSlot");
             if (slot == null) continue;
 
+            // a) Instantiate prefab karty
             var go = Instantiate(threatCardPrefab, slot, false);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
 
-            var inst = go.GetComponent<ThreatCardInstance>() ?? go.AddComponent<ThreatCardInstance>();
+            // b) Configurujemy ThreatCardInstance
+            var inst = go.GetComponent<ThreatCardInstance>()
+                       ?? go.AddComponent<ThreatCardInstance>();
             inst.data             = threat;
             inst.data.BuildDictionaries();
             inst.assignedLocation = root.gameObject;
 
-            var locCtrl = root.GetComponent<LocationController>();
+            // c) Przypinamy do LocationController
+            var locCtrl = root.GetComponentInChildren<LocationController>();
             if (locCtrl != null)
-                locCtrl.threatInstance = inst;
+                locCtrl.AssignThreatCard(inst);
+            else
+                Debug.LogWarning($"ThreatCardSpawner: brakuje LocationController w {root.name}");
 
+            // d) Przypinamy też do prostego Location (jeśli używasz tej klasy)
+            var locComp = root.GetComponentInChildren<Location>();
+            if (locComp != null)
+                locComp.AssignThreatCard(inst);
+            else
+                Debug.LogWarning($"ThreatCardSpawner: brakuje Location w {root.name}");
+
+            // e) Ustawiamy tekstury front/back
             var disp = go.GetComponent<CardDisplay>();
             if (disp != null)
             {
@@ -102,9 +117,13 @@ public class ThreatCardSpawner : MonoBehaviour
                 disp.backTexture  = textureDatabase.GetBackTexture(villainId);
             }
 
-            int parsedHp;
-            if (threat.minion && int.TryParse(threat.minion_health, out parsedHp) && parsedHp > 0)
-                StartCoroutine(SpawnMinionTokens(go.transform, parsedHp));
+            // f) Spawn tokenów minionów (jeśli są)
+            if (threat.minion
+                && int.TryParse(threat.minion_health, out int hp)
+                && hp > 0)
+            {
+                StartCoroutine(SpawnMinionTokens(go.transform, hp));
+            }
         }
     }
 

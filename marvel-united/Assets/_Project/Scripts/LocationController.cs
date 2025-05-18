@@ -7,16 +7,14 @@ public class LocationController : MonoBehaviour
     public List<LocationController> neighbors;
     public Button moveButton;
     public GameObject moveParticles;
-    private System.Action<LocationController> onMoveCallback;
 
     public Button heroicButton;
-    public ThreatCardInstance threatInstance;
     public Button threatCardButton;
 
-    private string pendingSymbolId;
-    private GameObject pendingSymbolPrefab;
-    private GameObject pendingSymbolUI;
+    // Tu przechowujemy referencję do aktualnej karty threat
+    public ThreatCardInstance threatInstance;
 
+    private System.Action<LocationController> onMoveCallback;
 
     public void EnableMoveButton(System.Action<LocationController> callback)
     {
@@ -44,10 +42,6 @@ public class LocationController : MonoBehaviour
     public void EnableHeroicButton(System.Action onClick)
     {
         if (heroicButton == null) return;
-
-        heroicButton.transform.localPosition = Vector3.zero;
-        heroicButton.gameObject.SetActive(true);
-        heroicButton.transform.localPosition = Vector3.zero;
         heroicButton.gameObject.SetActive(true);
         heroicButton.onClick.RemoveAllListeners();
         heroicButton.onClick.AddListener(() =>
@@ -62,28 +56,8 @@ public class LocationController : MonoBehaviour
         return CountCivillians() > 0;
     }
 
-public GameObject RemoveFirstCivillian()
-{
-    for (int i = 0; i <= 4; i++)
+    public GameObject RemoveFirstCivillian()
     {
-        var slot = transform.Find($"Slot_{i}");
-        if (slot != null && slot.childCount > 0)
-        {
-            var token = slot.GetChild(0).gameObject;
-            if (token.name.Contains("Civillian"))
-            {
-                // zamiast Destroy(token);
-                token.transform.SetParent(null);
-                return token;
-            }
-        }
-    }
-    return null;
-}
-
-    public int CountCivillians()
-    {
-        int count = 0;
         for (int i = 0; i <= 4; i++)
         {
             var slot = transform.Find($"Slot_{i}");
@@ -91,8 +65,23 @@ public GameObject RemoveFirstCivillian()
             {
                 var token = slot.GetChild(0).gameObject;
                 if (token.name.Contains("Civillian"))
-                    count++;
+                {
+                    token.transform.SetParent(null);
+                    return token;
+                }
             }
+        }
+        return null;
+    }
+
+    public int CountCivillians()
+    {
+        int count = 0;
+        for (int i = 0; i <= 4; i++)
+        {
+            var slot = transform.Find($"Slot_{i}");
+            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
+                count++;
         }
         return count;
     }
@@ -102,35 +91,42 @@ public GameObject RemoveFirstCivillian()
         for (int i = 0; i <= 4; i++)
         {
             var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0)
-            {
-                var token = slot.GetChild(0).gameObject;
-                if (token.name.Contains("Civillian"))
-                    return slot;
-            }
+            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
+                return slot;
         }
         return null;
     }
-public void EnableThreatCardButton(string symbolId, GameObject symbolPrefab, ThreatCardInstance threat, GameObject symbolButton)
-{
-    if (threatCardButton == null)
+
+    /// <summary>
+    /// Wywoływane z ThreatCardSpawner, przypisuje instancję threat do tej lokacji
+    /// </summary>
+    public void AssignThreatCard(ThreatCardInstance card)
     {
-        Debug.LogError("❌ ThreatCardButton nie przypisany w inspektorze!");
-        return;
+        threatInstance = card;
+        card.assignedLocation = this.gameObject;
     }
 
-    threatCardButton.gameObject.SetActive(true);
-    threatCardButton.onClick.RemoveAllListeners();
-    threatCardButton.onClick.AddListener(() =>
+    public void EnableThreatCardButton(string symbolId,
+                                       GameObject symbolPrefab,
+                                       ThreatCardInstance threat,
+                                       GameObject symbolButton)
     {
-        threat.TryPlaceSymbol(symbolId, symbolPrefab);
-        threatCardButton.gameObject.SetActive(false);
-        Destroy(symbolButton);
-        Debug.Log($"🟡 Kliknięto ThreatCardButton → dodano {symbolId}");
-    });
+        if (threatCardButton == null)
+        {
+            Debug.LogError("❌ ThreatCardButton nie przypisany w inspektorze!");
+            return;
+        }
 
-    Debug.Log("✅ ThreatCardButton aktywowany");
-}
+        threatCardButton.gameObject.SetActive(true);
+        threatCardButton.onClick.RemoveAllListeners();
+        threatCardButton.onClick.AddListener(() =>
+        {
+            threat.TryPlaceSymbol(symbolId, symbolPrefab);
+            threatCardButton.gameObject.SetActive(false);
+            Destroy(symbolButton);
+            Debug.Log($"🟡 Kliknięto ThreatCardButton → dodano {symbolId}");
+        });
 
-
+        Debug.Log("✅ ThreatCardButton aktywowany");
+    }
 }
