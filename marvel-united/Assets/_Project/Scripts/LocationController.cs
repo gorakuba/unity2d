@@ -6,17 +6,27 @@ using UnityEngine.UI;
 public class LocationController : MonoBehaviour
 {
     public List<LocationController> neighbors;
+
+    // --- Move ---
     public Button moveButton;
     public GameObject moveParticles;
+    private Action<LocationController> onMoveCallback;
 
+    // --- Heroic & Attack & Threat ---
     public Button heroicButton;
-    public Button threatCardButton;
     public Button attackButton;
-
-    // Referencja do aktualnej karty Threat
+    public Button threatCardButton;
     public ThreatCardInstance threatInstance;
 
-    private Action<LocationController> onMoveCallback;
+    // --- Slot Helpers ---
+    // zakładamy, że wewnątrz prefabów są Transformy nazwy: "Hero_Slot_1", "Hero_Slot_2"
+    // oraz "Slot_0"..."Slot_4" do civilians i thugów
+
+    public Transform GetHeroSlot(int playerIndex)
+    {
+        // playerIndex = 1 lub 2
+        return transform.Find(playerIndex == 1 ? "Hero_Slot_1" : "Hero_Slot_2");
+    }
 
     public void EnableMoveButton(Action<LocationController> callback)
     {
@@ -36,16 +46,15 @@ public class LocationController : MonoBehaviour
         if (moveParticles != null) moveParticles.SetActive(false);
     }
 
-    public Transform GetHeroSlot(int playerIndex)
-    {
-        return transform.Find(playerIndex == 1 ? "Hero_Slot_1" : "Hero_Slot_2");
-    }
-
     // --- Heroic ---
 
     public void EnableHeroicButton(Action onClick)
     {
         if (heroicButton == null) return;
+        // wyłącz inne
+        DisableMoveButton();
+        DisableAttackButton();
+
         heroicButton.gameObject.SetActive(true);
         heroicButton.onClick.RemoveAllListeners();
         heroicButton.onClick.AddListener(() =>
@@ -55,12 +64,20 @@ public class LocationController : MonoBehaviour
         });
     }
 
+    public void DisableHeroicButton()
+    {
+        if (heroicButton == null) return;
+        heroicButton.onClick.RemoveAllListeners();
+        heroicButton.gameObject.SetActive(false);
+    }
+
     public bool HasCivillian()
     {
         for (int i = 0; i < 5; i++)
         {
             var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
+            if (slot != null && slot.childCount > 0 &&
+                slot.GetChild(0).name.Contains("Civillian"))
                 return true;
         }
         return false;
@@ -90,9 +107,12 @@ public class LocationController : MonoBehaviour
     {
         if (attackButton == null)
         {
-            Debug.LogError("❌ attackButton nie przypisany w LocationController!");
+            Debug.LogError("attackButton nie przypisany!");
             return;
         }
+        // wyłącz inne
+        DisableMoveButton();
+        DisableHeroicButton();
 
         attackButton.gameObject.SetActive(true);
         attackButton.onClick.RemoveAllListeners();
@@ -101,7 +121,13 @@ public class LocationController : MonoBehaviour
             onClick?.Invoke();
             attackButton.gameObject.SetActive(false);
         });
-        Debug.Log("✅ AttackButton aktywowany");
+    }
+
+    public void DisableAttackButton()
+    {
+        if (attackButton == null) return;
+        attackButton.onClick.RemoveAllListeners();
+        attackButton.gameObject.SetActive(false);
     }
 
     public bool HasThug()
@@ -109,7 +135,8 @@ public class LocationController : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Thug"))
+            if (slot != null && slot.childCount > 0 &&
+                slot.GetChild(0).name.Contains("Thug"))
                 return true;
         }
         return false;
@@ -141,14 +168,12 @@ public class LocationController : MonoBehaviour
         card.assignedLocation = gameObject;
     }
 
-    public void EnableThreatCardButton(string symbolId, GameObject symbolPrefab, ThreatCardInstance threat, GameObject symbolButton)
+    public void EnableThreatCardButton(string symbolId,
+                                       GameObject symbolPrefab,
+                                       ThreatCardInstance threat,
+                                       GameObject symbolButton)
     {
-        if (threatCardButton == null)
-        {
-            Debug.LogError("❌ ThreatCardButton nie przypisany w inspektorze!");
-            return;
-        }
-
+        if (threatCardButton == null) return;
         threatCardButton.gameObject.SetActive(true);
         threatCardButton.onClick.RemoveAllListeners();
         threatCardButton.onClick.AddListener(() =>
@@ -156,9 +181,6 @@ public class LocationController : MonoBehaviour
             threat.TryPlaceSymbol(symbolId, symbolPrefab);
             threatCardButton.gameObject.SetActive(false);
             Destroy(symbolButton);
-            Debug.Log($"🟡 Kliknięto ThreatCardButton → dodano {symbolId}");
         });
-
-        Debug.Log("✅ ThreatCardButton aktywowany");
     }
 }

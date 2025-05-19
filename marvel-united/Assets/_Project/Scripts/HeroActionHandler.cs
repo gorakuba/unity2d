@@ -1,52 +1,42 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class HeroActionHandler : MonoBehaviour
 {
     public HeroMovementManager movementManager;
-    public SymbolPanelUI symbolPanelUI;
+    public SymbolPanelUI       symbolPanelUI;
 
+    // Civillian tokens
     public List<Transform> missionTokenSlots;
     public GameObject      civilianTokenPrefab;
 
+    // Thug tokens
     public List<Transform> thugTokenSlots;
     public GameObject      thugTokenPrefab;
 
+    // Wild symbol panel
+    public GameObject wildSymbolPanel;
+    public Button     wildMoveButton;
+    public Button     wildHeroicButton;
+    public Button     wildAttackButton;
+
+    // Internal state for wild handling
+    private GameObject         pendingWildButton;
+    private LocationController pendingWildLocation;
+
     public void HandleAction(string symbolId, GameObject symbolButton)
     {
-        Debug.Log($"▶ [HandleAction] Kliknięto symbol: {symbolId}");
-
-        if (symbolButton == null)
-        {
-            Debug.LogError("❌ symbolButton jest null w HandleAction!");
-            return;
-        }
-
+        if (symbolButton == null) return;
         movementManager.CancelHeroMovement();
+
         var loc = movementManager.GetCurrentLocation();
-        if (loc == null)
-        {
-            Debug.LogError("❌ Nie znaleziono lokacji gracza");
-            return;
-        }
+        if (loc == null) return;
 
-        // ===== Threat Card =====
-        var threat = loc.threatInstance;
-        if (threat != null && threat.data != null && threat.data.required_symbols.ContainsKey(symbolId))
-        {
-            var prefab = symbolPanelUI.GetSymbolPrefab(symbolId);
-            loc.EnableThreatCardButton(symbolId, prefab, threat, symbolButton);
-            symbolPanelUI.ClearSelectedSymbol();
-            return;
-        }
-
-        // ===== Standard Symbols =====
         switch (symbolId.ToLower())
         {
             case "move":
+                wildSymbolPanel.SetActive(false);
                 movementManager.OnMoveCompleted = () =>
                 {
                     Destroy(symbolButton);
@@ -57,75 +47,54 @@ public class HeroActionHandler : MonoBehaviour
                 break;
 
             case "attack":
-                Debug.Log("⚔️ Atak!");
-                // nie ma Thug → symbol nie przepada, tylko ostrzeżenie
-                if (!loc.HasThug())
-                {
-                    Debug.LogWarning("🚫 Brak Thug na lokacji — symbol ataku pozostaje");
-                    break;
-                }
-                // włączamy przycisk potwierdzenia ataku
+                wildSymbolPanel.SetActive(false);
+                if (!loc.HasThug()) return;
+                DisableAllLocationButtons();
                 loc.EnableAttackButton(() =>
                 {
-                    // 1) ściągamy Thuga
                     var thug = loc.RemoveFirstThug();
-                    if (thug == null)
+                    if (thug != null)
                     {
-                        Debug.LogWarning("⚠️ Nie znaleziono Thug do zniszczenia");
-                        return;
-                    }
-                    // 2) przenosimy Thuga do pierwszego wolnego slotu
-                    foreach (var slot in thugTokenSlots)
-                    {
-                        if (slot != null && slot.childCount == 0)
+                        Vector3 ws = thug.transform.lossyScale;
+                        foreach (var slot in thugTokenSlots)
                         {
-                            var scale = thug.transform.lossyScale;
-                            thug.transform.SetParent(slot, false);
-                            thug.transform.localPosition = Vector3.zero;
-                            thug.transform.localRotation = Quaternion.identity;
-                            // zachowaj skalę
-                            var pScale = slot.lossyScale;
-                            thug.transform.localScale = new Vector3(
-                                scale.x / pScale.x,
-                                scale.y / pScale.y,
-                                scale.z / pScale.z
-                            );
-                            break;
+                            if (slot != null && slot.childCount == 0)
+                            {
+                                thug.transform.SetParent(slot, false);
+                                thug.transform.localPosition = Vector3.zero;
+                                thug.transform.localRotation = Quaternion.identity;
+                                Vector3 ps = slot.lossyScale;
+                                thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                break;
+                            }
                         }
                     }
-                    // 3) zużywamy symbol i odznaczamy
                     Destroy(symbolButton);
                     symbolPanelUI.ClearSelectedSymbol();
                 });
                 break;
 
             case "heroic":
-                Debug.Log("⭐ Akcja heroiczna!");
-                if (!loc.HasCivillian())
-                {
-                    Debug.LogWarning("🚫 Brak Civillian na lokacji — symbol heroic pozostaje");
-                    break;
-                }
+                wildSymbolPanel.SetActive(false);
+                if (!loc.HasCivillian()) return;
+                DisableAllLocationButtons();
                 loc.EnableHeroicButton(() =>
                 {
                     var civ = loc.RemoveFirstCivillian();
-                    if (civ == null) return;
-
-                    var scale = civ.transform.lossyScale;
-                    foreach (var slot in missionTokenSlots)
+                    if (civ != null)
                     {
-                        if (slot != null && slot.childCount == 0)
+                        Vector3 ws = civ.transform.lossyScale;
+                        foreach (var slot in missionTokenSlots)
                         {
-                            civ.transform.SetParent(slot, false);
-                            civ.transform.localPosition = Vector3.zero;
-                            civ.transform.localRotation = Quaternion.identity;
-                            var pScale = slot.lossyScale;
-                            civ.transform.localScale = new Vector3(
-                                scale.x / pScale.x,
-                                scale.y / pScale.y,
-                                scale.z / pScale.z
-                            );
-                            break;
+                            if (slot != null && slot.childCount == 0)
+                            {
+                                civ.transform.SetParent(slot, false);
+                                civ.transform.localPosition = Vector3.zero;
+                                civ.transform.localRotation = Quaternion.identity;
+                                Vector3 ps = slot.lossyScale;
+                                civ.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                break;
+                            }
                         }
                     }
                     Destroy(symbolButton);
@@ -134,13 +103,142 @@ public class HeroActionHandler : MonoBehaviour
                 break;
 
             case "wild":
-                Destroy(symbolButton);
-                symbolPanelUI.ClearSelectedSymbol();
-                break;
+                // zapamiętujemy dziki symbol i lokację
+                pendingWildButton   = symbolButton;
+                pendingWildLocation = loc;
 
-            default:
-                Debug.LogWarning($"❓ Nieznany symbol: {symbolId}");
+                // wyłączamy wszystkie przyciski na bieżącej lokacji
+                loc.DisableMoveButton();
+                loc.DisableHeroicButton();
+                loc.DisableAttackButton();
+
+                // otwieramy panel Wild
+                wildSymbolPanel.SetActive(true);
+
+                // resetujemy interaktywność przycisków wewnątrz panelu Wild
+                wildMoveButton.interactable   = true;
+                wildHeroicButton.interactable = true;
+                wildAttackButton.interactable = true;
+
+                // podłączamy callbacki
+                wildMoveButton.onClick.RemoveAllListeners();
+                wildHeroicButton.onClick.RemoveAllListeners();
+                wildAttackButton.onClick.RemoveAllListeners();
+
+                wildMoveButton.onClick.AddListener(OnWildMove);
+                wildHeroicButton.onClick.AddListener(OnWildHeroic);
+                wildAttackButton.onClick.AddListener(OnWildAttack);
                 break;
         }
     }
+
+    private void OnWildMove()
+    {
+        wildSymbolPanel.SetActive(false);
+        pendingWildLocation.DisableHeroicButton();
+        pendingWildLocation.DisableAttackButton();
+        movementManager.OnMoveCompleted = () =>
+        {
+            Destroy(pendingWildButton);
+            symbolPanelUI.ClearSelectedSymbol();
+            movementManager.OnMoveCompleted = null;
+        };
+        movementManager.PrepareHeroMovement();
+    }
+
+    private void OnWildHeroic()
+    {
+        wildSymbolPanel.SetActive(false);
+        // validation: tylko jeśli jest civillian
+        if (!pendingWildLocation.HasCivillian())
+        {
+            Debug.LogWarning("🚫 Brak Civillian — Wild Heroic anulowany");
+            //Destroy(pendingWildButton);
+            //symbolPanelUI.ClearSelectedSymbol();
+            return;
+        }
+
+        pendingWildLocation.DisableMoveButton();
+        pendingWildLocation.DisableAttackButton();
+
+        pendingWildLocation.EnableHeroicButton(() =>
+        {
+            var civ = pendingWildLocation.RemoveFirstCivillian();
+            if (civ != null)
+            {
+                Vector3 ws = civ.transform.lossyScale;
+                foreach (var slot in missionTokenSlots)
+                {
+                    if (slot != null && slot.childCount == 0)
+                    {
+                        civ.transform.SetParent(slot, false);
+                        civ.transform.localPosition = Vector3.zero;
+                        civ.transform.localRotation = Quaternion.identity;
+                        Vector3 ps = slot.lossyScale;
+                        civ.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                        break;
+                    }
+                }
+            }
+            Destroy(pendingWildButton);
+            symbolPanelUI.ClearSelectedSymbol();
+        });
+    }
+
+    private void OnWildAttack()
+    {
+        wildSymbolPanel.SetActive(false);
+        // validation: tylko jeśli jest thug
+        if (!pendingWildLocation.HasThug())
+        {
+            Debug.LogWarning("🚫 Brak Thug — Wild Attack anulowany");
+            //Destroy(pendingWildButton);
+            //symbolPanelUI.ClearSelectedSymbol();
+            return;
+        }
+
+        pendingWildLocation.DisableMoveButton();
+        pendingWildLocation.DisableHeroicButton();
+
+        pendingWildLocation.EnableAttackButton(() =>
+        {
+            var thug = pendingWildLocation.RemoveFirstThug();
+            if (thug != null)
+            {
+                Vector3 ws = thug.transform.lossyScale;
+                foreach (var slot in thugTokenSlots)
+                {
+                    if (slot != null && slot.childCount == 0)
+                    {
+                        thug.transform.SetParent(slot, false);
+                        thug.transform.localPosition = Vector3.zero;
+                        thug.transform.localRotation = Quaternion.identity;
+                        Vector3 ps = slot.lossyScale;
+                        thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                        break;
+                    }
+                }
+            }
+            Destroy(pendingWildButton);
+            symbolPanelUI.ClearSelectedSymbol();
+        });
+    }
+
+    /// <summary>
+    /// Wyłącza Move, Heroic, Attack na każdej lokacji w scenie.
+    /// </summary>
+private void DisableAllLocationButtons()
+{
+    var all = Object.FindObjectsByType<LocationController>(
+        FindObjectsInactive.Include,
+        FindObjectsSortMode.None
+    );
+    foreach (var lc in all)
+    {
+        lc.DisableMoveButton();
+        lc.DisableHeroicButton();
+        lc.DisableAttackButton();
+    }
+}
+
 }
