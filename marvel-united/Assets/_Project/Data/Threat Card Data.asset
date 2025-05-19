@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c5f4b74f687c1441bef467ce472950d, type: 3}
   m_Name: Threat Card Data
   m_EditorClassIdentifier: 
-  id: 
-  name: 
-  effect: 
-  removeCondition: 
+  id: threat_1
+  cardName: 
+  effect: Heroes starting their turn in this Location take 1 Crisis token.
+  removeCondition: Beat Bob agent of Hydra
   toRemove: 0
   requiredSymbols: []

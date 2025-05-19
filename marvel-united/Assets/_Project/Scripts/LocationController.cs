@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,13 +11,14 @@ public class LocationController : MonoBehaviour
 
     public Button heroicButton;
     public Button threatCardButton;
+    public Button attackButton;
 
-    // Tu przechowujemy referencję do aktualnej karty threat
+    // Referencja do aktualnej karty Threat
     public ThreatCardInstance threatInstance;
 
-    private System.Action<LocationController> onMoveCallback;
+    private Action<LocationController> onMoveCallback;
 
-    public void EnableMoveButton(System.Action<LocationController> callback)
+    public void EnableMoveButton(Action<LocationController> callback)
     {
         if (moveButton == null) return;
         moveButton.gameObject.SetActive(true);
@@ -39,7 +41,9 @@ public class LocationController : MonoBehaviour
         return transform.Find(playerIndex == 1 ? "Hero_Slot_1" : "Hero_Slot_2");
     }
 
-    public void EnableHeroicButton(System.Action onClick)
+    // --- Heroic ---
+
+    public void EnableHeroicButton(Action onClick)
     {
         if (heroicButton == null) return;
         heroicButton.gameObject.SetActive(true);
@@ -53,12 +57,18 @@ public class LocationController : MonoBehaviour
 
     public bool HasCivillian()
     {
-        return CountCivillians() > 0;
+        for (int i = 0; i < 5; i++)
+        {
+            var slot = transform.Find($"Slot_{i}");
+            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
+                return true;
+        }
+        return false;
     }
 
     public GameObject RemoveFirstCivillian()
     {
-        for (int i = 0; i <= 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             var slot = transform.Find($"Slot_{i}");
             if (slot != null && slot.childCount > 0)
@@ -74,42 +84,64 @@ public class LocationController : MonoBehaviour
         return null;
     }
 
-    public int CountCivillians()
+    // --- Attack ---
+
+    public void EnableAttackButton(Action onClick)
     {
-        int count = 0;
-        for (int i = 0; i <= 4; i++)
+        if (attackButton == null)
         {
-            var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
-                count++;
+            Debug.LogError("❌ attackButton nie przypisany w LocationController!");
+            return;
         }
-        return count;
+
+        attackButton.gameObject.SetActive(true);
+        attackButton.onClick.RemoveAllListeners();
+        attackButton.onClick.AddListener(() =>
+        {
+            onClick?.Invoke();
+            attackButton.gameObject.SetActive(false);
+        });
+        Debug.Log("✅ AttackButton aktywowany");
     }
 
-    public Transform GetFirstCivillianSlot()
+    public bool HasThug()
     {
-        for (int i = 0; i <= 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Civillian"))
-                return slot;
+            if (slot != null && slot.childCount > 0 && slot.GetChild(0).name.Contains("Thug"))
+                return true;
+        }
+        return false;
+    }
+
+    public GameObject RemoveFirstThug()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var slot = transform.Find($"Slot_{i}");
+            if (slot != null && slot.childCount > 0)
+            {
+                var token = slot.GetChild(0).gameObject;
+                if (token.name.Contains("Thug"))
+                {
+                    token.transform.SetParent(null);
+                    return token;
+                }
+            }
         }
         return null;
     }
 
-    /// <summary>
-    /// Wywoływane z ThreatCardSpawner, przypisuje instancję threat do tej lokacji
-    /// </summary>
+    // --- Threat Card ---
+
     public void AssignThreatCard(ThreatCardInstance card)
     {
         threatInstance = card;
-        card.assignedLocation = this.gameObject;
+        card.assignedLocation = gameObject;
     }
 
-    public void EnableThreatCardButton(string symbolId,
-                                       GameObject symbolPrefab,
-                                       ThreatCardInstance threat,
-                                       GameObject symbolButton)
+    public void EnableThreatCardButton(string symbolId, GameObject symbolPrefab, ThreatCardInstance threat, GameObject symbolButton)
     {
         if (threatCardButton == null)
         {
