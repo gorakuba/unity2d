@@ -7,32 +7,28 @@ public class LocationController : MonoBehaviour
 {
     public List<LocationController> neighbors;
 
-    // --- Move ---
+    // — MOVE —
     public Button moveButton;
-    public GameObject moveParticles;
     private Action<LocationController> onMoveCallback;
 
-    // --- Heroic & Attack & Threat ---
+    // — HEROIC / ATTACK / THREAT —
     public Button heroicButton;
     public Button attackButton;
     public Button threatCardButton;
     public ThreatCardInstance threatInstance;
 
-    // --- Slot Helpers ---
-    // zakładamy, że wewnątrz prefabów są Transformy nazwy: "Hero_Slot_1", "Hero_Slot_2"
-    // oraz "Slot_0"..."Slot_4" do civilians i thugów
-
+    // — SLOTY —
     public Transform GetHeroSlot(int playerIndex)
-    {
-        // playerIndex = 1 lub 2
-        return transform.Find(playerIndex == 1 ? "Hero_Slot_1" : "Hero_Slot_2");
-    }
+        => transform.Find(playerIndex == 1 ? "Hero_Slot_1" : "Hero_Slot_2");
 
+    // ================================
+    // MOVE
+    // ================================
     public void EnableMoveButton(Action<LocationController> callback)
     {
+        DisableAllActionButtons();
         if (moveButton == null) return;
         moveButton.gameObject.SetActive(true);
-        if (moveParticles != null) moveParticles.SetActive(true);
         onMoveCallback = callback;
         moveButton.onClick.RemoveAllListeners();
         moveButton.onClick.AddListener(() => onMoveCallback?.Invoke(this));
@@ -43,18 +39,15 @@ public class LocationController : MonoBehaviour
         if (moveButton == null) return;
         moveButton.onClick.RemoveAllListeners();
         moveButton.gameObject.SetActive(false);
-        if (moveParticles != null) moveParticles.SetActive(false);
     }
 
-    // --- Heroic ---
-
+    // ================================
+    // HEROIC
+    // ================================
     public void EnableHeroicButton(Action onClick)
     {
+        DisableAllActionButtons();
         if (heroicButton == null) return;
-        // wyłącz inne
-        DisableMoveButton();
-        DisableAttackButton();
-
         heroicButton.gameObject.SetActive(true);
         heroicButton.onClick.RemoveAllListeners();
         heroicButton.onClick.AddListener(() =>
@@ -71,49 +64,17 @@ public class LocationController : MonoBehaviour
         heroicButton.gameObject.SetActive(false);
     }
 
-    public bool HasCivillian()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 &&
-                slot.GetChild(0).name.Contains("Civillian"))
-                return true;
-        }
-        return false;
-    }
-
-    public GameObject RemoveFirstCivillian()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0)
-            {
-                var token = slot.GetChild(0).gameObject;
-                if (token.name.Contains("Civillian"))
-                {
-                    token.transform.SetParent(null);
-                    return token;
-                }
-            }
-        }
-        return null;
-    }
-
-    // --- Attack ---
-
+    // ================================
+    // ATTACK (ściąganie Thugów)
+    // ================================
     public void EnableAttackButton(Action onClick)
     {
+        DisableAllActionButtons();
         if (attackButton == null)
         {
             Debug.LogError("attackButton nie przypisany!");
             return;
         }
-        // wyłącz inne
-        DisableMoveButton();
-        DisableHeroicButton();
-
         attackButton.gameObject.SetActive(true);
         attackButton.onClick.RemoveAllListeners();
         attackButton.onClick.AddListener(() =>
@@ -130,49 +91,19 @@ public class LocationController : MonoBehaviour
         attackButton.gameObject.SetActive(false);
     }
 
-    public bool HasThug()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0 &&
-                slot.GetChild(0).name.Contains("Thug"))
-                return true;
-        }
-        return false;
-    }
-
-    public GameObject RemoveFirstThug()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            var slot = transform.Find($"Slot_{i}");
-            if (slot != null && slot.childCount > 0)
-            {
-                var token = slot.GetChild(0).gameObject;
-                if (token.name.Contains("Thug"))
-                {
-                    token.transform.SetParent(null);
-                    return token;
-                }
-            }
-        }
-        return null;
-    }
-
-    // --- Threat Card ---
-
+    // ================================
+    // THREAT CARD
+    // ================================
     public void AssignThreatCard(ThreatCardInstance card)
     {
         threatInstance = card;
         card.assignedLocation = gameObject;
     }
 
-    public void EnableThreatCardButton(string symbolId,
-                                       GameObject symbolPrefab,
-                                       ThreatCardInstance threat,
-                                       GameObject symbolButton)
+    public void EnableThreatCardButton(string symbolId, GameObject symbolPrefab,
+                                       ThreatCardInstance threat, GameObject symbolButton)
     {
+        DisableAllActionButtons();
         if (threatCardButton == null) return;
         threatCardButton.gameObject.SetActive(true);
         threatCardButton.onClick.RemoveAllListeners();
@@ -182,5 +113,90 @@ public class LocationController : MonoBehaviour
             threatCardButton.gameObject.SetActive(false);
             Destroy(symbolButton);
         });
+    }
+
+    // ================================
+    // TOKENS: Civilians & Thugs
+    // ================================
+    public bool HasCivillian()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var s = transform.Find($"Slot_{i}");
+            if (s != null && s.childCount > 0 && s.GetChild(0).name.Contains("Civillian"))
+                return true;
+        }
+        return false;
+    }
+
+    public GameObject RemoveFirstCivillian()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var s = transform.Find($"Slot_{i}");
+            if (s != null && s.childCount > 0)
+            {
+                var t = s.GetChild(0).gameObject;
+                if (t.name.Contains("Civillian"))
+                {
+                    t.transform.SetParent(null);
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public bool HasThug()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var s = transform.Find($"Slot_{i}");
+            if (s != null && s.childCount > 0 && s.GetChild(0).name.Contains("Thug"))
+                return true;
+        }
+        return false;
+    }
+
+    public GameObject RemoveFirstThug()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var s = transform.Find($"Slot_{i}");
+            if (s != null && s.childCount > 0)
+            {
+                var t = s.GetChild(0).gameObject;
+                if (t.name.Contains("Thug"))
+                {
+                    t.transform.SetParent(null);
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    // ================================
+    // VILLAIN DETECTION
+    // ================================
+    public bool HasVillain()
+    {
+        var slot = transform.Find("Villain_Slot");
+        return slot != null && slot.childCount > 0;
+    }
+
+    // ================================
+    // UTILITY
+    // ================================
+    /// <summary>
+    /// Wyłącza WSZYSTKIE przyciski akcji na tej lokacji.
+    /// </summary>
+    public void DisableAllActionButtons()
+    {
+        DisableMoveButton();
+        DisableHeroicButton();
+        DisableAttackButton();
+        if (threatCardButton != null)
+            threatCardButton.gameObject.SetActive(false);
     }
 }

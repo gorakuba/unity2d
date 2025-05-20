@@ -150,3 +150,5 @@ MonoBehaviour:
   visualRenderer: {fileID: 7655288268438475144}
   visualDatabase: {fileID: 11400000, guid: f6df83e8a14ee0f4ca40701effdd779d, type: 2}
   stepDuration: 0.3
+  villainJson: {fileID: 4900000, guid: 6e62bfe5cf6a7034e8d973cf3d85becd, type: 3}
+  villainHealth: 0

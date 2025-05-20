@@ -122,7 +122,7 @@ public class TurnManager : MonoBehaviour
                 playerTurnsCounter++;
 
                 lastPlayerBeforeVillainTurn = nextPlayer;
-                int maxPlayerTurns = missionManager.CompletedCount > 0 ? 2 : 3;
+                int maxPlayerTurns = missionManager.CompletedMissionsCount > 0 ? 2 : 3;
 
                 if (playerTurnsCounter >= maxPlayerTurns)
                     currentPhase = GamePhase.VillainTurn;

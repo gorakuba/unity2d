@@ -3,11 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class VillainsRoot
-{
-    public List<VillainData> villains;
-}
 
 public class BAMController : MonoBehaviour
 {
@@ -31,27 +26,6 @@ public class BAMController : MonoBehaviour
             Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
         }
     }
-}
-
-[Serializable]
-public class VillainData
-{
-    public string id;
-    public string name;
-    public string bam;
-
-    [Serializable]
-    public class HealthPerPlayers { public int _2; public int _3; public int _4; }
-    public HealthPerPlayers health_per_players;
-    public string bam_effect;
-    public string villainous_plot;
-    public bool additional_win_condition;
-    public string additional_win_condition_script;
-    public string overflow;
-    public List<ThreatCard> threats;
-    public List<VillainCard> cards;
-    public string imagePath;
-    public string backTexturePath;
 }
 
 [Serializable]

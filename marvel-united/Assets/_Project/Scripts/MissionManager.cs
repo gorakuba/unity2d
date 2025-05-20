@@ -3,58 +3,55 @@ using System.Linq;
 
 public class MissionManager : MonoBehaviour
 {
+    public static MissionManager Instance { get; private set; } 
     [Header("Rooty z prefabami misji")]
-    public Transform thugsMissionRoot;        // np. GameObject ThugsMission
-    public Transform threatMissionRoot;       // np. GameObject ThreatMission
-    public Transform civiliansMissionRoot;    // np. GameObject CivilliansMission
+    public Transform thugsMissionRoot;        // GameObject “ThugsMission”
+    public Transform threatMissionRoot;       // GameObject “ThreatMission”
+    public Transform civiliansMissionRoot;    // GameObject “CivilliansMission”
 
     [Header("Ile slotów w każdej misji")]
-    public int thugsSlotsCount = 9;
-    public int threatSlotsCount = 4;
-    public int civiliansSlotsCount = 9;
+    public int thugsSlotsCount      = 9;
+    public int threatSlotsCount     = 4;
+    public int civiliansSlotsCount  = 9;
 
     [HideInInspector] public bool thugsCompleted;
     [HideInInspector] public bool threatCompleted;
     [HideInInspector] public bool civiliansCompleted;
 
-    public int CompletedCount { get; private set; }
+    public int CompletedMissionsCount { get; private set; }
+
+    private int completed = 0;
 
     /// <summary>
     /// Wywołuj po każdej akcji gracza, żeby zaktualizować statusy misji.
     /// </summary>
     public void CheckMissions()
     {
-        // 1) ThugsMission
+
+
         if (!thugsCompleted && CountFilledSlots(thugsMissionRoot) >= thugsSlotsCount)
         {
             thugsCompleted = true;
-            CompletedCount++;
+            completed++;
             Debug.Log("🎉 ThugsMission completed!");
         }
-
-        // 2) ThreatMission
         if (!threatCompleted && CountFilledSlots(threatMissionRoot) >= threatSlotsCount)
         {
             threatCompleted = true;
-            CompletedCount++;
+            completed++;
             Debug.Log("🎉 ThreatMission completed!");
         }
-
-        // 3) CivilliansMission
         if (!civiliansCompleted && CountFilledSlots(civiliansMissionRoot) >= civiliansSlotsCount)
         {
             civiliansCompleted = true;
-            CompletedCount++;
+            completed++;
             Debug.Log("🎉 CivilliansMission completed!");
         }
 
-        // (opcjonalnie) feedback ile zostało zrobionych:
-        Debug.Log($"🚩 Missions done: {CompletedCount}/3");
+        CompletedMissionsCount = completed;
+        Debug.Log($"🚩 Missions done: {CompletedMissionsCount}/3");
     }
 
-    /// <summary>
-    /// Zlicza pod-transformy o nazwie „Slot_*” w parent, które mają childCount>0.
-    /// </summary>
     private int CountFilledSlots(Transform parent)
     {
         if (parent == null) return 0;
