@@ -70,6 +70,9 @@ public class TurnManager : MonoBehaviour
     private List<string> _pendingSelectedSymbols;
     private List<string> _lastSymbols;
     private VillainCard _currentVillainCard;
+    private bool missionBonusScheduled = false;
+    private bool pendingBonusP1 = false;
+    private bool pendingBonusP2 = false;
 
     // ============================================
     //               --- INIT ---
@@ -105,6 +108,12 @@ public class TurnManager : MonoBehaviour
 
         while (true)
         {
+
+            if (!missionBonusScheduled && missionManager.CompletedMissionsCount == 3)
+            {
+                missionBonusScheduled = true;
+                pendingBonusP1 = pendingBonusP2 = true;
+            }
             if (currentPhase == GamePhase.VillainTurn)
             {
                 yield return StartCoroutine(VillainTurnSequence());
@@ -225,6 +234,23 @@ public class TurnManager : MonoBehaviour
                 _cardMgr.playerOneHand.Add(drawn);
             else
                 _cardMgr.playerTwoHand.Add(drawn);
+        }
+
+        if (missionBonusScheduled)
+        {
+            if ((playerIndex == 1 && pendingBonusP1) ||
+                (playerIndex == 2 && pendingBonusP2))
+            {
+                var bonus = _cardMgr.DrawHeroCard(playerIndex);
+                if (bonus != null)
+                {
+                    if (playerIndex == 1) _cardMgr.playerOneHand.Add(bonus);
+                    else                   _cardMgr.playerTwoHand.Add(bonus);
+                }
+
+                if (playerIndex == 1) pendingBonusP1 = false;
+                else                   pendingBonusP2 = false;
+            }
         }
 
         string heroId = playerIndex == 1 ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
