@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class HeroActionHandler : MonoBehaviour
 {
+    public MissionManager missionManager;
     public HeroMovementManager movementManager;
     public SymbolPanelUI       symbolPanelUI;
 
@@ -42,6 +43,7 @@ public class HeroActionHandler : MonoBehaviour
                     Destroy(symbolButton);
                     symbolPanelUI.ClearSelectedSymbol();
                     movementManager.OnMoveCompleted = null;
+                    missionManager.CheckMissions();
                 };
                 movementManager.PrepareHeroMovement();
                 break;
@@ -64,13 +66,14 @@ public class HeroActionHandler : MonoBehaviour
                                 thug.transform.localPosition = Vector3.zero;
                                 thug.transform.localRotation = Quaternion.identity;
                                 Vector3 ps = slot.lossyScale;
-                                thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                thug.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                                 break;
                             }
                         }
                     }
                     Destroy(symbolButton);
                     symbolPanelUI.ClearSelectedSymbol();
+                    missionManager.CheckMissions();
                 });
                 break;
 
@@ -92,13 +95,14 @@ public class HeroActionHandler : MonoBehaviour
                                 civ.transform.localPosition = Vector3.zero;
                                 civ.transform.localRotation = Quaternion.identity;
                                 Vector3 ps = slot.lossyScale;
-                                civ.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                civ.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                                 break;
                             }
                         }
                     }
                     Destroy(symbolButton);
                     symbolPanelUI.ClearSelectedSymbol();
+                    missionManager.CheckMissions();
                 });
                 break;
 
@@ -142,6 +146,7 @@ public class HeroActionHandler : MonoBehaviour
             Destroy(pendingWildButton);
             symbolPanelUI.ClearSelectedSymbol();
             movementManager.OnMoveCompleted = null;
+            missionManager.CheckMissions();
         };
         movementManager.PrepareHeroMovement();
     }
@@ -175,13 +180,14 @@ public class HeroActionHandler : MonoBehaviour
                         civ.transform.localPosition = Vector3.zero;
                         civ.transform.localRotation = Quaternion.identity;
                         Vector3 ps = slot.lossyScale;
-                        civ.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                        civ.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                         break;
                     }
                 }
             }
             Destroy(pendingWildButton);
             symbolPanelUI.ClearSelectedSymbol();
+            missionManager.CheckMissions();
         });
     }
 
@@ -214,13 +220,14 @@ public class HeroActionHandler : MonoBehaviour
                         thug.transform.localPosition = Vector3.zero;
                         thug.transform.localRotation = Quaternion.identity;
                         Vector3 ps = slot.lossyScale;
-                        thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                        thug.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                         break;
                     }
                 }
             }
             Destroy(pendingWildButton);
             symbolPanelUI.ClearSelectedSymbol();
+            missionManager.CheckMissions();
         });
     }
 

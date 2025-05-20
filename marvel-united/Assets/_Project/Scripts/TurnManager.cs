@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
     // ============================================
     //               --- CONFIG ---
     // ============================================
+    public MissionManager missionManager;
 
     [Header("Symbol Panel UI")]
     public SymbolPanelUI symbolPanelUI;
@@ -121,8 +122,9 @@ public class TurnManager : MonoBehaviour
                 playerTurnsCounter++;
 
                 lastPlayerBeforeVillainTurn = nextPlayer;
+                int maxPlayerTurns = missionManager.CompletedCount > 0 ? 2 : 3;
 
-                if (playerTurnsCounter >= 3)
+                if (playerTurnsCounter >= maxPlayerTurns)
                     currentPhase = GamePhase.VillainTurn;
                 else
                 {
