@@ -20,7 +20,7 @@ public class MissionManager : MonoBehaviour
 
     public int CompletedMissionsCount { get; private set; }
 
-    private int completed = 0;
+    private int completed = 2;
 
     /// <summary>
     /// Wywołuj po każdej akcji gracza, żeby zaktualizować statusy misji.

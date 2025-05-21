@@ -283,7 +283,12 @@ public class VillainController : MonoBehaviour
     {
         CurrentHealth -= amount;
         Debug.Log($"Villain otrzymuje {amount} dmg → pozostało {CurrentHealth}");
+        for (int i = 0; i < amount; i++)
+    {
+        DashboardLoader.Instance.RemoveFirstHealthToken();
+    }
         if (CurrentHealth <= 0)
             Debug.Log("💀 Villain pokonany!");
+        
     }
 }
