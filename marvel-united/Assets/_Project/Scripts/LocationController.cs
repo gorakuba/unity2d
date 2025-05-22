@@ -193,10 +193,9 @@ public class LocationController : MonoBehaviour
     /// </summary>
     public void DisableAllActionButtons()
     {
-        DisableMoveButton();
-        DisableHeroicButton();
-        DisableAttackButton();
-        if (threatCardButton != null)
-            threatCardButton.gameObject.SetActive(false);
+        moveButton?.gameObject.SetActive(false);
+        heroicButton?.gameObject.SetActive(false);
+        attackButton?.gameObject.SetActive(false);
+        threatCardButton?.gameObject.SetActive(false);
     }
 }

@@ -268,7 +268,7 @@ MonoBehaviour:
   threatCardPrefab: {fileID: 3800158283944725106, guid: 12569c5df5bbe6649b0d1397c1668907, type: 3}
   tokenHealthPrefab: {fileID: 1926510363687983682, guid: 64aa2ca5fbff9ad42a0a6e73e4cc67ac, type: 3}
   textureDatabase: {fileID: 11400000, guid: fcfa201d5b370b64186a0db5cbc4dc43, type: 2}
-  villainJson: {fileID: 4900000, guid: 49e90f3d993b0a04f80238ba2aaacafe, type: 3}
+  villainJson: {fileID: 4900000, guid: d2af8df8e7e70ca4790ff202d79a2c13, type: 3}
 --- !u!4 &23859557
 Transform:
   m_ObjectHideFlags: 0
@@ -9072,6 +9072,10 @@ MonoBehaviour:
   wildHeroicButton: {fileID: 1640429028}
   wildAttackButton: {fileID: 986510141}
   punchUIButton: {fileID: 1725945746}
+  heroicTokenPrefab: {fileID: 4103869682229363191, guid: a3f14890373562744ac3eb12833ba266, type: 3}
+  attackTokenPrefab: {fileID: 6937918514642934543, guid: 9bf5e449483e28243851ac6b4f4b4d2b, type: 3}
+  moveTokenPrefab: {fileID: 2293238289568129257, guid: 5d64f1f397db4564e8b77efc2cd73de1, type: 3}
+  wildTokenPrefab: {fileID: 1307029696469039459, guid: 5c237f05c6e397143a360efede0d97b3, type: 3}
 --- !u!4 &1088304247
 Transform:
   m_ObjectHideFlags: 0

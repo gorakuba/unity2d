@@ -27,8 +27,8 @@
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
+                "required_symbol_list": {},
+                "used_symbol_list": {},
                 "special":false,
                 "special_ability":"Redskull_threat_01"
             },
@@ -44,8 +44,8 @@
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
+                "required_symbol_list": {},
+                "used_symbol_list": {},
                 "special":false,
                 "special_ability":""                
             },
@@ -82,8 +82,8 @@
                 "on_stand_effect":false,
                 "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
+                "required_symbol_list": {},
+                "used_symbol_list": {},
                 "special":false,
                 "special_ability":""
             },

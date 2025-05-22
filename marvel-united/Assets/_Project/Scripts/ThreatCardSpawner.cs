@@ -43,6 +43,8 @@ public class ThreatCardSpawner : MonoBehaviour
             Debug.LogError("ThreatCardSpawner: GameManager.Instance jest null");
             return;
         }
+        else
+        Debug.Log("▶ ThreatCardSpawner: ładowany JSON ma długość " + villainJson.text.Length);
 
         string villainId = GameManager.Instance.selectedVillain;
         if (string.IsNullOrEmpty(villainId))
@@ -54,6 +56,9 @@ public class ThreatCardSpawner : MonoBehaviour
         // 1) Wczytujemy i losujemy 6 threatów z JSONa
         var rootData = JsonUtility.FromJson<VillainsRoot>(villainJson.text);
         var villain  = rootData.villains.FirstOrDefault(v => v.id == villainId);
+        Debug.Log($"▶ Załadowano dla villain={villainId} {villain.threats.Count} threatów.");
+        foreach (var t in villain.threats)
+    Debug.Log($"   • threat {t.id}: required_symbol_list.Count = {t.required_symbol_list?.Count}");
         if (villain == null)
         {
             Debug.LogError($"ThreatCardSpawner: nie ma villain ID={villainId}");
@@ -93,6 +98,10 @@ public class ThreatCardSpawner : MonoBehaviour
                        ?? go.AddComponent<ThreatCardInstance>();
             inst.data             = threat;
             inst.data.BuildDictionaries();
+            string keys = inst.data.required_symbols != null
+                ? string.Join(",", inst.data.required_symbols.Keys)
+                : "(null)";
+            Debug.Log("[ThreatCardInstance.Awake] threat=" + inst.data.id + " dict keys=" + keys);
             inst.assignedLocation = root.gameObject;
 
             // c) Przypinamy do LocationController

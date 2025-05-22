@@ -7,10 +7,16 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ThreatCardInstance : MonoBehaviour
 {
-    [Tooltip("Dane tego threata – JsonUtility wypelnia listy, BuildDictionaries() tworzy z nich slowniki")]
+    [Tooltip("Dane tego threata – JsonUtility wypelnia listy, BuildDictionaries() tworzy z nich słowniki")]
     public ThreatCard data;
     public GameObject assignedLocation;
     public int currentMinionHealth = 0;
+
+    [Header("Token Prefabs")]
+    public GameObject heroicTokenPrefab;
+    public GameObject attackTokenPrefab;
+    public GameObject moveTokenPrefab;
+    public GameObject wildTokenPrefab;
 
     private void Awake()
     {
@@ -20,7 +26,7 @@ public class ThreatCardInstance : MonoBehaviour
             string keys = data.required_symbols != null
                 ? string.Join(",", data.required_symbols.Keys)
                 : "(null)";
-            Debug.Log("[ThreatCardInstance.Awake] threat=" + data.id + " dict keys=" + keys);
+            Debug.Log($"[ThreatCardInstance.Awake] threat={data.id} dict keys={keys}");
         }
     }
 
@@ -51,56 +57,103 @@ public class ThreatCardInstance : MonoBehaviour
     private string GetThreatSpriteAddress(string villainId, string cardId)
     {
         string index = cardId.Split('_')[1];
-        return "Villain/" + villainId + "/Threats/Card_" + index;
+        return $"Villain/{villainId}/Threats/Card_{index}";
     }
 
-    public void TryPlaceSymbol(string symbolId, GameObject symbolPrefab)
+    /// <summary>
+    /// Próbuje położyć token symbolu na tej karcie.
+    /// </summary>
+    /// <param name="symbolId">np. "Heroic","Attack","Move","Wild"</param>
+    /// <param name="tokenPrefab">prefab tokena do wstawienia</param>
+    public void TryPlaceSymbol(string symbolId, GameObject tokenPrefab)
     {
+        Debug.Log($"[ThreatCardInstance] TryPlaceSymbol: '{symbolId}', prefab='{tokenPrefab?.name}'");
         if (data.required_symbols == null || !data.required_symbols.ContainsKey(symbolId))
-            return;
-
-        int current = data.used_symbols != null && data.used_symbols.ContainsKey(symbolId)
-            ? data.used_symbols[symbolId]
-            : 0;
-        int required = data.required_symbols[symbolId];
-        if (current >= required) return;
-
-        for (int i = 0; i < 3; i++)
         {
-            Transform slot = transform.Find("Slot_" + symbolId + "_" + i);
-            if (slot != null && slot.childCount == 0)
-            {
-                GameObject icon = Instantiate(symbolPrefab, slot);
-                icon.transform.localPosition = Vector3.zero;
-                icon.transform.localRotation = Quaternion.identity;
+            Debug.LogWarning($"[ThreatCardInstance] '{symbolId}' not required by threat '{data.id}'");
+            return;
+        }
+        if (tokenPrefab == null)
+        {
+            Debug.LogError($"[ThreatCardInstance] tokenPrefab is null for '{symbolId}'");
+            return;
+        }
 
+        int used = data.used_symbols?.GetValueOrDefault(symbolId) ?? 0;
+        int req  = data.required_symbols[symbolId];
+        if (used >= req)
+        {
+            Debug.LogWarning($"[ThreatCardInstance] '{symbolId}' already filled {used}/{req}");
+            return;
+        }
+
+        // slots named Slot_<symbol>_1..3
+        for (int i = 1; i <= 3; i++)
+        {
+            string slotName = $"Slot_{symbolId.ToLower()}_{i}";
+            Transform slot  = transform.Find(slotName);
+            if (slot == null) continue;
+
+            Debug.Log($"[ThreatCardInstance] Checking slot '{slotName}', childCount={slot.childCount}");
+            if (slot.childCount == 0)
+            {
+                // Instantiate token prefab directly into slot
+                GameObject tokenGO = Instantiate(tokenPrefab, slot);
+                tokenGO.transform.localPosition = Vector3.zero;
+                tokenGO.transform.localRotation = Quaternion.identity;
+                tokenGO.transform.localScale = Vector3.one;
+
+                // Update used count
                 if (data.used_symbols == null)
                     data.used_symbols = new Dictionary<string,int>();
-                if (!data.used_symbols.ContainsKey(symbolId))
-                    data.used_symbols[symbolId] = 0;
-                data.used_symbols[symbolId]++;
+                data.used_symbols[symbolId] = used + 1;
 
-                Debug.Log("✅ Dodano symbol " + symbolId + " do Threat " + data.name);
+                Debug.Log($"[ThreatCardInstance] Placed {symbolId} token in {slotName} ({used+1}/{req})");
+
+                // Resolve if complete
                 if (data.to_remove && IsFullyResolved())
                 {
-                    Destroy(gameObject);
-                    Debug.Log("💥 Threat " + data.name + " usunięty po spełnieniu warunków!");
+                    Debug.Log($"[ThreatCardInstance] Threat '{data.id}' fully resolved, resolving...");
+                    ResolveThreat();
                 }
                 return;
             }
         }
+
+        Debug.LogWarning($"[ThreatCardInstance] No free slot for '{symbolId}'");
     }
 
     private bool IsFullyResolved()
     {
-        foreach (var pair in data.required_symbols)
-        {
-            if (!data.used_symbols.ContainsKey(pair.Key) ||
-                data.used_symbols[pair.Key] < pair.Value)
-            {
+        foreach (var kv in data.required_symbols)
+            if ((data.used_symbols?.GetValueOrDefault(kv.Key) ?? 0) < kv.Value)
                 return false;
+        return true;
+    }
+
+    /// <summary>
+    /// Przenosi token z ThreatSlot do pierwszego wolnego slotu misji i niszczy tę kartę.
+    /// </summary>
+    private void ResolveThreat()
+    {
+        Transform threatSlot = transform.Find("ThreatSlot");
+        if (threatSlot != null && threatSlot.childCount > 0 && assignedLocation != null)
+        {
+            var missionToken = threatSlot.GetChild(0).gameObject;
+            for (int i = 1;; i++)
+            {
+                Transform ms = assignedLocation.transform.Find($"Slot_{i}");
+                if (ms != null && ms.childCount == 0)
+                {
+                    missionToken.transform.SetParent(ms, false);
+                    missionToken.transform.localPosition = Vector3.zero;
+                    missionToken.transform.localRotation = Quaternion.identity;
+                    Debug.Log($"[ThreatCardInstance] Moved mission token to '{ms.name}'");
+                    break;
+                }
             }
         }
-        return true;
+        Debug.Log($"[ThreatCardInstance] Destroying threat '{data.id}'");
+        Destroy(gameObject);
     }
 }
