@@ -16,15 +16,14 @@ public class HeroActionHandler : MonoBehaviour
     public List<Transform> thugTokenSlots;
     public GameObject       thugTokenPrefab;
 
-    [Header("Wild")]
+    [Header("Wild Panel")]
     public GameObject wildSymbolPanel;
     public Button     wildMoveButton;
     public Button     wildHeroicButton;
     public Button     wildAttackButton;
 
-    [Header("Punch (global UI)")]
+    [Header("Global UI")]
     public Button punchUIButton;
-
     [Header("Threat Token Prefabs")]
     public GameObject heroicTokenPrefab;
     public GameObject attackTokenPrefab;
@@ -43,20 +42,18 @@ public class HeroActionHandler : MonoBehaviour
     public void HandleAction(string symbolId, GameObject symbolButton)
     {
         if (symbolButton == null) return;
-
-        // reset state
+        // reset
         movementManager.CancelHeroMovement();
-        if (punchUIButton != null)
-            punchUIButton.gameObject.SetActive(false);
+        punchUIButton?.gameObject.SetActive(false);
         wildSymbolPanel.SetActive(false);
 
         var loc = movementManager.GetCurrentLocation();
         if (loc == null) return;
 
-        // hide threat button initially
+        // ukryj ThreatButton
         loc.threatCardButton.gameObject.SetActive(false);
 
-        // 1) existing Move/Attack/Heroic/Wild flow
+        // 1) normalny flow akcji
         switch (symbolId.ToLower())
         {
             case "move":
@@ -85,63 +82,66 @@ public class HeroActionHandler : MonoBehaviour
                 pendingWildLocation = loc;
                 loc.DisableAllActionButtons();
                 wildSymbolPanel.SetActive(true);
-
                 wildMoveButton.interactable   = true;
                 wildHeroicButton.interactable = true;
                 wildAttackButton.interactable = true;
-
                 wildMoveButton.onClick.RemoveAllListeners();
                 wildHeroicButton.onClick.RemoveAllListeners();
                 wildAttackButton.onClick.RemoveAllListeners();
-
                 wildMoveButton.onClick.AddListener(OnWildMove);
                 wildHeroicButton.onClick.AddListener(OnWildHeroic);
                 wildAttackButton.onClick.AddListener(OnWildAttack);
-                break;
-
-            default:
-                Debug.LogWarning($"Unknown symbolId '{symbolId}'");
-                break;
+                return; // zakończ, bo flow dla wild obsłużymy w OnWildX
         }
 
-        // 2) additionally, if a ThreatCard here needs this symbol, enable ThreatButton
+        // 2) dodatkowo: pokaż ThreatButton jeśli potrzeba
+        TryEnableThreatButton(symbolId, symbolButton, loc);
+    }
+
+    private void TryEnableThreatButton(string symbolId, GameObject symbolButton, LocationController loc)
+    {
         var threat = loc.threatInstance;
-        if (threat != null)
-        {
-            // select correct token prefab
-            GameObject tokenPrefab = symbolId.ToLower() switch
-            {
-                "heroic" => heroicTokenPrefab,
-                "attack" => attackTokenPrefab,
-                "move"   => moveTokenPrefab,
-                "wild"   => wildTokenPrefab,
-                _         => null
-            };
+        if (threat == null) return;
 
-            // check requirement
-            if (tokenPrefab != null
-                && threat.data.required_symbols.TryGetValue(symbolId, out int req)
-                && threat.data.used_symbols.GetValueOrDefault(symbolId, 0) < req)
-            {
-                loc.threatCardButton.gameObject.SetActive(true);
-                loc.threatCardButton.onClick.RemoveAllListeners();
-                loc.threatCardButton.onClick.AddListener(() =>
-                {
-                    threat.TryPlaceSymbol(symbolId, tokenPrefab);
-                    // standard cleanup
-                    loc.DisableAllActionButtons();
-                    symbolPanelUI.ClearSelectedSymbol();
-                    missionManager.CheckMissions();
-                    Destroy(symbolButton);
-                });
-            }
-        }
+        // matchKey: wild jako Joker
+        string matchKey = symbolId.Equals("wild", StringComparison.OrdinalIgnoreCase)
+            ? threat.data.required_symbols.Keys
+                    .FirstOrDefault(k => threat.data.used_symbols.GetValueOrDefault(k,0) < threat.data.required_symbols[k])
+            : threat.data.required_symbols.Keys
+                    .FirstOrDefault(k => string.Equals(k, symbolId, StringComparison.OrdinalIgnoreCase));
+
+        if (matchKey == null) return;
+
+        int used = threat.data.used_symbols.GetValueOrDefault(matchKey, 0);
+        int req  = threat.data.required_symbols[matchKey];
+        if (used >= req) return;
+
+        // wybór prefabraw
+        GameObject tokenPrefab = matchKey.ToLower() switch
+        {
+            "heroic" => heroicTokenPrefab,
+            "attack" => attackTokenPrefab,
+            "move"   => moveTokenPrefab,
+            "wild"   => wildTokenPrefab,
+            _        => null
+        };
+        if (tokenPrefab == null) return;
+
+        loc.threatCardButton.gameObject.SetActive(true);
+        loc.threatCardButton.onClick.RemoveAllListeners();
+        loc.threatCardButton.onClick.AddListener(() =>
+        {
+            threat.TryPlaceSymbol(matchKey, tokenPrefab);
+            loc.DisableAllActionButtons();
+            symbolPanelUI.ClearSelectedSymbol();
+            missionManager.CheckMissions();
+            Destroy(symbolButton);
+        });
     }
 
     private void DoAttack(LocationController loc, GameObject symbolButton)
     {
         loc.DisableAllActionButtons();
-
         if (missionManager.CompletedMissionsCount >= 2 && loc.HasVillain())
         {
             punchUIButton.gameObject.SetActive(true);
@@ -154,9 +154,9 @@ public class HeroActionHandler : MonoBehaviour
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
+                loc.threatCardButton.gameObject.SetActive(false);
             });
         }
-
         if (loc.HasThug())
         {
             loc.EnableAttackButton(() =>
@@ -164,25 +164,20 @@ public class HeroActionHandler : MonoBehaviour
                 var thug = loc.RemoveFirstThug();
                 if (thug != null)
                 {
-                    if (missionManager.thugsCompleted)
-                        Destroy(thug);
+                    if (missionManager.thugsCompleted) Destroy(thug);
                     else
                     {
                         Vector3 ws = thug.transform.lossyScale;
                         foreach (var slot in thugTokenSlots)
-                        {
                             if (slot.childCount == 0)
                             {
                                 Vector3 ps = slot.lossyScale;
                                 thug.transform.SetParent(slot, false);
+                                thug.transform.localScale = new Vector3(ws.x/ps.x,ws.y/ps.y,ws.z/ps.z);
                                 thug.transform.localPosition = Vector3.zero;
                                 thug.transform.localRotation = Quaternion.identity;
-                                thug.transform.localScale = new Vector3(
-                                    ws.x/ps.x, ws.y/ps.y, ws.z/ps.z
-                                );
                                 break;
                             }
-                        }
                     }
                 }
                 Destroy(symbolButton);
@@ -202,25 +197,20 @@ public class HeroActionHandler : MonoBehaviour
             var civ = loc.RemoveFirstCivillian();
             if (civ != null)
             {
-                if (missionManager.civiliansCompleted)
-                    Destroy(civ);
+                if (missionManager.civiliansCompleted) Destroy(civ);
                 else
                 {
                     Vector3 ws = civ.transform.lossyScale;
                     foreach (var slot in missionTokenSlots)
-                    {
                         if (slot.childCount == 0)
                         {
                             Vector3 ps = slot.lossyScale;
                             civ.transform.SetParent(slot, false);
+                            civ.transform.localScale = new Vector3(ws.x/ps.x,ws.y/ps.y,ws.z/ps.z);
                             civ.transform.localPosition = Vector3.zero;
                             civ.transform.localRotation = Quaternion.identity;
-                            civ.transform.localScale = new Vector3(
-                                ws.x/ps.x, ws.y/ps.y, ws.z/ps.z
-                            );
                             break;
                         }
-                    }
                 }
             }
             Destroy(symbolButton);
@@ -241,10 +231,23 @@ public class HeroActionHandler : MonoBehaviour
             movementManager.OnMoveCompleted = null;
             missionManager.CheckMissions();
             pendingWildLocation.threatCardButton.gameObject.SetActive(false);
+            // teraz też threat:
+            TryEnableThreatButton("move", pendingWildButton, pendingWildLocation);
         };
         movementManager.PrepareHeroMovement();
     }
 
-    private void OnWildHeroic() => DoHeroic(pendingWildLocation, pendingWildButton);
-    private void OnWildAttack() => DoAttack(pendingWildLocation, pendingWildButton);
+    private void OnWildHeroic()
+    {
+        wildSymbolPanel.SetActive(false);
+        DoHeroic(pendingWildLocation, pendingWildButton);
+        TryEnableThreatButton("heroic", pendingWildButton, pendingWildLocation);
+    }
+
+    private void OnWildAttack()
+    {
+        wildSymbolPanel.SetActive(false);
+        DoAttack(pendingWildLocation, pendingWildButton);
+        TryEnableThreatButton("attack", pendingWildButton, pendingWildLocation);
+    }
 }
