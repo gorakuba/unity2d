@@ -35,6 +35,7 @@ public class VillainData
 public class VillainController : MonoBehaviour
 {
     public static VillainController Instance { get; private set; }
+    public event Action<Transform> OnVillainStop;
     public event Func<IEnumerator> OnBAMEffect;
     public int CurrentHealth { get; private set; }
 
@@ -131,17 +132,29 @@ public class VillainController : MonoBehaviour
         transform.localPosition = Vector3.zero;
     }
 
-    public IEnumerator MoveVillain(int steps)
+public IEnumerator MoveVillain(int steps)
+{
+    int count = _villainSlots.Length;
+
+    if (steps <= 0)
     {
-        int count = _villainSlots.Length;
-        for (int i = 0; i < steps; i++)
-        {
-            _currentIndex = (_currentIndex + 1) % count;
-            var target = _villainSlots[_currentIndex];
-            yield return StartCoroutine(AnimateMoveTo(target.position));
-            transform.SetParent(target, true);
-        }
+        // Villain nie rusza się, ale wciąż „staje” na obecnym slocie
+        OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
+        yield break;
     }
+
+    for (int i = 0; i < steps; i++)
+    {
+        _currentIndex = (_currentIndex + 1) % count;
+        var target = _villainSlots[_currentIndex];
+        yield return StartCoroutine(AnimateMoveTo(target.position));
+        transform.SetParent(target, true);
+    }
+
+    // po zakończeniu ruchu – emitujemy event
+    OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
+}
+
 
     private IEnumerator AnimateMoveTo(Vector3 targetPos)
     {
