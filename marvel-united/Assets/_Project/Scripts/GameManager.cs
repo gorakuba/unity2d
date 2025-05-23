@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
         default: return heroId;
     }
 }
-private GameObject FindObjectInScene(string name)
+public GameObject FindObjectInScene(string name)
 {
     Scene activeScene = SceneManager.GetActiveScene();
     GameObject[] rootObjects = activeScene.GetRootGameObjects();

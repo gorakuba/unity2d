@@ -1,131 +1,149 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;  // <-- potrzebne dla Enumerable.Empty<>
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-
+using Object = UnityEngine.Object;
 public class ThreatCardInstance : MonoBehaviour
 {
-    [Tooltip("Dane tego threata – JsonUtility wypelnia listy, BuildDictionaries() tworzy z nich słowniki")]
+    [Tooltip("Dane tego threata – JsonUtility wypełnia listy, BuildDictionaries() tworzy słowniki")]
     public ThreatCard data;
     public GameObject assignedLocation;
     public int currentMinionHealth = 0;
 
-    [Header("Mission Slots (opcjonalnie możesz przypisać ręcznie)")]
+    [Header("Mission Slots (opcjonalnie ręcznie)")]
     public List<Transform> missionSlots;
 
-    [Header("Mission Manager (jeśli puste, zostanie automatycznie znaleziony)")]
+    [Header("Mission Manager (autopodpinany jeśli null)")]
     public MissionManager missionManager;
 
-    private void Awake()
+private void Awake()
+{
+    // ---------------------------------------
+    // 1) Autopodpinanie MissionManagera
+    // ---------------------------------------
+    if (missionManager == null)
     {
-        // 1) Build dictionaries
-        if (data != null)
-        {
-            data.BuildDictionaries();
-            var keys = data.required_symbols != null
-                ? string.Join(",", data.required_symbols.Keys)
-                : "(null)";
-            Debug.Log($"[ThreatCardInstance.Awake] threat={data.id} dict keys={keys}");
-        }
-
-        // 2) Auto‐assign MissionManager, jeśli nie podpięto w Inspektorze
+        missionManager = Object.FindFirstObjectByType<MissionManager>();
         if (missionManager == null)
-        {
-            missionManager = UnityEngine.Object.FindFirstObjectByType<MissionManager>();
-            if (missionManager == null)
-                Debug.LogError("[ThreatCardInstance] Nie znaleziono MissionManager w scenie!");
-            else
-                Debug.Log("[ThreatCardInstance] Automatycznie przypisano MissionManager");
-        }
-
-        // 3) Auto‐fill missionSlots, jeśli lista jest pusta
-        if (missionSlots == null || missionSlots.Count == 0)
-        {
-            missionSlots = new List<Transform>();
-            var missionRoot = GameObject.Find("ThreatMission");
-            if (missionRoot != null)
-            {
-                foreach (Transform child in missionRoot.transform)
-                    if (child.name.StartsWith("Slot_"))
-                        missionSlots.Add(child);
-                Debug.Log($"[ThreatCardInstance.Awake] Auto‐assigned {missionSlots.Count} missionSlots");
-            }
-            else
-            {
-                Debug.LogWarning("[ThreatCardInstance] Nie znaleziono obiektu 'ThreatMission' w scenie!");
-            }
-        }
+            Debug.LogError("[ThreatCardInstance] Nie znaleziono MissionManager w scenie!");
+        else
+            Debug.Log($"[ThreatCardInstance] Automatycznie przypięto MissionManager ({missionManager.name})");
     }
 
-    private void Start()
+    // ---------------------------------------
+    // 2) Autopodpinanie missionSlots
+    // ---------------------------------------
+    if (missionSlots == null || missionSlots.Count == 0)
     {
-        if (data != null)
-            StartCoroutine(LoadThreatSpriteAsync(data));
-        var slotHealth = transform.Find("Slot_Health");
-        currentMinionHealth = slotHealth != null ? slotHealth.childCount : 0;
+        missionSlots = new List<Transform>();
+        var root = GameObject.Find("ThreatMission");
+        if (root != null)
+        {
+            foreach (Transform c in root.transform)
+                if (c.name.StartsWith("Slot_"))
+                    missionSlots.Add(c);
+            Debug.Log($"[ThreatCardInstance.Awake] Autopodpinano {missionSlots.Count} missionSlots");
+        }
+        else
+        {
+            Debug.LogWarning("[ThreatCardInstance] Nie znaleziono obiektu 'ThreatMission' w hierarchii!");
+        }
     }
+
+    // ---------------------------------------
+    // 3) Inicjalizacja currentMinionHealth
+    // ---------------------------------------
+    var slotHealth = transform.Find("Slot_Health");
+    currentMinionHealth = slotHealth != null ? slotHealth.childCount : 0;
+}
+
+private void Start()
+{
+    // ---------------------------------------------------
+    // 4) Jeżeli mamy dane z JSON-a, to je zbuduj i podłącz
+    // ---------------------------------------------------
+    if (data != null)
+    {
+        // budujemy słowniki symboli
+        data.BuildDictionaries();
+
+        // logowanie dla debugowania
+        var keys = data.required_symbols != null
+            ? string.Join(",", data.required_symbols.Keys)
+            : "(null)";
+        Debug.Log($"[ThreatCardInstance.Start] threat={data.id} dict keys={keys}");
+
+        // podpinamy wszystkie ability z JSON-owego pola abilities
+        foreach (var ab in data.abilities ?? Enumerable.Empty<AbilityData>())
+        {
+            var comp = ThreatAbilityFactory.Attach(ab.id, this);
+            if (comp != null)
+            {
+                comp.RegisterTrigger(ab.trigger, this);
+                Debug.Log($"[ThreatCardInstance.Start] podpiąłem ability {ab.id} pod trigger {ab.trigger}");
+            }
+            else
+            {
+                Debug.LogWarning($"[ThreatCardInstance.Start] nie znaleziono ability {ab.id}");
+            }
+        }
+    }
+    else
+    {
+        Debug.LogWarning("[ThreatCardInstance.Start] Brak danych (data == null), nie podpinam ability");
+    }
+
+    // jeżeli sprite jeszcze nie załadowany - odpalenie w tle
+    if (data != null)
+        StartCoroutine(LoadThreatSpriteAsync(data));
+}
+
 
     private IEnumerator LoadThreatSpriteAsync(ThreatCard card)
     {
         string villainId = GameManager.Instance.selectedVillain;
-        string address   = GetThreatSpriteAddress(villainId, card.id);
-        var handle       = Addressables.LoadAssetAsync<Sprite>(address);
+        string address = $"Villain/{villainId}/Threats/Card_{card.id.Split('_')[1]}";
+        var handle = Addressables.LoadAssetAsync<Sprite>(address);
         yield return handle;
-
         if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
             card.sprite = handle.Result;
-        }
         else
-        {
-            Debug.LogError("❌ Nie udało się załadować sprite'a: " + address);
-        }
+            Debug.LogError("Nie udało się załadować sprite'a: " + address);
     }
 
-    private string GetThreatSpriteAddress(string villainId, string cardId)
+    public void TryRemoveMinionToken()
     {
-        string index = cardId.Split('_')[1];
-        return $"Villain/{villainId}/Threats/Card_{index}";
-    }
-public void TryRemoveMinionToken()
-    {
-        Transform slotHealth = transform.Find("Slot_Health");
+        var slotHealth = transform.Find("Slot_Health");
         if (slotHealth == null)
         {
-            Debug.LogWarning($"[ThreatCardInstance] Brak Slot_Health na karcie {data.id}");
+            Debug.LogWarning($"[ThreatCardInstance] Brak Slot_Health na karcie {data?.id}");
             return;
         }
-
         if (slotHealth.childCount > 0)
         {
-            // Usuń ostatni token
             int last = slotHealth.childCount - 1;
             Destroy(slotHealth.GetChild(last).gameObject);
 
-            // Przelicz currentMinionHealth
-            currentMinionHealth = slotHealth.childCount - 1;
-            Debug.Log($"[ThreatCardInstance] Usunięto token życia z {data.id}, pozostało {currentMinionHealth}");
+            currentMinionHealth = slotHealth.childCount;
+            Debug.Log($"[ThreatCardInstance] Usunięto token zdrowia z {data.id}, pozostało {currentMinionHealth}");
 
-            // Jeśli nie ma już żadnego, odpal resolve po 2s
             if (currentMinionHealth == 0)
                 StartCoroutine(CheckMinionResolvedDelayed(2f));
         }
         else
         {
-            Debug.LogWarning($"[ThreatCardInstance] Brak tokenów życia do usunięcia na {data.id}");
+            Debug.LogWarning($"[ThreatCardInstance] Brak tokenów zdrowia do usunięcia na {data.id}");
         }
     }
 
     private IEnumerator CheckMinionResolvedDelayed(float delay)
     {
         yield return new WaitForSeconds(delay);
-        // ResolveThreat już przeniesie token misji i zniszczy tę kartę
         ResolveThreat();
     }
-
-
 
     public void TryPlaceSymbol(string symbolId, GameObject tokenPrefab)
     {
@@ -133,30 +151,27 @@ public void TryRemoveMinionToken()
             return;
         if (tokenPrefab == null)
         {
-            Debug.LogError($"[ThreatCardInstance] tokenPrefab null for '{symbolId}'");
+            Debug.LogError($"[ThreatCardInstance] tokenPrefab null dla '{symbolId}'");
             return;
         }
-
         int used = data.used_symbols?.GetValueOrDefault(symbolId) ?? 0;
         int req = data.required_symbols[symbolId];
         if (used >= req) return;
 
         for (int i = 1; i <= 3; i++)
         {
-            string slotName = $"Slot_{symbolId.ToLower()}_{i}";
-            Transform slot = transform.Find(slotName);
+            var slot = transform.Find($"Slot_{symbolId.ToLower()}_{i}");
             if (slot != null && slot.childCount == 0)
             {
-                var tokenGO = Instantiate(tokenPrefab, slot);
-                tokenGO.transform.localPosition = Vector3.zero;
-                tokenGO.transform.localRotation = Quaternion.identity;
-                tokenGO.transform.localScale = Vector3.one;
+                var go = Instantiate(tokenPrefab, slot);
+                go.transform.localPosition = Vector3.zero;
+                go.transform.localRotation = Quaternion.identity;
+                go.transform.localScale = Vector3.one;
 
                 if (data.used_symbols == null)
-                    data.used_symbols = new Dictionary<string, int>();
+                    data.used_symbols = new Dictionary<string,int>();
                 data.used_symbols[symbolId] = used + 1;
 
-                // sprawdź po 2s
                 StartCoroutine(CheckResolvedDelayed(2f));
                 return;
             }
@@ -180,28 +195,21 @@ public void TryRemoveMinionToken()
 
     private void ResolveThreat()
     {
-        // przenieś token z lokacji
         var threatSlot = assignedLocation.transform.Find("ThreatSlot");
         if (threatSlot != null && threatSlot.childCount > 0)
         {
             var missionToken = threatSlot.GetChild(0).gameObject;
             foreach (var ms in missionSlots)
-            {
-                if (ms != null && ms.childCount == 0)
+                if (ms.childCount == 0)
                 {
                     missionToken.transform.SetParent(ms, false);
                     missionToken.transform.localPosition = Vector3.zero;
                     missionToken.transform.localRotation = Quaternion.identity;
                     break;
                 }
-            }
         }
 
-        // sprawdź misje
-        if (missionManager != null)
-            missionManager.CheckMissions();
-
-        // usuń kartę
+        missionManager?.CheckMissions();
         Destroy(gameObject);
     }
 }

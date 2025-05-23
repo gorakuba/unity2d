@@ -22,15 +22,11 @@
                 "remove_condition":"Beat Bob agent of Hydra",
                 "minion":true,
                 "minion_health": 4,
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
                 "required_symbol_list": {},
                 "used_symbol_list": {},
-                "special":false,
-                "special_ability":"Redskull_threat_01"
+                "abilities": [
+                    { "trigger": "OnTurnStart", "id": "Redskull_threat_01" } ]
             },
             {
                 "id": "threat_2",
@@ -39,15 +35,11 @@
                 "remove_condition":"Beat Crossbones",
                 "minion":true,
                 "minion_health": 6,
-                "bam_effect":true,
-                "bam_ability":"Redskull_threat_02",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
                 "required_symbol_list": {},
                 "used_symbol_list": {},
-                "special":false,
-                "special_ability":""                
+                "abilities": [
+                    { "trigger": "OnBAM", "id": "Redskull_threat_02" } ]                
             },
             {
                 "id": "threat_3",
@@ -56,10 +48,6 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":true,
-                "on_stand_ability":"Redskull_threat_03",
                 "to_remove":true,
                 "required_symbol_list": [
                 { "symbol": "Heroic", "count": 3 }
@@ -67,8 +55,8 @@
                 "used_symbol_list": [
                 { "symbol": "Heroic", "count": 0 }
                 ],
-                "special":false,
-                "special_ability":""
+                "abilities": [
+                    { "trigger": "OnStand", "id": "Redskull_threat_03" } ]
             },
             {
                 "id": "threat_4",
@@ -77,15 +65,11 @@
                 "remove_condition":"Beat Madame Hydra",
                 "minion":true,
                 "minion_health": 5,
-                "bam_effect":true,
-                "bam_ability":"Redskull_threat_04",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
                 "required_symbol_list": {},
                 "used_symbol_list": {},
-                "special":false,
-                "special_ability":""
+                "abilities": [
+                    { "trigger": "OnBAM", "id": "Redskull_threat_04" } ]
             },
             {
                 "id": "threat_5",
@@ -94,10 +78,6 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":true,
-                "on_stand_ability":"Redskull_threat_05",
                 "to_remove":true,
                 "required_symbol_list": [
                 { "symbol": "Heroic", "count": 3 }
@@ -105,8 +85,8 @@
                 "used_symbol_list": [
                 { "symbol": "Heroic", "count": 0 }
                 ],
-                "special":false,
-                "special_ability":""
+                "abilities": [
+                    { "trigger": "OnStand", "id": "Redskull_threat_05" } ]
             },
             {
                 "id": "threat_6",
@@ -115,10 +95,6 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":true,
                 "required_symbol_list": [
                 { "symbol": "Heroic", "count": 3 }
@@ -126,8 +102,8 @@
                 "used_symbol_list": [
                 { "symbol": "Heroic", "count": 0 }
                 ],
-                "special":true,
-                "special_ability":"Redskull_threat_06"
+                "abilities": [
+                    { "trigger": "WhenActive", "id": "Redskull_threat_06" } ]
             }
         ],
         "cards":[

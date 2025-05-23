@@ -11,7 +11,6 @@ public class HeroMovementManager : MonoBehaviour
     private int playerIndex => GameManager.Instance.CurrentPlayerIndex;
 
     private LocationController currentLocation;
-
     public void PrepareHeroMovement()
     {
         UpdateCurrentLocation();
@@ -41,6 +40,12 @@ public class HeroMovementManager : MonoBehaviour
         currentHero.SetParent(slot);          // ← nowy parent
         currentHero.localPosition = Vector3.zero;  // ← ustalona pozycja względem slotu
         currentHero.localRotation = Quaternion.identity; // ← reset rotacji jeśli trzeba
+
+        var heroCtrl = currentHero.GetComponent<HeroController>();
+        
+        if (heroCtrl != null)
+            heroCtrl.CurrentLocation = newLocation;
+            Debug.Log($"[HeroMovement] Bohater {heroCtrl.HeroId} przesunięty do lokacji {newLocation.name}");
 
         if (playerIndex == 1)
             GameManager.Instance.locationManager.characterSlots.heroSlot1 = slot;

@@ -42,24 +42,19 @@ public class ThreatCard
     public string name;
     public string effect;
     public string remove_condition;
-    public bool   minion;
+    public bool minion;
     public string minion_health;
-    public bool   bam_effect;
-    public string bam_ability;
-    public bool   on_stand_effect;
-    public string on_stand_ability;
-    public bool   to_remove;
+    public bool to_remove;
 
     // z JSON: listy symboli
     public List<SymbolCount> required_symbol_list;
     public List<SymbolCount> used_symbol_list;
+    public List<AbilityData> abilities;
 
     // runtime: słowniki tworzone w BuildDictionaries()
-    [NonSerialized] public Dictionary<string,int> required_symbols;
-    [NonSerialized] public Dictionary<string,int> used_symbols;
+    [NonSerialized] public Dictionary<string, int> required_symbols;
+    [NonSerialized] public Dictionary<string, int> used_symbols;
 
-    public bool special;
-    public string special_ability;
     public Sprite sprite;
 
     /// <summary>
@@ -67,20 +62,26 @@ public class ThreatCard
     /// </summary>
     public void BuildDictionaries()
     {
-        required_symbols = new Dictionary<string,int>();
+        required_symbols = new Dictionary<string, int>();
         if (required_symbol_list != null)
         {
             foreach (var sc in required_symbol_list)
                 required_symbols[sc.symbol] = sc.count;
         }
 
-        used_symbols = new Dictionary<string,int>();
+        used_symbols = new Dictionary<string, int>();
         if (used_symbol_list != null)
         {
             foreach (var sc in used_symbol_list)
                 used_symbols[sc.symbol] = sc.count;
         }
     }
+}
+[Serializable]
+public class AbilityData
+{
+    public string trigger; // "OnTurnStart", "OnBAM", "OnStand", "WhenActive" itp.
+    public string id;      // "Redskull_threat_01"
 }
 
 [Serializable]

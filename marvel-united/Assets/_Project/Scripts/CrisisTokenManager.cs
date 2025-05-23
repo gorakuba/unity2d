@@ -33,9 +33,25 @@ public class CrisisTokenManager : MonoBehaviour
         return total;
     }
 
-    public void UpdateUI()
+     public void UpdateUI()
     {
         if (crisisTokenUI != null)
             crisisTokenUI.UpdateUI(GetTotalCrisisTokens());
+    }
+  /// <summary>
+    /// Daje bohaterowi 1 CrisisToken i odświeża UI.
+    /// </summary>
+    public void GiveCrisisToken(HeroController hero)
+    {
+        if (hero == null) return;
+        var handler = hero.GetComponent<HeroCrisisHandler>();
+        if (handler == null)
+        {
+            Debug.LogError($"[CrisisTokenManager] {hero.name} nie ma HeroCrisisHandler!");
+            return;
+        }
+        handler.AddCrisisToken();
+        UpdateUI();
+        Debug.Log($"[CrisisTokenManager] {hero.name} otrzymał CrisisToken. Suma = {GetTotalCrisisTokens()}");
     }
 }

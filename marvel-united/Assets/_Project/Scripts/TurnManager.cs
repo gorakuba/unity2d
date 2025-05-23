@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class TurnManager : MonoBehaviour
 {
+    public static TurnManager Instance { get; private set; }
+    public event Action<HeroController> OnStartHeroTurn;
     public enum GamePhase { VillainTurn, Player1Turn, Player2Turn }
 
     // ============================================
@@ -80,6 +83,7 @@ public class TurnManager : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
         _cardMgr = FindAnyObjectByType<CardManager>();
         _villainController = FindAnyObjectByType<VillainController>();
 
@@ -245,17 +249,30 @@ public class TurnManager : MonoBehaviour
                 if (bonus != null)
                 {
                     if (playerIndex == 1) _cardMgr.playerOneHand.Add(bonus);
-                    else                   _cardMgr.playerTwoHand.Add(bonus);
+                    else _cardMgr.playerTwoHand.Add(bonus);
                 }
 
                 if (playerIndex == 1) pendingBonusP1 = false;
-                else                   pendingBonusP2 = false;
+                else pendingBonusP2 = false;
             }
         }
 
         string heroId = playerIndex == 1 ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
         string heroName = GameManager.Instance.GetHeroName(heroId);
+        var heroGO = GameManager.Instance.FindObjectInScene(heroId);
+        var hero = FindHeroById(heroId);
+        if (hero == null)
+        {
+            Debug.LogError($"TurnManager: nie znalazłem HeroController o HeroId='{heroId}'");
+        }
+        else
+        {
+            OnStartHeroTurn?.Invoke(hero);
+        }
+
+
         yield return StartCoroutine(ShowPhaseText($"{heroName.ToUpper()} TURN", playerPhaseContainer, playerPhaseText));
+        
 
         _endTurnClicked = false;
         symbolPanel.SetActive(false);
@@ -371,5 +388,15 @@ public class TurnManager : MonoBehaviour
         tex.SetPixels(sprite.texture.GetPixels((int)sprite.rect.x, (int)sprite.rect.y, (int)sprite.rect.width, (int)sprite.rect.height));
         tex.Apply();
         return tex;
+    }
+    private HeroController FindHeroById(string heroId)
+    {
+        var heroes = UnityEngine.Object.FindObjectsByType<HeroController>(FindObjectsSortMode.None);
+        foreach (var hero in heroes)
+        {
+            if (hero.HeroId == heroId)
+                return hero;
+        }
+        return null;
     }
 }
