@@ -63,6 +63,8 @@ public class ThreatCardInstance : MonoBehaviour
     {
         if (data != null)
             StartCoroutine(LoadThreatSpriteAsync(data));
+        var slotHealth = transform.Find("Slot_Health");
+        currentMinionHealth = slotHealth != null ? slotHealth.childCount : 0;
     }
 
     private IEnumerator LoadThreatSpriteAsync(ThreatCard card)
@@ -87,6 +89,43 @@ public class ThreatCardInstance : MonoBehaviour
         string index = cardId.Split('_')[1];
         return $"Villain/{villainId}/Threats/Card_{index}";
     }
+public void TryRemoveMinionToken()
+    {
+        Transform slotHealth = transform.Find("Slot_Health");
+        if (slotHealth == null)
+        {
+            Debug.LogWarning($"[ThreatCardInstance] Brak Slot_Health na karcie {data.id}");
+            return;
+        }
+
+        if (slotHealth.childCount > 0)
+        {
+            // Usuń ostatni token
+            int last = slotHealth.childCount - 1;
+            Destroy(slotHealth.GetChild(last).gameObject);
+
+            // Przelicz currentMinionHealth
+            currentMinionHealth = slotHealth.childCount - 1;
+            Debug.Log($"[ThreatCardInstance] Usunięto token życia z {data.id}, pozostało {currentMinionHealth}");
+
+            // Jeśli nie ma już żadnego, odpal resolve po 2s
+            if (currentMinionHealth == 0)
+                StartCoroutine(CheckMinionResolvedDelayed(2f));
+        }
+        else
+        {
+            Debug.LogWarning($"[ThreatCardInstance] Brak tokenów życia do usunięcia na {data.id}");
+        }
+    }
+
+    private IEnumerator CheckMinionResolvedDelayed(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // ResolveThreat już przeniesie token misji i zniszczy tę kartę
+        ResolveThreat();
+    }
+
+
 
     public void TryPlaceSymbol(string symbolId, GameObject tokenPrefab)
     {
@@ -99,22 +138,22 @@ public class ThreatCardInstance : MonoBehaviour
         }
 
         int used = data.used_symbols?.GetValueOrDefault(symbolId) ?? 0;
-        int req  = data.required_symbols[symbolId];
+        int req = data.required_symbols[symbolId];
         if (used >= req) return;
 
         for (int i = 1; i <= 3; i++)
         {
             string slotName = $"Slot_{symbolId.ToLower()}_{i}";
-            Transform slot  = transform.Find(slotName);
+            Transform slot = transform.Find(slotName);
             if (slot != null && slot.childCount == 0)
             {
                 var tokenGO = Instantiate(tokenPrefab, slot);
                 tokenGO.transform.localPosition = Vector3.zero;
                 tokenGO.transform.localRotation = Quaternion.identity;
-                tokenGO.transform.localScale    = Vector3.one;
+                tokenGO.transform.localScale = Vector3.one;
 
                 if (data.used_symbols == null)
-                    data.used_symbols = new Dictionary<string,int>();
+                    data.used_symbols = new Dictionary<string, int>();
                 data.used_symbols[symbolId] = used + 1;
 
                 // sprawdź po 2s

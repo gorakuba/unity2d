@@ -24,6 +24,7 @@ public class HeroActionHandler : MonoBehaviour
 
     [Header("Global UI")]
     public Button punchUIButton;
+
     [Header("Threat Token Prefabs")]
     public GameObject heroicTokenPrefab;
     public GameObject attackTokenPrefab;
@@ -42,7 +43,8 @@ public class HeroActionHandler : MonoBehaviour
     public void HandleAction(string symbolId, GameObject symbolButton)
     {
         if (symbolButton == null) return;
-        // reset
+
+        // reset stanu
         movementManager.CancelHeroMovement();
         punchUIButton?.gameObject.SetActive(false);
         wildSymbolPanel.SetActive(false);
@@ -50,10 +52,11 @@ public class HeroActionHandler : MonoBehaviour
         var loc = movementManager.GetCurrentLocation();
         if (loc == null) return;
 
-        // ukryj ThreatButton
+        // na start ukryj wszystkie specjalne przyciski
         loc.threatCardButton.gameObject.SetActive(false);
+        loc.minionButton.gameObject.SetActive(false);
 
-        // 1) normalny flow akcji
+        // 1) Standardowy flow akcji
         switch (symbolId.ToLower())
         {
             case "move":
@@ -64,7 +67,6 @@ public class HeroActionHandler : MonoBehaviour
                     symbolPanelUI.ClearSelectedSymbol();
                     movementManager.OnMoveCompleted = null;
                     missionManager.CheckMissions();
-                    loc.threatCardButton.gameObject.SetActive(false);
                 };
                 movementManager.PrepareHeroMovement();
                 break;
@@ -81,21 +83,25 @@ public class HeroActionHandler : MonoBehaviour
                 pendingWildButton   = symbolButton;
                 pendingWildLocation = loc;
                 loc.DisableAllActionButtons();
+
                 wildSymbolPanel.SetActive(true);
                 wildMoveButton.interactable   = true;
                 wildHeroicButton.interactable = true;
                 wildAttackButton.interactable = true;
+
                 wildMoveButton.onClick.RemoveAllListeners();
                 wildHeroicButton.onClick.RemoveAllListeners();
                 wildAttackButton.onClick.RemoveAllListeners();
+
                 wildMoveButton.onClick.AddListener(OnWildMove);
                 wildHeroicButton.onClick.AddListener(OnWildHeroic);
                 wildAttackButton.onClick.AddListener(OnWildAttack);
-                return; // zakończ, bo flow dla wild obsłużymy w OnWildX
+                return;
         }
 
-        // 2) dodatkowo: pokaż ThreatButton jeśli potrzeba
+        // 2) Dodatkowo: Enable ThreatButton i/lub MinionButton
         TryEnableThreatButton(symbolId, symbolButton, loc);
+        TryEnableMinionButton(symbolId, symbolButton, loc);
     }
 
     private void TryEnableThreatButton(string symbolId, GameObject symbolButton, LocationController loc)
@@ -106,17 +112,16 @@ public class HeroActionHandler : MonoBehaviour
         // matchKey: wild jako Joker
         string matchKey = symbolId.Equals("wild", StringComparison.OrdinalIgnoreCase)
             ? threat.data.required_symbols.Keys
-                    .FirstOrDefault(k => threat.data.used_symbols.GetValueOrDefault(k,0) < threat.data.required_symbols[k])
+                    .FirstOrDefault(k => threat.data.used_symbols.GetValueOrDefault(k,0)
+                                        < threat.data.required_symbols[k])
             : threat.data.required_symbols.Keys
                     .FirstOrDefault(k => string.Equals(k, symbolId, StringComparison.OrdinalIgnoreCase));
-
         if (matchKey == null) return;
 
         int used = threat.data.used_symbols.GetValueOrDefault(matchKey, 0);
         int req  = threat.data.required_symbols[matchKey];
         if (used >= req) return;
 
-        // wybór prefabraw
         GameObject tokenPrefab = matchKey.ToLower() switch
         {
             "heroic" => heroicTokenPrefab,
@@ -139,6 +144,29 @@ public class HeroActionHandler : MonoBehaviour
         });
     }
 
+    private void TryEnableMinionButton(string symbolId, GameObject symbolButton, LocationController loc)
+    {
+        var threat = loc.threatInstance;
+        if (threat == null || !threat.data.minion) return;
+
+        // tylko dla ataku lub wild->attack
+        bool isAttack = symbolId.Equals("attack", StringComparison.OrdinalIgnoreCase)
+                     || symbolId.Equals("wild",   StringComparison.OrdinalIgnoreCase);
+        if (!isAttack) return;
+
+        loc.minionButton.gameObject.SetActive(true);
+        loc.minionButton.onClick.RemoveAllListeners();
+        loc.minionButton.onClick.AddListener(() =>
+        {
+            // Usuń token miniona z karty threata
+            threat.TryRemoveMinionToken(); // implementuj w ThreatCardInstance
+            loc.DisableAllActionButtons();
+            symbolPanelUI.ClearSelectedSymbol();
+            missionManager.CheckMissions();
+            Destroy(symbolButton);
+        });
+    }
+
     private void DoAttack(LocationController loc, GameObject symbolButton)
     {
         loc.DisableAllActionButtons();
@@ -154,7 +182,6 @@ public class HeroActionHandler : MonoBehaviour
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
-                loc.threatCardButton.gameObject.SetActive(false);
             });
         }
         if (loc.HasThug())
@@ -183,7 +210,6 @@ public class HeroActionHandler : MonoBehaviour
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
-                loc.threatCardButton.gameObject.SetActive(false);
             });
         }
     }
@@ -216,7 +242,6 @@ public class HeroActionHandler : MonoBehaviour
             Destroy(symbolButton);
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
-            loc.threatCardButton.gameObject.SetActive(false);
         });
     }
 
@@ -230,9 +255,8 @@ public class HeroActionHandler : MonoBehaviour
             symbolPanelUI.ClearSelectedSymbol();
             movementManager.OnMoveCompleted = null;
             missionManager.CheckMissions();
-            pendingWildLocation.threatCardButton.gameObject.SetActive(false);
-            // teraz też threat:
             TryEnableThreatButton("move", pendingWildButton, pendingWildLocation);
+            TryEnableMinionButton("move", pendingWildButton, pendingWildLocation);
         };
         movementManager.PrepareHeroMovement();
     }
@@ -242,6 +266,7 @@ public class HeroActionHandler : MonoBehaviour
         wildSymbolPanel.SetActive(false);
         DoHeroic(pendingWildLocation, pendingWildButton);
         TryEnableThreatButton("heroic", pendingWildButton, pendingWildLocation);
+        TryEnableMinionButton("heroic", pendingWildButton, pendingWildLocation);
     }
 
     private void OnWildAttack()
@@ -249,5 +274,6 @@ public class HeroActionHandler : MonoBehaviour
         wildSymbolPanel.SetActive(false);
         DoAttack(pendingWildLocation, pendingWildButton);
         TryEnableThreatButton("attack", pendingWildButton, pendingWildLocation);
+        TryEnableMinionButton("attack", pendingWildButton, pendingWildLocation);
     }
 }

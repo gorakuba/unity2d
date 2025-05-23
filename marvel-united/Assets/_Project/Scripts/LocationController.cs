@@ -15,6 +15,7 @@ public class LocationController : MonoBehaviour
     public Button heroicButton;
     public Button attackButton;
     public Button threatCardButton;
+    public Button minionButton;
     public ThreatCardInstance threatInstance;
 
     // — SLOTY —
@@ -197,5 +198,6 @@ public class LocationController : MonoBehaviour
         heroicButton?.gameObject.SetActive(false);
         attackButton?.gameObject.SetActive(false);
         threatCardButton?.gameObject.SetActive(false);
+        minionButton?.gameObject.SetActive(false);
     }
 }
