@@ -208,6 +208,7 @@ public class HeroActionHandler : MonoBehaviour
                     }
                 }
                 Destroy(symbolButton);
+                loc.DisableAllActionButtons();
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
             });
@@ -240,6 +241,7 @@ public class HeroActionHandler : MonoBehaviour
                 }
             }
             Destroy(symbolButton);
+            loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
         });

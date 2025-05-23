@@ -13,7 +13,20 @@ public class HeroController : MonoBehaviour
     /// Ustawiane przez HeroMovementManager po zakończeniu ruchu.
     /// </summary>
     public LocationController CurrentLocation { get; set; }
-
+    private void Awake()
+    {
+        // Spróbuj znaleźć LocationController w górę hierarchii
+        var loc = GetComponentInParent<LocationController>();
+        if (loc != null)
+        {
+            CurrentLocation = loc;
+            Debug.Log($"[HeroController] {HeroId} zainicjowany w lokacji {loc.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[HeroController] Nie udało się wykryć startowej lokacji dla {HeroId}");
+        }
+    }
     public void Initialize(string heroID, GameManager gameManager, CardManager cardManager, bool isPlayerTwo)
     {
         heroId = heroID;

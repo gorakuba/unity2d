@@ -127,11 +127,11 @@ private void Start()
             int last = slotHealth.childCount - 1;
             Destroy(slotHealth.GetChild(last).gameObject);
 
-            currentMinionHealth = slotHealth.childCount;
+            currentMinionHealth = slotHealth.childCount-1;
             Debug.Log($"[ThreatCardInstance] Usunięto token zdrowia z {data.id}, pozostało {currentMinionHealth}");
 
             if (currentMinionHealth == 0)
-                StartCoroutine(CheckMinionResolvedDelayed(2f));
+                StartCoroutine(CheckMinionResolvedDelayed(1f));
         }
         else
         {

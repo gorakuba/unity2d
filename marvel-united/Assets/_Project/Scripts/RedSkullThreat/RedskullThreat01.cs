@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RedskullThreat01Ability : MonoBehaviour, IThreatAbility
+public class RedskullThreat01 : MonoBehaviour, IThreatAbility
 {
     public void RegisterTrigger(string trigger, ThreatCardInstance inst)
     {
