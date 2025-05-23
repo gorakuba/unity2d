@@ -35,6 +35,7 @@ public class VillainData
 public class VillainController : MonoBehaviour
 {
     public static VillainController Instance { get; private set; }
+    public event Func<IEnumerator> OnBAMEffect;
     public int CurrentHealth { get; private set; }
 
     [Header("References")]
@@ -160,6 +161,10 @@ public class VillainController : MonoBehaviour
         if (card.BAM_effect)
         {
             Debug.Log("💥 BAM effect!");
+            if (OnBAMEffect != null)
+                foreach (Func<IEnumerator> handler in OnBAMEffect.GetInvocationList())
+                yield return StartCoroutine(handler());
+            
             ExecuteBAM();
             yield return new WaitForSeconds(0.5f);
         }

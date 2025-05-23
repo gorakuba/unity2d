@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject threatChoicePanel;
     [HideInInspector]
     public int CurrentPlayerIndex = 1;
     public static GameManager Instance;
@@ -29,6 +30,26 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
+
+        TryBindThreatChoicePanel();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void TryBindThreatChoicePanel()
+    {
+        if (threatChoicePanel == null)
+        {
+            // Szukamy w Hierarchii obiektu o tej nazwie
+            var go = GameObject.Find("UI/ThreatChoicePanel");
+            if (go != null)
+            {
+                threatChoicePanel = go;
+                Debug.Log("[GameManager] Podpięto ThreatChoicePanel automatycznie");
+            }
+            else
+            {
+                Debug.LogWarning("[GameManager] Nie znalazłem ThreatChoicePanel w scenie");
+            }
+        }
     }
 
     /// <summary>

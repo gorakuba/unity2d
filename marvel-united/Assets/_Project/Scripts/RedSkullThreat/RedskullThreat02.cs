@@ -1,35 +1,80 @@
 using UnityEngine;
+using System;
+using System.Collections;
+using System.Linq;
 
 public class RedskullThreat02 : MonoBehaviour, IThreatAbility
 {
-    public void RegisterTrigger(string trigger, ThreatCardInstance inst)
+    private ThreatCardInstance _threat;
+    private GameObject _choicePanel;
+
+    public void Init(ThreatCardInstance threatInstance, GameObject choicePanel)
     {
-        if (trigger == "OnTurnStart")
-        {
-             Debug.Log($"[RedskullThreat01] RegisterTrigger: subskrybuję OnTurnStart dla karty na {inst.assignedLocation?.name}");
-            TurnManager.Instance.OnStartHeroTurn += hero => OnTurnStart(inst, hero);
-        }
-        // w przyszłości dorzuć inne triggery:
-        // else if (trigger == "OnBAM")
-        //     BAMController.Instance.OnBAM += () => OnBAM(inst);
+        _threat      = threatInstance;
+        _choicePanel = choicePanel;
+        _choicePanel.SetActive(false);
     }
 
-    public void OnTurnStart(ThreatCardInstance threat, HeroController hero)
+    public void RegisterTrigger(string trigger, ThreatCardInstance inst)
     {
-        string heroLoc = hero.CurrentLocation  != null ? hero.CurrentLocation.gameObject.name : "null";
-        string threatLoc = threat.assignedLocation != null ? threat.assignedLocation.name   : "null";
-        Debug.Log($"[RedskullThreat01] OnTurnStart dla {hero.HeroId}: CurrentLocation={heroLoc}, ThreatLocation={threatLoc}");
+        if (trigger == "OnBAM")
+            VillainController.Instance.OnBAMEffect += OnBam;
+    }
 
-        if (hero.CurrentLocation != null
-        && hero.CurrentLocation.gameObject == threat.assignedLocation)
+    public void OnTurnStart(ThreatCardInstance threat, HeroController hero) { }
+
+    private IEnumerator OnBam()
+    {
+        var heroes = UnityEngine.Object
+            .FindObjectsByType<HeroController>(FindObjectsSortMode.None)
+            .Where(h => h.CurrentLocation?.gameObject == _threat.assignedLocation);
+
+        foreach (var hero in heroes)
+            yield return HandleChoice(hero);
+    }
+
+    private IEnumerator HandleChoice(HeroController hero)
+    {
+        // 1) pokaż panel
+        _choicePanel.SetActive(true);
+        var ctrl = _choicePanel.GetComponent<ThreatChoicePanelController>();
+
+        // 2) przygotuj header + callbacki
+        string displayName = GameManager.Instance.GetHeroName(hero.HeroId);
+        bool? takeDamage = null;
+        ctrl.Init(
+            displayName,
+            onDamage:  () => {
+                takeDamage = true;
+                _choicePanel.SetActive(false);
+            },
+            onTokens:  () => {
+                takeDamage = false;
+                _choicePanel.SetActive(false);
+            }
+        );
+
+        // 3) czekamy na wybór
+        yield return new WaitUntil(() => takeDamage.HasValue);
+
+        // 4) wykonujemy wybraną akcję
+        if (takeDamage.Value)
         {
-            Debug.Log($"[RedskullThreat01] WARUNEK SPEŁNIONY — daję CrisisToken");
-            CrisisTokenManager.Instance.GiveCrisisToken(hero);
+            var dmg = hero.GetComponent<HeroDamageHandler>();
+            yield return dmg.TakeDamageCoroutine();
+            yield return dmg.TakeDamageCoroutine();
         }
         else
         {
-            Debug.Log($"[RedskullThreat01] WARUNEK NIEZWYPLNIONY");
+            CrisisTokenManager.Instance.GiveCrisisToken(hero);
+            CrisisTokenManager.Instance.GiveCrisisToken(hero);
+            Debug.Log($"[RedskullThreat02] {hero.HeroId} otrzymuje 2 Threat Tokens");
         }
     }
 
+    private void OnDestroy()
+    {
+        if (VillainController.Instance != null)
+            VillainController.Instance.OnBAMEffect -= OnBam;
+    }
 }

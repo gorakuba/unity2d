@@ -5,6 +5,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class CardManager : MonoBehaviour
 {
+    public static CardManager Instance { get; private set; }
     // Ręce graczy
     public List<HeroCard> playerOneHand { get; private set; }
     public List<HeroCard> playerTwoHand { get; private set; }
@@ -28,6 +29,7 @@ public class CardManager : MonoBehaviour
     // Dostęp do aktualnych talii bohaterów (potrzebne np. do wrzucania kart na spód)
     public List<HeroCard> playerOneDeck => heroDeck1;
     public List<HeroCard> playerTwoDeck => heroDeck2;
+
 
     private void Start()
     {
