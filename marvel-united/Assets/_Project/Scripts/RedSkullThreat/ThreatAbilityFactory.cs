@@ -9,6 +9,7 @@ static class ThreatAbilityFactory
     {
         ["Redskull_threat_01"] = typeof(RedskullThreat01),
         ["Redskull_threat_02"] = typeof(RedskullThreat02),
+        ["Redskull_threat_04"] = typeof(RedskullThreat04),
     };
 
     public static IThreatAbility Attach(string key, ThreatCardInstance inst)
@@ -18,6 +19,8 @@ static class ThreatAbilityFactory
             var comp = inst.gameObject.AddComponent(type) as IThreatAbility;
             if (comp is RedskullThreat02 rt2)
                 rt2.Init(inst, GameManager.Instance.threatChoicePanel);
+            if (comp is RedskullThreat04 rt4)
+            rt4.Init(inst, GameManager.Instance.threatChoicePanel);
             return comp;
         }
         return null;

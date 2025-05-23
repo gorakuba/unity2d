@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Linq;
 
-public class RedskullThreat02 : MonoBehaviour, IThreatAbility
+public class RedskullThreat04 : MonoBehaviour, IThreatAbility
 {
     private ThreatCardInstance _threat;
     private GameObject _choicePanel;
@@ -40,8 +40,8 @@ private IEnumerator HandleChoice(HeroController hero)
 
     // dynamiczne napisy
     string displayName = GameManager.Instance.GetHeroName(hero.HeroId);
-    string dmgLabel    = "Take 2 Damage";
-    string tokenLabel  = "Take 2 Threat Token";
+    string dmgLabel    = "Take 1 Damage";
+    string tokenLabel  = "Take 1 Threat Token";
 
     bool? takeDamage = null;
     ctrl.Init(
@@ -60,18 +60,16 @@ private IEnumerator HandleChoice(HeroController hero)
 
     yield return new WaitUntil(() => takeDamage.HasValue);
 
-        if (takeDamage.Value)
-        {
-            var dmg = hero.GetComponent<HeroDamageHandler>();
-            yield return dmg.TakeDamageCoroutine();
-            yield return dmg.TakeDamageCoroutine();
+    if (takeDamage.Value)
+    {
+        var dmg = hero.GetComponent<HeroDamageHandler>();
+        yield return dmg.TakeDamageCoroutine();  // jeden discard
     }
-        else
-        {
-            CrisisTokenManager.Instance.GiveCrisisToken(hero);
-            CrisisTokenManager.Instance.GiveCrisisToken(hero);
-            Debug.Log($"[RedskullThreat04] {hero.HeroId} otrzymuje 1 Threat Token");
-        }
+    else
+    {
+        CrisisTokenManager.Instance.GiveCrisisToken(hero);
+        Debug.Log($"[RedskullThreat04] {hero.HeroId} otrzymuje 1 Threat Token");
+    }
 }
 
     private void OnDestroy()

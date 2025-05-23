@@ -7,23 +7,24 @@ public class ThreatChoicePanelController : MonoBehaviour
 {
     public Button damageButton;
     public Button tokenButton;
-    public TextMeshProUGUI headerText;   // przeciągnij w Inspectorze swój TextMeshProUGUI
+    public TextMeshProUGUI damageLabelText;  // przypnij w Inspectorze
+    public TextMeshProUGUI tokenLabelText;   // przypnij w Inspectorze
+    public TextMeshProUGUI headerText;
 
     /// <summary>
-    /// Inicjalizuje panel:
-    /// - ustawia nagłówek na nazwę bohatera,
-    /// - podłącza callbacki do przycisków.
+    /// heroName   – tekst w nagłówku
+    /// dmgLabel   – podpis na pierwszym przycisku
+    /// tokenLabel – podpis na drugim przycisku
     /// </summary>
-    public void Init(string heroName, Action onDamage, Action onTokens)
+    public void Init(string heroName, string dmgLabel, string tokenLabel, Action onDamage, Action onTokens)
     {
-        // ustaw nagłówek
-        headerText.text = $"{heroName.ToUpper()} CHOOSE!";
+        headerText.text         = $"{heroName.ToUpper()} CHOOSE!";
+        damageLabelText.text    = dmgLabel;
+        tokenLabelText.text     = tokenLabel;
 
-        // usuń stare listener’y
         damageButton.onClick.RemoveAllListeners();
         tokenButton.onClick.RemoveAllListeners();
 
-        // podłącz nowe
         damageButton.onClick.AddListener(() => onDamage?.Invoke());
         tokenButton.onClick.AddListener(() => onTokens?.Invoke());
     }
