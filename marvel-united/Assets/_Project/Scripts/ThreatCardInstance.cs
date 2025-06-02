@@ -10,6 +10,7 @@ public class ThreatCardInstance : MonoBehaviour
 {
     [Tooltip("Dane tego threata – JsonUtility wypełnia listy, BuildDictionaries() tworzy słowniki")]
     public ThreatCard data;
+    public IThreatAbility ability;
     public GameObject assignedLocation;
     public int currentMinionHealth = 0;
 

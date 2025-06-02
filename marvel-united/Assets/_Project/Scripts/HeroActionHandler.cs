@@ -185,34 +185,52 @@ public class HeroActionHandler : MonoBehaviour
             });
         }
         if (loc.HasThug())
-        {
-            loc.EnableAttackButton(() =>
             {
-                var thug = loc.RemoveFirstThug();
-                if (thug != null)
+                loc.EnableAttackButton(() =>
                 {
-                    if (missionManager.thugsCompleted) Destroy(thug);
+                    bool shouldRemoveThug = true;
+
+                    // Sprawdź, czy Threat06 jest aktywny na tej lokacji
+                    var threat = loc.threatInstance;
+                    if (threat != null && threat.ability is RedskullThreat06 r06)
+                    {
+                        shouldRemoveThug = r06.RegisterAttackOnLocation(loc);
+                    }
+
+                    if (shouldRemoveThug)
+                    {
+                        var thug = loc.RemoveFirstThug();
+                        if (thug != null)
+                        {
+                            if (missionManager.thugsCompleted) Destroy(thug);
+                            else
+                            {
+                                Vector3 ws = thug.transform.lossyScale;
+                                foreach (var slot in thugTokenSlots)
+                                    if (slot.childCount == 0)
+                                    {
+                                        Vector3 ps = slot.lossyScale;
+                                        thug.transform.SetParent(slot, false);
+                                        thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                        thug.transform.localPosition = Vector3.zero;
+                                        thug.transform.localRotation = Quaternion.identity;
+                                        break;
+                                    }
+                            }
+                        }
+                    }
                     else
                     {
-                        Vector3 ws = thug.transform.lossyScale;
-                        foreach (var slot in thugTokenSlots)
-                            if (slot.childCount == 0)
-                            {
-                                Vector3 ps = slot.lossyScale;
-                                thug.transform.SetParent(slot, false);
-                                thug.transform.localScale = new Vector3(ws.x/ps.x,ws.y/ps.y,ws.z/ps.z);
-                                thug.transform.localPosition = Vector3.zero;
-                                thug.transform.localRotation = Quaternion.identity;
-                                break;
-                            }
+                        Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
                     }
-                }
-                Destroy(symbolButton);
-                loc.DisableAllActionButtons();
-                symbolPanelUI.ClearSelectedSymbol();
-                missionManager.CheckMissions();
-            });
-        }
+
+                    Destroy(symbolButton);
+                    loc.DisableAllActionButtons();
+                    symbolPanelUI.ClearSelectedSymbol();
+                    missionManager.CheckMissions();
+                });
+            }
+
     }
 
     private void DoHeroic(LocationController loc, GameObject symbolButton)

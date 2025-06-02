@@ -12,6 +12,7 @@ static class ThreatAbilityFactory
         ["Redskull_threat_03"] = typeof(RedskullThreat03),
         ["Redskull_threat_04"] = typeof(RedskullThreat04),
         ["Redskull_threat_05"] = typeof(RedskullThreat05),
+        ["Redskull_threat_06"] = typeof(RedskullThreat06),
     };
 
     public static IThreatAbility Attach(string key, ThreatCardInstance inst)
@@ -27,6 +28,7 @@ static class ThreatAbilityFactory
                 rt3.Init(inst, null);
             else if (comp is RedskullThreat05 rt5)
                 rt5.Init(inst);
+            inst.ability = comp;
             return comp;
         }
         return null;
