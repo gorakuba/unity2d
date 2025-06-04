@@ -48,12 +48,12 @@ public class RedskullThreat05 : MonoBehaviour, IThreatAbility
             .Where(h => h.CurrentLocation != null
                      && relevantRoots.Contains(h.CurrentLocation.gameObject))
             .ToList();
-
+        var activeHeroes = heroesHere.Where(h => !h.IsStunned).ToList();
         // każdemu dajemy po jednym Threat Tokenie
-        foreach (var hero in heroesHere)
+        foreach (var hero in activeHeroes)
             CrisisTokenManager.Instance.GiveCrisisToken(hero);
 
-        Debug.Log($"[RedskullThreat05] Dodano {heroesHere.Count} Threat Tokenów dla {string.Join(", ", heroesHere.Select(h => h.HeroId))}");
+        Debug.Log($"[RedskullThreat05] Dodano {activeHeroes.Count} Threat Tokenów dla {string.Join(", ", activeHeroes.Select(h => h.HeroId))}");
 
     }
 

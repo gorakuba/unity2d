@@ -20,7 +20,7 @@ public class CardManager : MonoBehaviour
 
     // Talia Zbira
     private List<VillainCard> villainDeck = new();
-    private int villainCardIndex = 1;
+    private int villainCardIndex = 0;
 
     // Pełne, przetasowane talie bohaterów
     private List<HeroCard> heroDeck1;
@@ -75,7 +75,7 @@ public class CardManager : MonoBehaviour
             Shuffle(cards);
             villainDeck = cards;
             firstVillainCard = villainDeck[0];
-            villainCardIndex = 1;
+            villainCardIndex = 0;
         }
     }
 

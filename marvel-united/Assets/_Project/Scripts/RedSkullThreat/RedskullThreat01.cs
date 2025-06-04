@@ -16,6 +16,7 @@ public class RedskullThreat01 : MonoBehaviour, IThreatAbility
 
     public void OnTurnStart(ThreatCardInstance threat, HeroController hero)
     {
+        if (hero.IsStunned) return;
         string heroLoc = hero.CurrentLocation  != null ? hero.CurrentLocation.gameObject.name : "null";
         string threatLoc = threat.assignedLocation != null ? threat.assignedLocation.name   : "null";
         Debug.Log($"[RedskullThreat01] OnTurnStart dla {hero.HeroId}: CurrentLocation={heroLoc}, ThreatLocation={threatLoc}");

@@ -44,6 +44,7 @@ public class CrisisTokenManager : MonoBehaviour
     public void GiveCrisisToken(HeroController hero)
     {
         if (hero == null) return;
+        if (hero.IsStunned) return;
         var handler = hero.GetComponent<HeroCrisisHandler>();
         if (handler == null)
         {

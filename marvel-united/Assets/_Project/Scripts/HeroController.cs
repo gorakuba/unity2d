@@ -5,10 +5,12 @@ public class HeroController : MonoBehaviour
     public SpriteRenderer visualRenderer;
     public HeroVisualDatabase visualDatabase;
 
+
     private HeroDamageHandler heroDamageHandler;
     private string heroId;
     public string HeroId => heroId;
 
+    public bool IsStunned { get; set; }
     /// <summary>
     /// Ustawiane przez HeroMovementManager po zakończeniu ruchu.
     /// </summary>
@@ -42,9 +44,23 @@ public class HeroController : MonoBehaviour
 
     public void TakeDamage()
     {
+        if (IsStunned)
+            return;
         if (heroDamageHandler != null)
             heroDamageHandler.TakeDamageCoroutine();
         else
             Debug.LogWarning($"Brak HeroDamageHandler dla {heroId}!");
+    }
+    
+    public void Stun()
+    {
+        IsStunned = true;
+        Debug.Log($"[HeroController] {heroId} zostal oszolomiony");
+    }
+
+    public void RecoverStun()
+    {
+        IsStunned = false;
+        Debug.Log($"[HeroController] {heroId} odzyskal przytomnosc");
     }
 }

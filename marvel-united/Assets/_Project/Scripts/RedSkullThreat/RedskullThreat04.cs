@@ -35,6 +35,7 @@ public class RedskullThreat04 : MonoBehaviour, IThreatAbility
 
 private IEnumerator HandleChoice(HeroController hero)
 {
+    if (hero.IsStunned) yield break;
     _choicePanel.SetActive(true);
     var ctrl = _choicePanel.GetComponent<ThreatChoicePanelController>();
 

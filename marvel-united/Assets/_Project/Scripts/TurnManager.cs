@@ -230,6 +230,22 @@ public class TurnManager : MonoBehaviour
     private IEnumerator PlayerTurnSequence(int playerIndex)
     {
         playerTurnUI.SetActive(true);
+        var heroController = playerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+        if (heroController != null && heroController.IsStunned)
+        {
+            heroController.IsStunned = false;
+            for (int i = 0; i < 3; i++)
+            {
+                var extra = _cardMgr.DrawHeroCard(playerIndex);
+                if (extra != null)
+                {
+                    if (playerIndex == 1)
+                        _cardMgr.playerOneHand.Add(extra);
+                    else
+                        _cardMgr.playerTwoHand.Add(extra);
+                }
+            }
+        }
 
         var drawn = _cardMgr.DrawHeroCard(playerIndex);
         if (drawn != null)
@@ -268,6 +284,19 @@ public class TurnManager : MonoBehaviour
         else
         {
             OnStartHeroTurn?.Invoke(hero);
+            if (hero.IsStunned)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var extra = _cardMgr.DrawHeroCard(playerIndex);
+                    if (extra != null)
+                    {
+                        if (playerIndex == 1) _cardMgr.playerOneHand.Add(extra);
+                        else _cardMgr.playerTwoHand.Add(extra);
+                    }
+                }
+                hero.RecoverStun();
+            }
         }
 
 

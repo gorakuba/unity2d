@@ -189,22 +189,27 @@ public IEnumerator MoveVillain(int steps)
         if (bamEffects.TryGetValue(currentBAMId, out var func))
             StartCoroutine(func.Invoke());
     }
+    
+        public void TriggerBAM()
+    {
+        ExecuteBAM();
+    }
 
     private IEnumerator BAM_RedSkull()
     {
         Debug.Log("🔥 BAM Red Skull");
         var root = GetLocationRoot(transform);
-        var h1   = SetupManager.hero1Controller;
-        var h2   = SetupManager.hero2Controller;
-        int dmg  = 0;
-        if (h1 != null && GetLocationRoot(h1.transform) == root) dmg++;
-        if (h2 != null && GetLocationRoot(h2.transform) == root) dmg++;
+        var h1 = SetupManager.hero1Controller;
+        var h2 = SetupManager.hero2Controller;
+        int dmg = 0;
+        if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
+        if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
         BAMController.StartBAM(dmg);
         if (dmg > 0)
         {
-            if (h1 != null && GetLocationRoot(h1.transform) == root)
+            if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
                 yield return StartCoroutine(h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
-            if (h2 != null && GetLocationRoot(h2.transform) == root)
+            if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
                 yield return StartCoroutine(h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
         }
         DashboardLoader.Instance.MoveFearTrack(2);

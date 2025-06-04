@@ -94,6 +94,8 @@ private IEnumerator Special_HailHydra()
     // 5️⃣ Zadanie obrażeń → dopiero po wszystkim
     foreach (var hero in heroes)
     {
+                if (hero.GetComponent<HeroController>()?.IsStunned == true)
+            continue;
         yield return hero.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
     }
 }
