@@ -51,6 +51,7 @@ public class LocationManager : MonoBehaviour
     public event System.Action OnLocationsAndTokensReady;
 
     public IReadOnlyList<Transform> LocationRoots => spawnedLocationTransforms;
+    
 
     public IReadOnlyList<Transform> VillainSlots =>
         spawnedLocationTransforms
@@ -130,6 +131,20 @@ public class LocationManager : MonoBehaviour
 
         // Lokacje gotowe
         OnLocationsReady?.Invoke();
+        for (int i = 0; i < spawnedLocations.Count; i++)
+        {
+            var ctrl = spawnedLocations[i].GetComponent<LocationController>();
+            if (ctrl == null) continue;
+
+            int prev = (i - 1 + spawnedLocations.Count) % spawnedLocations.Count;
+            int next = (i + 1) % spawnedLocations.Count;
+
+            ctrl.neighbors = new List<LocationController>
+            {
+                spawnedLocations[prev].GetComponent<LocationController>(),
+                spawnedLocations[next].GetComponent<LocationController>()
+            };
+        }
 
         // Start spawn żetonów
         StartCoroutine(SpawnAllTokens());
@@ -157,7 +172,7 @@ public class LocationManager : MonoBehaviour
                          ? civilianTokenPrefab
                          : thugTokenPrefab;
 
-            if (slot != null && prefab != null)
+           if (slot != null && prefab != null)
             {
                 var tok = Instantiate(prefab, slot);
                 tok.transform.localPosition = Vector3.zero;

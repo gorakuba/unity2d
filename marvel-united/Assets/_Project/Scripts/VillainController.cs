@@ -2,107 +2,159 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using UnityEngine;
+
+[Serializable]
+public class VillainsRoot
+{
+    public List<VillainData> villains;
+}
+
+[Serializable]
+public class VillainData
+{
+    public string id;
+    public string name;
+    public string bam;
+
+    [Serializable]
+    public class HealthPerPlayers { public int _2; public int _3; public int _4; }
+    public HealthPerPlayers health_per_players;
+
+    public string bam_effect;
+    public string villainous_plot;
+    public bool additional_win_condition;
+    public string additional_win_condition_script;
+    public string overflow;
+    public List<ThreatCard> threats;
+    public List<VillainCard> cards;
+    public string imagePath;
+    public string backTexturePath;
+}
 
 public class VillainController : MonoBehaviour
 {
+    public static VillainController Instance { get; private set; }
+    public event Action<Transform> OnVillainStop;
+    public event Func<IEnumerator> OnBAMEffect;
+    public int CurrentHealth { get; private set; }
+
     [Header("References")]
     public SpriteRenderer visualRenderer;
     public VillainVisualDatabase visualDatabase;
 
     [Header("Movement Settings")]
-    [Tooltip("Time (in seconds) for one movement step")]  
+    [Tooltip("Time (in seconds) for one movement step")]
     public float stepDuration = 0.3f;
 
+    [Header("Health Settings")]
+    [Tooltip("Tekst JSON z danymi villains")]
+    public TextAsset villainJson;
+
+    private VillainsRoot loadedVillainData;
     private Transform[] _villainSlots;
     private int _currentIndex;
 
-    // -------------------------------
-    // BAM SYSTEM
-    // -------------------------------
-    private Dictionary<string, Func<IEnumerator>> bamEffects = new Dictionary<string, Func<IEnumerator>>();
-
+    private Dictionary<string, Func<IEnumerator>> bamEffects = new();
     private string currentBAMId;
-
-    // Villains data loaded from StreamingAssets
-    private VillainsRoot loadedVillainData;
+    private IVillainSpecials specialHandler;
 
     void Awake()
     {
-        // Wczytaj dane JSON z StreamingAssets
-        LoadVillainJson();
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
 
-        // Pobierz sloty z LocationManager
+        LoadVillainJson();
+        InitializeHealthForPlayers(2);  // test: 2 graczy
+        Debug.Log($"[Villain] HP = {CurrentHealth}");
+
         var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
         _villainSlots = locMan.VillainSlots.ToArray();
 
-        // Rejestracja BAM efektów
-        bamEffects.Add("red_skull", BAM_RedSkull);
-        bamEffects.Add("taskmaster", () => { BAM_Taskmaster(); return null; }); // template na przyszłość
-        bamEffects.Add("ultron", () => { BAM_Ultron(); return null; });         // template na przyszłość
+        bamEffects["red_skull"]  = BAM_RedSkull;
+        bamEffects["taskmaster"] = () => { BAM_Taskmaster(); return null; };
+        bamEffects["ultron"]     = () => { BAM_Ultron();      return null; };
 
-        // Pobierz aktualny BAM ID
         currentBAMId = GetBAMIdForCurrentVillain();
+        switch (GameManager.Instance.selectedVillain)
+        {
+            case "red_skull":
+                specialHandler = new RedSkullSpecials();
+                break;
+            // inne...
+        }
     }
 
     private void LoadVillainJson()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "Villains.json");
-
-        if (!File.Exists(path))
+        if (villainJson == null)
         {
-            Debug.LogError("VillainController: Nie znaleziono Villains.json w StreamingAssets!");
+            Debug.LogError("VillainController: nie przypisano villainJson!");
             return;
         }
+        loadedVillainData = JsonUtility.FromJson<VillainsRoot>(villainJson.text);
+    }
 
-        string json = File.ReadAllText(path);
-        loadedVillainData = JsonUtility.FromJson<VillainsRoot>(json);
+    private void InitializeHealthForPlayers(int players)
+    {
+        if (loadedVillainData == null) return;
+        var vid = GameManager.Instance.selectedVillain;
+        var vd  = loadedVillainData.villains.FirstOrDefault(v => v.id == vid);
+        if (vd == null) return;
+
+        CurrentHealth = players switch
+        {
+            2 => vd.health_per_players._2,
+            3 => vd.health_per_players._3,
+            4 => vd.health_per_players._4,
+            _ => vd.health_per_players._2
+        };
     }
 
     private string GetBAMIdForCurrentVillain()
     {
-        var villainId = GameManager.Instance.selectedVillain;
-        var villain = loadedVillainData.villains.Find(v => v.id == villainId);
-
-        if (villain != null)
-            return villain.bam;
-
-        Debug.LogError("VillainController: Nie znaleziono BAM ID dla Villain!");
-        return "";
+        if (loadedVillainData == null) return "";
+        var vid = GameManager.Instance.selectedVillain;
+        var vd  = loadedVillainData.villains.Find(v => v.id == vid);
+        return vd != null ? vd.bam : "";
     }
 
-    // ============================
-    // 1️⃣ Initialization
-    // ============================
     public void Initialize(string villainID, int startIndex = 0)
     {
         var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
         _villainSlots = locMan.VillainSlots.ToArray();
 
         var sprite = visualDatabase.GetVillainSprite(villainID);
-        if (sprite != null)
-            visualRenderer.sprite = sprite;
+        if (sprite != null) visualRenderer.sprite = sprite;
 
         _currentIndex = startIndex;
         transform.SetParent(_villainSlots[_currentIndex], false);
         transform.localPosition = Vector3.zero;
     }
 
-    // ============================
-    // 2️⃣ Movement
-    // ============================
-    public IEnumerator MoveVillain(int steps)
+public IEnumerator MoveVillain(int steps)
+{
+    int count = _villainSlots.Length;
+
+    if (steps <= 0)
     {
-        int count = _villainSlots.Length;
-        for (int i = 0; i < steps; i++)
-        {
-            _currentIndex = (_currentIndex + 1) % count;
-            var target = _villainSlots[_currentIndex];
-            yield return StartCoroutine(AnimateMoveTo(target.position));
-            transform.SetParent(target, true);
-        }
+        // Villain nie rusza się, ale wciąż „staje” na obecnym slocie
+        OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
+        yield break;
     }
+
+    for (int i = 0; i < steps; i++)
+    {
+        _currentIndex = (_currentIndex + 1) % count;
+        var target = _villainSlots[_currentIndex];
+        yield return StartCoroutine(AnimateMoveTo(target.position));
+        transform.SetParent(target, true);
+    }
+
+    // po zakończeniu ruchu – emitujemy event
+    OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
+}
+
 
     private IEnumerator AnimateMoveTo(Vector3 targetPos)
     {
@@ -117,243 +169,149 @@ public class VillainController : MonoBehaviour
         transform.position = targetPos;
     }
 
-    // ============================
-    // 3️⃣ BAM Attack (Main BAM trigger)
-    // ============================
     public IEnumerator ExecuteAttack(VillainCard card)
     {
         if (card.BAM_effect)
         {
             Debug.Log("💥 BAM effect!");
-
-            // Wykonaj BAM efekt
+            if (OnBAMEffect != null)
+                foreach (Func<IEnumerator> handler in OnBAMEffect.GetInvocationList())
+                yield return StartCoroutine(handler());
+            
             ExecuteBAM();
-
             yield return new WaitForSeconds(0.5f);
         }
     }
 
-private void ExecuteBAM()
-{
-    if (string.IsNullOrEmpty(currentBAMId))
+    private void ExecuteBAM()
     {
-        Debug.LogWarning("BAM ID nie ustawiony → brak efektu BAM");
-        return;
+        if (string.IsNullOrEmpty(currentBAMId)) return;
+        if (bamEffects.TryGetValue(currentBAMId, out var func))
+            StartCoroutine(func.Invoke());
+    }
+    
+        public void TriggerBAM()
+    {
+        ExecuteBAM();
     }
 
-    if (bamEffects.TryGetValue(currentBAMId, out var func))
+    private IEnumerator BAM_RedSkull()
     {
-        Debug.Log($"🚨 [BAM] {currentBAMId.ToUpper()} → Aktywacja efektu BAM");
-        StartCoroutine(func.Invoke());
-    }
-    else
-    {
-        Debug.LogWarning($"Brak efektu BAM dla ID: {currentBAMId}");
-    }
-}
-
-    // ✅ BAM EFFECTS ========================
-
-    IEnumerator BAM_RedSkull()
-    {
-        Debug.Log("🔥 BAM Red Skull → Obrażenia + Fear +2");
-
-        var villainLocationRoot = GetLocationRoot(transform);
-
-        var hero1 = SetupManager.hero1Controller;
-        var hero2 = SetupManager.hero2Controller;
-
-        var hero1LocationRoot = hero1 != null ? GetLocationRoot(hero1.transform) : null;
-        var hero2LocationRoot = hero2 != null ? GetLocationRoot(hero2.transform) : null;
-        int playersToDamage = 0;
-
-        if (hero1 != null && hero1LocationRoot == villainLocationRoot)
-            playersToDamage++;
-
-        if (hero2 != null && hero2LocationRoot == villainLocationRoot)
-            playersToDamage++;
-
-        // UWAGA: START BAM -> RAZ dla wszystkich graczy
-        BAMController.StartBAM(playersToDamage);
-        Debug.Log("BAM");
-        if (hero1 != null && hero1LocationRoot == villainLocationRoot)
+        Debug.Log("🔥 BAM Red Skull");
+        var root = GetLocationRoot(transform);
+        var h1 = SetupManager.hero1Controller;
+        var h2 = SetupManager.hero2Controller;
+        int dmg = 0;
+        if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
+        if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
+        BAMController.StartBAM(dmg);
+        if (dmg > 0)
         {
-            Debug.Log("BAM trafia gracza 1");
-            yield return StartCoroutine(hero1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
-            
+            if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
+                yield return StartCoroutine(h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
+            if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
+                yield return StartCoroutine(h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
         }
-
-        if (hero2 != null && hero2LocationRoot == villainLocationRoot)
-        {
-            Debug.Log("BAM trafia gracza 2");
-            yield return StartCoroutine(hero2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
-            
-        }
-        
         DashboardLoader.Instance.MoveFearTrack(2);
     }
 
+    private void BAM_Taskmaster() { Debug.Log("🎯 BAM Taskmaster (przykład)"); }
+    private void BAM_Ultron()     { Debug.Log("🤖 BAM Ultron (przykład)"); }
 
-    // TEMPLATE BAMs (przykłady na przyszłość)
-
-    private void BAM_Taskmaster()
+    public IEnumerator ExecuteSpawn(VillainCard card)
     {
-        Debug.Log("🎯 BAM Taskmaster → Porusz + Atakuj (przykład)");
-        // TODO: Dodaj implementację BAM dla Taskmaster
-    }
-
-    private void BAM_Ultron()
-    {
-        Debug.Log("🤖 BAM Ultron → Spawn robotów (przykład)");
-        // TODO: Dodaj implementację BAM dla Ultron
-    }
-
-    // ============================
-    // 4️⃣ Spawn Tokens
-    // ============================
-public IEnumerator ExecuteSpawn(VillainCard card)
-    {
-        if (!card.HasSpawn)
-            yield break;
-
-        Debug.Log("🎯 Spawn tokens START");
-
+        if (!card.HasSpawn) yield break;
         var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
-        var locations = locMan.LocationRoots;
+        var locs   = locMan.LocationRoots;
+        int i = _currentIndex;
 
-        int villainIndex = _currentIndex;
-        int leftIndex = (villainIndex - 1 + locations.Count) % locations.Count;
-        int middleIndex = villainIndex;
-        int rightIndex = (villainIndex + 1) % locations.Count;
-
-        yield return StartCoroutine(SpawnTokensForLocation(card.Location_left, locations[leftIndex], "LEFT"));
-        yield return StartCoroutine(SpawnTokensForLocation(card.Location_middle, locations[middleIndex], "MIDDLE"));
-        yield return StartCoroutine(SpawnTokensForLocation(card.Location_right, locations[rightIndex], "RIGHT"));
+        yield return StartCoroutine(SpawnTokens(card.Location_left,   locs[(i-1+locs.Count)%locs.Count], "LEFT"));
+        yield return StartCoroutine(SpawnTokens(card.Location_middle, locs[i],                       "MIDDLE"));
+        yield return StartCoroutine(SpawnTokens(card.Location_right,  locs[(i+1)%locs.Count],     "RIGHT"));
     }
 
-private IEnumerator SpawnTokensForLocation(List<LocationSpawnSymbol> spawnGroups, Transform locationRoot, string locationName)
+    private IEnumerator SpawnTokens(List<LocationSpawnSymbol> groups, Transform root, string name)
     {
-        if (spawnGroups == null || spawnGroups.Count == 0)
-            yield break;
-
-        List<Transform> freeSlots = GetAllFreeTokenSlots(locationRoot);
-
-        int totalToSpawn = 0;
-        foreach (var group in spawnGroups)
-            totalToSpawn += group.count;
-
-        Debug.Log($"[DEBUG] {locationName} → Free slots available: {freeSlots.Count}, Tokens to spawn: {totalToSpawn}");
-
-        foreach (var group in spawnGroups)
-        {
-            for (int i = 0; i < group.count; i++)
-            {
-                yield return StartCoroutine(SpawnToken(group.symbol, locationRoot, locationName, freeSlots));
-            }
-        }
+        if (groups == null || groups.Count == 0) yield break;
+        var free = GetAllFreeSlots(root);
+        foreach (var g in groups)
+            for (int k = 0; k < g.count; k++)
+                yield return StartCoroutine(SpawnSingle(g.symbol, root, name, free));
     }
 
-private IEnumerator SpawnToken(string type, Transform locationRoot, string locationName, List<Transform> freeSlots)
-{
-    var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
-    GameObject prefab = null;
-
-    if (type == "Civillian")
-        prefab = locMan.civilianTokenPrefab;
-    else if (type == "Thug")
-        prefab = locMan.thugTokenPrefab;
-
-    if (prefab != null)
+    private IEnumerator SpawnSingle(string type, Transform root, string name, List<Transform> free)
     {
-        if (freeSlots.Count > 0)
+        var locMan = UnityEngine.Object.FindFirstObjectByType<LocationManager>();
+        GameObject prefab = type == "Civillian" ? locMan.civilianTokenPrefab
+                         : type == "Thug"      ? locMan.thugTokenPrefab
+                         : null;
+        if (prefab != null && free.Count > 0)
         {
-            var slot = freeSlots[0];
-            freeSlots.RemoveAt(0);
-
-            // ✅ INSTANCJA → dokładnie tak jak Prepare Game (ustawia automatycznie parent i lokalną skalę)
-            GameObject token = Instantiate(prefab, slot.position, slot.rotation, slot);
-            token.transform.localPosition = Vector3.zero;
-            token.transform.localRotation = Quaternion.identity;
-
-            // ✅ TokenDrop → jeżeli jest w prefabie to Start() zrobi swoje, jak nie ma → możesz dodać
-            if (token.GetComponent<TokenDrop>() == null)
-            {
-                token.AddComponent<TokenDrop>();
-            }
-
-            Debug.Log($"[SPAWN OK] {locationName} → Spawned {type} in {locationRoot.name}");
+            var slot = free[0]; free.RemoveAt(0);
+            var tok  = Instantiate(prefab, slot.position, slot.rotation, slot);
+            tok.transform.localPosition  = Vector3.zero;
+            tok.transform.localRotation  = Quaternion.identity;
+            if (tok.GetComponent<TokenDrop>() == null) tok.AddComponent<TokenDrop>();
+            Debug.Log($"[SPAWN] {name} → {type}");
         }
         else
         {
-            Debug.LogWarning($"[SPAWN FAIL] {locationName} → No free slot for {type} in {locationRoot.name}");
-
-            if (type == "Civillian")
-            {
-                Debug.LogWarning($"[OVERFLOW] Civillian → 1 Fear Track ");
-                DashboardLoader.Instance.MoveFearTrack(1);
-            }
-            else if (type == "Thug")
-            {
-                Debug.LogWarning($"[OVERFLOW] Thug → 1 Fear Track.");
-                DashboardLoader.Instance.MoveFearTrack(1);
-            }
+            Debug.LogWarning($"[{name}] brak slotu dla {type}");
+            DashboardLoader.Instance.MoveFearTrack(1);
         }
-    }
-    else
-    {
-        Debug.LogError($"[SPAWN ERROR] Invalid token type: {type}");
+        yield return new WaitForSeconds(0.3f);
     }
 
-    yield return new WaitForSeconds(0.3f);
-}
-
-
-private List<Transform> GetAllFreeTokenSlots(Transform locationRoot)
+    private List<Transform> GetAllFreeSlots(Transform root)
     {
-        List<Transform> freeSlots = new List<Transform>();
-
+        var list = new List<Transform>();
         for (int i = 0; i < 6; i++)
         {
-            var slot = FindDeepChild(locationRoot, $"Slot_{i}");
-            if (slot != null && slot.childCount == 0)
-                freeSlots.Add(slot);
+            var s = FindDeepChild(root, $"Slot_{i}");
+            if (s != null && s.childCount == 0) list.Add(s);
         }
-
-        return freeSlots;
+        return list;
     }
 
-private Transform FindDeepChild(Transform parent, string name)
+    private Transform FindDeepChild(Transform parent, string name)
     {
-        foreach (Transform child in parent)
+        foreach (Transform c in parent)
         {
-            if (child.name == name)
-                return child;
-
-            var result = FindDeepChild(child, name);
-            if (result != null)
-                return result;
+            if (c.name == name) return c;
+            var r = FindDeepChild(c, name);
+            if (r != null) return r;
         }
-
         return null;
     }
 
-
-    // ============================
-    // 5️⃣ Special Ability
-    // ============================
     public IEnumerator ExecuteAbility(VillainCard card)
     {
-        if (card.special)
-        {
-            Debug.Log($"🌟 Special: {card.special_name}");
-            yield return new WaitForSeconds(0.5f);
-        }
+        if (!card.special) yield break;
+        if (specialHandler == null) yield break;
+        yield return specialHandler.ExecuteSpecial(card.special_ability);
+        yield return new WaitForSeconds(0.5f);
     }
-    
+
     private Transform GetLocationRoot(Transform t)
     {
         while (t.parent != null && !t.parent.name.StartsWith("Location_PLACE"))
             t = t.parent;
         return t;
+    }
+
+    /// <summary>
+    /// Zadaj obrażenia Zbirovi.
+    /// </summary>
+    public void DealDamageToVillain(int amount)
+    {
+        CurrentHealth -= amount;
+        Debug.Log($"Villain otrzymuje {amount} dmg → pozostało {CurrentHealth}");
+        for (int i = 0; i < amount; i++)
+    {
+        DashboardLoader.Instance.RemoveFirstHealthToken();
+    }
+        if (CurrentHealth <= 0)
+            Debug.Log("💀 Villain pokonany!");
+        
     }
 }

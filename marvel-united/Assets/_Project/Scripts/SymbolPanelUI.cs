@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System;
 public class SymbolPanelUI : MonoBehaviour
 {
+    public HeroActionHandler actionHandler;
     [Header("Kontenery (ustaw w Inspectorze)")]
     public Transform currentContainer;
     public Transform previousContainer;
@@ -15,16 +16,30 @@ public class SymbolPanelUI : MonoBehaviour
 
     [Header("Mapowanie ID → Sprite")]
     public List<SymbolEntry> symbolEntries;
+    private Button lastClickedButton;
+    private string lastClickedSymbolId;
+    
+    private List<GameObject> activeSymbolButtons = new();
+
+    [Header("Prefaby symboli (do spawnowania np. na kartach)")]
+    public GameObject moveSymbolPrefab;
+    public GameObject attackSymbolPrefab;
+    public GameObject heroicSymbolPrefab;
+    public GameObject wildSymbolPrefab;
+
 
     Dictionary<string, Sprite> lookup;
 
     // Pulka trwałych tokenów: ID → ilość
     Dictionary<string,int> persistentPool = new();
     [Header("Panel wybranego symbolu")]
+    [Header("Panel Crisis Tokens")]
+    public CrisisTokenUI crisisTokenUI;
 public Image currentlySelectedImage;
 
     // jeżeli chcesz reagować w TurnManagerze
     public event Action<string> onSymbolClicked;
+    private List<string> currentSymbolsList = new();
     void Awake()
     {
         // zbuduj słownik do szybkiego lookup
@@ -35,11 +50,14 @@ public Image currentlySelectedImage;
     }
 
     // 1) Bieżące symbole
+
     public void ShowCurrentSymbols(List<string> symbols)
     {
+        currentSymbolsList = new List<string>(symbols);
         Clear(currentContainer);
-        foreach(var id in symbols)
+        foreach (var id in symbols)
             InstantiateIcon(currentContainer, id);
+        UpdateCrisisTokens();
     }
 
     // 2) Poprzednie symbole drugiego gracza
@@ -89,28 +107,33 @@ void InstantiateIcon(Transform parent, string id)
         return;
     }
 
-    // 1) Instancja
     var go = Instantiate(symbolIconPrefab, parent);
+    activeSymbolButtons.Add(go); // ← zapamiętaj button
 
-    // 2) Podmień obrazek
     var img = go.GetComponent<Image>();
     img.sprite = sprite;
 
-    // 3) Dodaj Button.onClick
     var btn = go.GetComponent<Button>();
     if (btn != null)
     {
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(() =>
         {
-            // 3a) Ustaw sprite w panelu „CurrentlySelectedSymbol”
+            Debug.Log($"[SymbolPanelUI] Kliknięto symbol: {id} | Button={btn.gameObject.name}");
+            lastClickedButton = btn;
+            lastClickedSymbolId = id;
+
             currentlySelectedImage.sprite = sprite;
             currentlySelectedImage.gameObject.SetActive(true);
-            // 3b) (Opcjonalnie) wyślij event dalej
+
             onSymbolClicked?.Invoke(id);
+            actionHandler?.HandleAction(id, btn.gameObject); // 🧠 <-- ważne
         });
+
     }
 }
+
+
 
 
     void Clear(Transform t)
@@ -135,5 +158,36 @@ void InstantiateIcon(Transform parent, string id)
         currentlySelectedImage.gameObject.SetActive(false);
     }
 }
+private void UpdateCrisisTokens()
+{
+    if (crisisTokenUI != null)
+        crisisTokenUI.UpdateUI(CrisisTokenManager.Instance.GetTotalCrisisTokens());
+} 
+public void RemoveCurrentSymbol(string id)
+{
+    int index = currentSymbolsList.IndexOf(id);
+    if (index != -1)
+    {
+        currentSymbolsList.RemoveAt(index);
+        Clear(currentContainer);
+        foreach (var sym in currentSymbolsList)
+            InstantiateIcon(currentContainer, sym);
+
+        ClearSelectedSymbol();
+    }
+}
+public GameObject GetSymbolPrefab(string id)
+{
+    // Przykład mapowania symbolu na prefab
+    return id switch
+    {
+        "move" => moveSymbolPrefab,
+        "attack" => attackSymbolPrefab,
+        "heroic" => heroicSymbolPrefab,
+        "wild" => wildSymbolPrefab,
+        _ => null
+    };
+}
+
 
 }

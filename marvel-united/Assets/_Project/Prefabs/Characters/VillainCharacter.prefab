@@ -149,3 +149,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualRenderer: {fileID: 7655288268438475144}
   visualDatabase: {fileID: 11400000, guid: f6df83e8a14ee0f4ca40701effdd779d, type: 2}
+  stepDuration: 0.3
+  villainJson: {fileID: 4900000, guid: d2af8df8e7e70ca4790ff202d79a2c13, type: 3}

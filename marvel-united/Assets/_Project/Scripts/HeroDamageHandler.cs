@@ -10,6 +10,8 @@ public class HeroDamageHandler : MonoBehaviour
     private string heroId;
     private DiscardPanelUI discardPanel;
 
+    private HeroController heroController;
+    private VillainController villainController;
     private List<HeroCard> currentHand;
     private List<HeroCard> currentDeck;
 
@@ -23,10 +25,23 @@ public class HeroDamageHandler : MonoBehaviour
         isPlayerTwo = playerTwo;
         this.heroId = heroId;
         discardPanel = DiscardPanelUI.Instance;
+        heroController = GetComponent<HeroController>();
+        if (villainController == null)
+            villainController = SetupManager.villainController;
     }
 
    public IEnumerator TakeDamageCoroutine()
     {
+                var hero = GetComponent<HeroController>();
+        if (hero != null && hero.IsStunned)
+            yield break;
+        var heroCtrl = GetComponent<HeroController>();
+        if (heroCtrl != null && heroCtrl.IsStunned)
+        {
+            Debug.Log($"[HeroDamageHandler] {heroId} is stunned - ignoring damage");
+            yield break;
+        }
+
         if (discardPanel == null)
         {
             discardPanel = DiscardPanelUI.Instance;
@@ -61,6 +76,19 @@ public class HeroDamageHandler : MonoBehaviour
             currentHand.Remove(selectedCard);
             currentDeck.Add(selectedCard);
             Debug.Log($"❤️ Gracz {(isPlayerTwo ? 2 : 1)} odrzucił kartę {selectedCard.Id} → na spód talii");
+
+            if (currentHand.Count == 0)
+            {
+                if (heroController != null)
+                    heroController.IsStunned = true;
+
+                if (villainController == null)
+                    villainController = SetupManager.villainController;
+
+                if (villainController != null)
+                    villainController.TriggerBAM();
+            }
+
         }
     }
 }

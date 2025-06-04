@@ -1,64 +1,38 @@
+// CLASS.cs
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class VillainsRoot
+
+public class BAMController : MonoBehaviour
 {
-    public List<VillainData> villains;
+    public static bool BamInProgress = false;
+    private static int playersPendingDamage = 0;
+
+    public static void StartBAM(int playersToDamage)
+    {
+        playersPendingDamage = playersToDamage;
+        BamInProgress = playersPendingDamage > 0;
+        Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
+    }
+
+    public static void PlayerFinishedDamage()
+    {
+        playersPendingDamage--;
+        Debug.Log($"[BAM] Gracz skończył obrażenia. Pozostało: {playersPendingDamage}");
+        if (playersPendingDamage <= 0)
+        {
+            BamInProgress = false;
+            Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
+        }
+    }
 }
-    public class BAMController : MonoBehaviour
-    {
-        public static bool BamInProgress = false;
-        private static int playersPendingDamage = 0;
-
-        public static void StartBAM(int playersToDamage)
-        {
-            playersPendingDamage = playersToDamage;
-            BamInProgress = playersPendingDamage > 0;
-
-            Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
-        }
-
-        public static void PlayerFinishedDamage()
-        {
-            playersPendingDamage--;
-            Debug.Log($"[BAM] Gracz skończył obrażenia. Pozostało: {playersPendingDamage}");
-
-            if (playersPendingDamage <= 0)
-            {
-                BamInProgress = false;
-                Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
-            }
-        }
-    }
-
-
 
 [Serializable]
-public class VillainData
+public struct SymbolCount
 {
-    public string id;
-    public string name;
-    public string bam;
-    [System.Serializable]
-    public class HealthPerPlayers
-    {
-        public int _2;
-        public int _3;
-        public int _4;
-    }
-
-public HealthPerPlayers health_per_players;
-    public string bam_effect;
-    public string villainous_plot;
-    public bool additional_win_condition;
-    public string additional_win_condition_script;
-    public string overflow;
-    public List<ThreatCard> threats;
-    public List<VillainCard> cards;
-    public string imagePath;
-    public string backTexturePath;
+    public string symbol;
+    public int    count;
 }
 
 [Serializable]
@@ -70,36 +44,66 @@ public class ThreatCard
     public string remove_condition;
     public bool minion;
     public string minion_health;
-    public bool bam_effect;
-    public string bam_ability;
-    public bool on_stand_effect;
-    public string on_stand_ability;
     public bool to_remove;
-    public Dictionary<string, int> required_symbols;
-    public Dictionary<string, int> used_symbols;
-    public bool special;
-    public string special_ability;
+
+    // z JSON: listy symboli
+    public List<SymbolCount> required_symbol_list;
+    public List<SymbolCount> used_symbol_list;
+    public List<AbilityData> abilities;
+
+    // runtime: słowniki tworzone w BuildDictionaries()
+    [NonSerialized] public Dictionary<string, int> required_symbols;
+    [NonSerialized] public Dictionary<string, int> used_symbols;
+
     public Sprite sprite;
+
+    /// <summary>
+    /// Wywołaj zaraz po JsonUtility.FromJson, żeby wypełnić required_symbols i used_symbols
+    /// </summary>
+    public void BuildDictionaries()
+    {
+        required_symbols = new Dictionary<string, int>();
+        if (required_symbol_list != null)
+        {
+            foreach (var sc in required_symbol_list)
+                required_symbols[sc.symbol] = sc.count;
+        }
+
+        used_symbols = new Dictionary<string, int>();
+        if (used_symbol_list != null)
+        {
+            foreach (var sc in used_symbol_list)
+                used_symbols[sc.symbol] = sc.count;
+        }
+    }
+}
+[Serializable]
+public class AbilityData
+{
+    public string trigger; // "OnTurnStart", "OnBAM", "OnStand", "WhenActive" itp.
+    public string id;      // "Redskull_threat_01"
 }
 
 [Serializable]
 public class VillainCard
 {
     public string id;
-    public int move;
-    public bool BAM_effect;
-    public bool special;
+    public int    move;
+    public bool   BAM_effect;
+    public bool   special;
+    public string special_ability;
     public string special_name;
     public string special_description;
     public List<LocationSpawnSymbol> Location_left;
     public List<LocationSpawnSymbol> Location_middle;
     public List<LocationSpawnSymbol> Location_right;
     public bool HasSpawn =>
-        (Location_left != null && Location_left.Count > 0) ||
+        (Location_left   != null && Location_left.Count   > 0) ||
         (Location_middle != null && Location_middle.Count > 0) ||
-        (Location_right != null && Location_right.Count > 0);
+        (Location_right  != null && Location_right.Count  > 0);
 }
-[System.Serializable]
+
+[Serializable]
 public class Hero
 {
     public string Id { get; private set; }
@@ -118,7 +122,7 @@ public class Hero
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class HeroCard
 {
     public string Id { get; private set; }
@@ -139,7 +143,8 @@ public class HeroCard
         Symbols = symbols;
     }
 }
-[System.Serializable]
+
+[Serializable]
 public class LocationData
 {
     public string id;
@@ -152,22 +157,22 @@ public class LocationData
     public Sprite sprite;
 }
 
-[System.Serializable]
+[Serializable]
 public class LocationDataList
 {
     public List<LocationData> locations;
 }
 
-[System.Serializable]
+[Serializable]
 public class VillainDashboard
 {
-    public string villainName;          // np. "red_skull"
-    public GameObject dashboardPrefab;  // przypisany prefab w Inspectorze
+    public string villainName;
+    public GameObject dashboardPrefab;
 }
 
 [Serializable]
 public class LocationSpawnSymbol
 {
     public string symbol;
-    public int count;
+    public int    count;
 }

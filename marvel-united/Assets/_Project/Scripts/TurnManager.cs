@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class TurnManager : MonoBehaviour
 {
+    public static TurnManager Instance { get; private set; }
+    public event Action<HeroController> OnStartHeroTurn;
     public enum GamePhase { VillainTurn, Player1Turn, Player2Turn }
 
     // ============================================
     //               --- CONFIG ---
     // ============================================
+    public MissionManager missionManager;
 
     [Header("Symbol Panel UI")]
     public SymbolPanelUI symbolPanelUI;
@@ -69,6 +73,9 @@ public class TurnManager : MonoBehaviour
     private List<string> _pendingSelectedSymbols;
     private List<string> _lastSymbols;
     private VillainCard _currentVillainCard;
+    private bool missionBonusScheduled = false;
+    private bool pendingBonusP1 = false;
+    private bool pendingBonusP2 = false;
 
     // ============================================
     //               --- INIT ---
@@ -76,6 +83,7 @@ public class TurnManager : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
         _cardMgr = FindAnyObjectByType<CardManager>();
         _villainController = FindAnyObjectByType<VillainController>();
 
@@ -99,10 +107,17 @@ public class TurnManager : MonoBehaviour
     {
         GamePhase currentPhase = GamePhase.VillainTurn;
         nextPlayer = 1;
+        GameManager.Instance.CurrentPlayerIndex = nextPlayer;
         playerTurnsCounter = 0;
 
         while (true)
         {
+
+            if (!missionBonusScheduled && missionManager.CompletedMissionsCount == 3)
+            {
+                missionBonusScheduled = true;
+                pendingBonusP1 = pendingBonusP2 = true;
+            }
             if (currentPhase == GamePhase.VillainTurn)
             {
                 yield return StartCoroutine(VillainTurnSequence());
@@ -111,6 +126,7 @@ public class TurnManager : MonoBehaviour
 
                 nextPlayer = lastPlayerBeforeVillainTurn == 1 ? 2 : 1;
                 currentPhase = nextPlayer == 1 ? GamePhase.Player1Turn : GamePhase.Player2Turn;
+                GameManager.Instance.CurrentPlayerIndex = nextPlayer;
                 playerTurnsCounter = 0;
             }
             else
@@ -119,13 +135,15 @@ public class TurnManager : MonoBehaviour
                 playerTurnsCounter++;
 
                 lastPlayerBeforeVillainTurn = nextPlayer;
+                int maxPlayerTurns = missionManager.CompletedMissionsCount > 0 ? 2 : 3;
 
-                if (playerTurnsCounter >= 3)
+                if (playerTurnsCounter >= maxPlayerTurns)
                     currentPhase = GamePhase.VillainTurn;
                 else
                 {
                     nextPlayer = nextPlayer == 1 ? 2 : 1;
                     currentPhase = nextPlayer == 1 ? GamePhase.Player1Turn : GamePhase.Player2Turn;
+                    GameManager.Instance.CurrentPlayerIndex = nextPlayer;
                 }
             }
         }
@@ -212,6 +230,22 @@ public class TurnManager : MonoBehaviour
     private IEnumerator PlayerTurnSequence(int playerIndex)
     {
         playerTurnUI.SetActive(true);
+        var heroController = playerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+        if (heroController != null && heroController.IsStunned)
+        {
+            heroController.IsStunned = false;
+            for (int i = 0; i < 3; i++)
+            {
+                var extra = _cardMgr.DrawHeroCard(playerIndex);
+                if (extra != null)
+                {
+                    if (playerIndex == 1)
+                        _cardMgr.playerOneHand.Add(extra);
+                    else
+                        _cardMgr.playerTwoHand.Add(extra);
+                }
+            }
+        }
 
         var drawn = _cardMgr.DrawHeroCard(playerIndex);
         if (drawn != null)
@@ -222,9 +256,52 @@ public class TurnManager : MonoBehaviour
                 _cardMgr.playerTwoHand.Add(drawn);
         }
 
+        if (missionBonusScheduled)
+        {
+            if ((playerIndex == 1 && pendingBonusP1) ||
+                (playerIndex == 2 && pendingBonusP2))
+            {
+                var bonus = _cardMgr.DrawHeroCard(playerIndex);
+                if (bonus != null)
+                {
+                    if (playerIndex == 1) _cardMgr.playerOneHand.Add(bonus);
+                    else _cardMgr.playerTwoHand.Add(bonus);
+                }
+
+                if (playerIndex == 1) pendingBonusP1 = false;
+                else pendingBonusP2 = false;
+            }
+        }
+
         string heroId = playerIndex == 1 ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
         string heroName = GameManager.Instance.GetHeroName(heroId);
+        var heroGO = GameManager.Instance.FindObjectInScene(heroId);
+        var hero = FindHeroById(heroId);
+        if (hero == null)
+        {
+            Debug.LogError($"TurnManager: nie znalazłem HeroController o HeroId='{heroId}'");
+        }
+        else
+        {
+            OnStartHeroTurn?.Invoke(hero);
+            if (hero.IsStunned)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var extra = _cardMgr.DrawHeroCard(playerIndex);
+                    if (extra != null)
+                    {
+                        if (playerIndex == 1) _cardMgr.playerOneHand.Add(extra);
+                        else _cardMgr.playerTwoHand.Add(extra);
+                    }
+                }
+                hero.RecoverStun();
+            }
+        }
+
+
         yield return StartCoroutine(ShowPhaseText($"{heroName.ToUpper()} TURN", playerPhaseContainer, playerPhaseText));
+        
 
         _endTurnClicked = false;
         symbolPanel.SetActive(false);
@@ -340,5 +417,15 @@ public class TurnManager : MonoBehaviour
         tex.SetPixels(sprite.texture.GetPixels((int)sprite.rect.x, (int)sprite.rect.y, (int)sprite.rect.width, (int)sprite.rect.height));
         tex.Apply();
         return tex;
+    }
+    private HeroController FindHeroById(string heroId)
+    {
+        var heroes = UnityEngine.Object.FindObjectsByType<HeroController>(FindObjectsSortMode.None);
+        foreach (var hero in heroes)
+        {
+            if (hero.HeroId == heroId)
+                return hero;
+        }
+        return null;
     }
 }

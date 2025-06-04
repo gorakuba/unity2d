@@ -147,4 +147,18 @@ public class DashboardLoader : MonoBehaviour
             Debug.LogWarning($"Brak slota {slotName} dla FearTrack");
         }
     }
+    /// <summary>
+/// Niszczy pierwszy (najstarszy) token życia w slocie "Slot_Health".
+/// </summary>
+public void RemoveFirstHealthToken()
+{
+    // Szukamy kontenera ze wszystkimi tokenami życia
+    Transform slotHealth = currentDashboard.transform.Find("Slot_Health");
+    if (slotHealth != null && slotHealth.childCount > 0)
+    {
+            // Destroy pierwszego dziecka (indeks 0)
+        int lastIndex = slotHealth.childCount - 1;
+        Destroy(slotHealth.GetChild(lastIndex).gameObject);
+    }
+}
 }

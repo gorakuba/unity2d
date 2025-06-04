@@ -5,15 +5,14 @@
         "name": "Red Skull",
         "bam" : "red_skull",
         "health_per_players": {
-         "2": 4,
-          "3": 8,
-          "4": 11
+         "_2": 4,
+         "_3": 8,
+         "_4": 11
         },
         "bam_effect":"Deal 1 damage to each Hero in Red Skull's Location and increase the Fear Track by 2",
         "villainous_plot":"Fear Track - When track reaches 20, Heroes lose.",
         "additional_win_condition": true,
         "additional_win_condition_script":"Red_Skull_win_condition",
-        "backTexturePath": "Art/Villains/RedSkull.png",
         "overflow":"If a Civillian or Thug token can't be added to a Location, increase the Fear Track by 1 for each token you couldn't add.",
         "threats": [
             {
@@ -23,15 +22,11 @@
                 "remove_condition":"Beat Bob agent of Hydra",
                 "minion":true,
                 "minion_health": 4,
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
-                "special":false,
-                "special_ability":"Redskull_threat_01"
+                "required_symbol_list": {},
+                "used_symbol_list": {},
+                "abilities": [
+                    { "trigger": "OnTurnStart", "id": "Redskull_threat_01" } ]
             },
             {
                 "id": "threat_2",
@@ -40,15 +35,11 @@
                 "remove_condition":"Beat Crossbones",
                 "minion":true,
                 "minion_health": 6,
-                "bam_effect":true,
-                "bam_ability":"Redskull_threat_02",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
-                "special":false,
-                "special_ability":""                
+                "required_symbol_list": {},
+                "used_symbol_list": {},
+                "abilities": [
+                    { "trigger": "OnBAM", "id": "Redskull_threat_02" } ]                
             },
             {
                 "id": "threat_3",
@@ -57,19 +48,15 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":true,
-                "on_stand_ability":"Redskull_threat_03",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
-                "special":false,
-                "special_ability":""
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
+                "abilities": [
+                    { "trigger": "OnStand", "id": "Redskull_threat_03" } ]
             },
             {
                 "id": "threat_4",
@@ -78,15 +65,11 @@
                 "remove_condition":"Beat Madame Hydra",
                 "minion":true,
                 "minion_health": 5,
-                "bam_effect":true,
-                "bam_ability":"Redskull_threat_04",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":false,
-                "required_symbols": {},
-                "used_symbols": {},
-                "special":false,
-                "special_ability":""
+                "required_symbol_list": {},
+                "used_symbol_list": {},
+                "abilities": [
+                    { "trigger": "OnBAM", "id": "Redskull_threat_04" } ]
             },
             {
                 "id": "threat_5",
@@ -95,19 +78,15 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":true,
-                "on_stand_ability":"Redskull_threat_05",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
-                "special":false,
-                "special_ability":""
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
+                "abilities": [
+                    { "trigger": "OnStand", "id": "Redskull_threat_05" } ]
             },
             {
                 "id": "threat_6",
@@ -116,19 +95,15 @@
                 "remove_condition":"Place 3 heroic symbols",
                 "minion":false,
                 "minion_health": "",
-                "bam_effect":false,
-                "bam_ability":"",
-                "on_stand_effect":false,
-                "on_stand_ability":"",
                 "to_remove":true,
-                "required_symbols": {
-                    "Heroic": 3
-                },
-                "used_symbols": {
-                    "Heroic": 0
-                },
-                "special":true,
-                "special_ability":"Redskull_threat_06"
+                "required_symbol_list": [
+                { "symbol": "Heroic", "count": 3 }
+                ],
+                "used_symbol_list": [
+                { "symbol": "Heroic", "count": 0 }
+                ],
+                "abilities": [
+                    { "trigger": "WhenActive", "id": "Redskull_threat_06" } ]
             }
         ],
         "cards":[
@@ -140,7 +115,7 @@
                 "special_ability":"Red_Skull_Special_1",
                 "special_name":"Hail Hydra!",
                 "special_description":"Discard all civillians from Locations with Heroes and deal 1 damage to each of those Heroes. Advance the Fear Track by the numver of civillians discarded this way.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -153,7 +128,7 @@
                 "special_ability":"Red_Skull_Special_2",
                 "special_name":"Hydra Insurgency",
                 "special_description":"For each Crisis token the Heroes have, advance the Fear Track by 1.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -166,22 +141,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {
@@ -192,7 +160,7 @@
                 "special_ability":"Red_Skull_Special_2",
                 "special_name":"Hydra Insurgency",
                 "special_description":"For each Crisis token the Heroes have, advance the Fear Track by 1.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -205,26 +173,18 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Civillian","count":1},
+                    {"symbol":"Thug","count":1} 
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian",
-                        "symbol_3":"Thug",
-                        "symbol_4":"Thug"
-                    }
+                        {"symbol":"Civillian","count":2},
+                        {"symbol":"Thug","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Civillian","count":1},
+                    {"symbol":"Thug","count":1} 
                 ]
             },
             {
@@ -235,22 +195,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1} 
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2} 
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -261,22 +214,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2} 
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -287,22 +233,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {
@@ -313,22 +252,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Thug",
-                        "symbol_2":"Thug"
-                    }
+                    {"symbol":"Thug","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Thug"
-                    }
+                    {"symbol":"Thug","count":1}
                 ]
             },
             {
@@ -339,22 +271,15 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":true,
+                "HasSpawn":true,
                 "Location_left": [
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ],
                 "Location_middle":[
-                    {
-                        "symbol_1":"Civillian",
-                        "symbol_2":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":2}
                 ],
                 "Location_right":[
-                    {
-                        "symbol_1":"Civillian"
-                    }
+                    {"symbol":"Civillian","count":1}
                 ]
             },
             {
@@ -365,7 +290,7 @@
                 "special_ability":"",
                 "special_name":"",
                 "special_description":"",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
@@ -378,12 +303,13 @@
                 "special_ability":"Red_Skull_Special_1",
                 "special_name":"Hail Hydra!",
                 "special_description":"Discard all civillians from Locations with Heroes and deal 1 damage to each of those Heroes. Advance the Fear Track by the numver of civillians discarded this way.",
-                "effect_on_stand":false,
+                "HasSpawn":false,
                 "Location_left":"",
                 "Location_middle":"",
                 "Location_right":""
             }
-        ]
+        ],
+        "imagePath":"Art/RedSkull"
     }
     ]
 }
