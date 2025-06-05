@@ -136,12 +136,14 @@ public IEnumerator MoveVillain(int steps)
 {
     int count = _villainSlots.Length;
 
+    if (steps > 0 && HUDMessageManager.Instance != null)
+        yield return HUDMessageManager.Instance.ShowAndWait($"Przeciwnik przemieszcza sie o {steps} pol");
     if (steps <= 0)
-    {
-        // Villain nie rusza się, ale wciąż „staje” na obecnym slocie
-        OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
-        yield break;
-    }
+        {
+            // Villain nie rusza się, ale wciąż „staje” na obecnym slocie
+            OnVillainStop?.Invoke(_villainSlots[_currentIndex]);
+            yield break;
+        }
 
     for (int i = 0; i < steps; i++)
     {
@@ -173,6 +175,8 @@ public IEnumerator MoveVillain(int steps)
     {
         if (card.BAM_effect)
         {
+            if (HUDMessageManager.Instance != null)
+                yield return HUDMessageManager.Instance.ShowAndWait("Przeciwnik uzywa BAM");
             Debug.Log("💥 BAM effect!");
             if (OnBAMEffect != null)
                 foreach (Func<IEnumerator> handler in OnBAMEffect.GetInvocationList())
@@ -204,19 +208,25 @@ public IEnumerator MoveVillain(int steps)
         int dmg = 0;
         if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
         if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
-        BAMController.StartBAM(dmg);
-        if (dmg > 0)
+
+        IEnumerator RunDamage()
         {
-            if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
-                yield return StartCoroutine(h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
-            if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
-                yield return StartCoroutine(h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
+             if (dmg > 0)
+            {
+                if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
+                    yield return h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
+                if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
+                    yield return h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
+            }
         }
-        DashboardLoader.Instance.MoveFearTrack(2);
+        
+        bool startNow = BAMController.StartBAM(dmg, RunDamage);
+        if (startNow)
+            yield return StartCoroutine(RunDamage());
     }
 
-    private void BAM_Taskmaster() { Debug.Log("🎯 BAM Taskmaster (przykład)"); }
-    private void BAM_Ultron()     { Debug.Log("🤖 BAM Ultron (przykład)"); }
+    private void BAM_Taskmaster() { Debug.Log("🎯 BAM Taskmaster (przyklad)"); }
+    private void BAM_Ultron()     { Debug.Log("🤖 BAM Ultron (przyklad)"); }
 
     public IEnumerator ExecuteSpawn(VillainCard card)
     {
@@ -248,11 +258,14 @@ public IEnumerator MoveVillain(int steps)
         if (prefab != null && free.Count > 0)
         {
             var slot = free[0]; free.RemoveAt(0);
-            var tok  = Instantiate(prefab, slot.position, slot.rotation, slot);
-            tok.transform.localPosition  = Vector3.zero;
-            tok.transform.localRotation  = Quaternion.identity;
+            var tok = Instantiate(prefab, slot.position, slot.rotation, slot);
+            tok.transform.localPosition = Vector3.zero;
+            tok.transform.localRotation = Quaternion.identity;
             if (tok.GetComponent<TokenDrop>() == null) tok.AddComponent<TokenDrop>();
-            Debug.Log($"[SPAWN] {name} → {type}");
+            var locName = root.GetComponent<LocationDataHolder>()?.data.name ?? name;
+            Debug.Log($"[SPAWN] {locName} → {type}");
+            if (HUDMessageManager.Instance != null)
+                yield return HUDMessageManager.Instance.ShowAndWait($"Przeciwnik umieszcza {type} w {root.name}");
         }
         else
         {
@@ -288,6 +301,8 @@ public IEnumerator MoveVillain(int steps)
     {
         if (!card.special) yield break;
         if (specialHandler == null) yield break;
+        if (HUDMessageManager.Instance != null)
+            yield return HUDMessageManager.Instance.ShowAndWait("Przeciwnik uzywa specjalnej zdolnosci");
         yield return specialHandler.ExecuteSpecial(card.special_ability);
         yield return new WaitForSeconds(0.5f);
     }

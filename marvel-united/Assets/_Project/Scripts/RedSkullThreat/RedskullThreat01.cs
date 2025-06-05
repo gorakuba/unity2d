@@ -24,6 +24,7 @@ public class RedskullThreat01 : MonoBehaviour, IThreatAbility
         if (hero.CurrentLocation != null
         && hero.CurrentLocation.gameObject == threat.assignedLocation)
         {
+            HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
             Debug.Log($"[RedskullThreat01] WARUNEK SPEŁNIONY — daję CrisisToken");
             CrisisTokenManager.Instance.GiveCrisisToken(hero);
         }

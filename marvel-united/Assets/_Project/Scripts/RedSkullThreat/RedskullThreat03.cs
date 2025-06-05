@@ -19,9 +19,10 @@ public class RedskullThreat03 : MonoBehaviour, IThreatAbility
     public void OnTurnStart(ThreatCardInstance threat, HeroController hero) { }
 
     private void OnStand(Transform slot)
-{
-    // 1) root lokacji (przechwycony assignedLocation)
-    var locRoot = _threat.assignedLocation.transform;
+    {
+        HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
+        // 1) root lokacji (przechwycony assignedLocation)
+        var locRoot = _threat.assignedLocation.transform;
 
     Debug.Log($"[RedskullThreat03] OnStand → slot={slot.name}, thrLoc={locRoot.name}");
 

@@ -128,6 +128,8 @@ private void Start()
             int last = slotHealth.childCount - 1;
             Destroy(slotHealth.GetChild(last).gameObject);
 
+            HUDMessageManager.Instance?.Enqueue("Usunieto zeton z karty threat");
+
             currentMinionHealth = slotHealth.childCount-1;
             Debug.Log($"[ThreatCardInstance] Usunięto token zdrowia z {data.id}, pozostało {currentMinionHealth}");
 
@@ -169,8 +171,10 @@ private void Start()
                 go.transform.localRotation = Quaternion.identity;
                 go.transform.localScale = Vector3.one;
 
+                HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
+
                 if (data.used_symbols == null)
-                    data.used_symbols = new Dictionary<string,int>();
+                    data.used_symbols = new Dictionary<string, int>();
                 data.used_symbols[symbolId] = used + 1;
 
                 StartCoroutine(CheckResolvedDelayed(2f));
@@ -196,6 +200,7 @@ private void Start()
 
     private void ResolveThreat()
     {
+        HUDMessageManager.Instance?.Enqueue("Karta threat zostaje zdjeta");
         var threatSlot = assignedLocation.transform.Find("ThreatSlot");
         if (threatSlot != null && threatSlot.childCount > 0)
         {

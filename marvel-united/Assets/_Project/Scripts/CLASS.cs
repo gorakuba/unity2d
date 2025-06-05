@@ -2,18 +2,31 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Collections;
 
 public class BAMController : MonoBehaviour
 {
     public static bool BamInProgress = false;
     private static int playersPendingDamage = 0;
+    private static Queue<(int count, Func<IEnumerator> routine)> pendingBams = new();
 
-    public static void StartBAM(int playersToDamage)
+        public static bool StartBAM(int playersToDamage, Func<IEnumerator> damageRoutine = null)
     {
-        playersPendingDamage = playersToDamage;
-        BamInProgress = playersPendingDamage > 0;
-        Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
+        if (!BamInProgress)
+        {
+            playersPendingDamage = playersToDamage;
+            BamInProgress = playersPendingDamage > 0;
+            Debug.Log($"[BAM] Rozpoczęto BAM → gracze do obrażenia: {playersPendingDamage}");
+            if (damageRoutine != null && playersPendingDamage > 0)
+                SetupManager.villainController.StartCoroutine(damageRoutine());
+            return true;
+        }
+        else
+        {
+            pendingBams.Enqueue((playersToDamage, damageRoutine));
+            Debug.Log($"[BAM] Dodano kolejny BAM do kolejki → gracze do obrażenia: {playersToDamage}");
+            return false;
+        }
     }
 
     public static void PlayerFinishedDamage()
@@ -22,8 +35,20 @@ public class BAMController : MonoBehaviour
         Debug.Log($"[BAM] Gracz skończył obrażenia. Pozostało: {playersPendingDamage}");
         if (playersPendingDamage <= 0)
         {
-            BamInProgress = false;
-            Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
+            while (playersPendingDamage <= 0 && pendingBams.Count > 0)
+            {
+                var next = pendingBams.Dequeue();
+                playersPendingDamage = next.count;
+                BamInProgress = playersPendingDamage > 0;
+                Debug.Log($"[BAM] Rozpoczyna się kolejny BAM → gracze do obrażenia: {playersPendingDamage}");
+                if (next.routine != null)
+                    SetupManager.villainController.StartCoroutine(next.routine());
+            }
+            if (playersPendingDamage <= 0 && pendingBams.Count == 0)
+            {
+                BamInProgress = false;
+                Debug.Log("[BAM] Wszyscy gracze skończyli obrażenia → BAM KONIEC.");
+            }
         }
     }
 }

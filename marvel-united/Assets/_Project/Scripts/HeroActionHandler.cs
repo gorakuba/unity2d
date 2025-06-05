@@ -176,6 +176,7 @@ public class HeroActionHandler : MonoBehaviour
             punchUIButton.onClick.RemoveAllListeners();
             punchUIButton.onClick.AddListener(() =>
             {
+                HUDMessageManager.Instance?.Enqueue("Bohater zadaje obrazenia przeciwnikowi");
                 VillainController.Instance.DealDamageToVillain(1);
                 punchUIButton.gameObject.SetActive(false);
                 loc.DisableAllActionButtons();
@@ -202,6 +203,7 @@ public class HeroActionHandler : MonoBehaviour
                         var thug = loc.RemoveFirstThug();
                         if (thug != null)
                         {
+                            HUDMessageManager.Instance?.Enqueue($"Usunieto zbira w {loc.name}");
                             if (missionManager.thugsCompleted) Destroy(thug);
                             else
                             {
@@ -211,7 +213,7 @@ public class HeroActionHandler : MonoBehaviour
                                     {
                                         Vector3 ps = slot.lossyScale;
                                         thug.transform.SetParent(slot, false);
-                                        thug.transform.localScale = new Vector3(ws.x/ps.x, ws.y/ps.y, ws.z/ps.z);
+                                        thug.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                                         thug.transform.localPosition = Vector3.zero;
                                         thug.transform.localRotation = Quaternion.identity;
                                         break;
@@ -242,6 +244,7 @@ public class HeroActionHandler : MonoBehaviour
             var civ = loc.RemoveFirstCivillian();
             if (civ != null)
             {
+                HUDMessageManager.Instance?.Enqueue($"Uratowano cywila w {loc.name}");
                 if (missionManager.civiliansCompleted) Destroy(civ);
                 else
                 {
@@ -251,7 +254,7 @@ public class HeroActionHandler : MonoBehaviour
                         {
                             Vector3 ps = slot.lossyScale;
                             civ.transform.SetParent(slot, false);
-                            civ.transform.localScale = new Vector3(ws.x/ps.x,ws.y/ps.y,ws.z/ps.z);
+                            civ.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
                             civ.transform.localPosition = Vector3.zero;
                             civ.transform.localRotation = Quaternion.identity;
                             break;

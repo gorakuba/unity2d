@@ -126,6 +126,8 @@ public class DashboardLoader : MonoBehaviour
             return;
         }
 
+        if (HUDMessageManager.Instance != null)
+            HUDMessageManager.Instance.Enqueue($"Fear Track przesuwa sie o {amount}");
         fearTrackIndex += amount;
 
         if (fearTrackIndex > 20)

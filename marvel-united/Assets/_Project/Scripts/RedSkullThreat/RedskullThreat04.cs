@@ -25,6 +25,7 @@ public class RedskullThreat04 : MonoBehaviour, IThreatAbility
 
     private IEnumerator OnBam()
     {
+        HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
         var heroes = UnityEngine.Object
             .FindObjectsByType<HeroController>(FindObjectsSortMode.None)
             .Where(h => h.CurrentLocation?.gameObject == _threat.assignedLocation);
