@@ -126,12 +126,12 @@ public class DashboardLoader : MonoBehaviour
             return;
         }
 
-        if (HUDMessageManager.Instance != null)
-            HUDMessageManager.Instance.Enqueue($"Fear Track przesuwa sie o {amount}");
         fearTrackIndex += amount;
 
         if (fearTrackIndex > 20)
             fearTrackIndex = 20;
+        if (fearTrackIndex >= 20)
+            GameManager.Instance?.TriggerDefeat();
 
         string slotName = $"FearTrack_Slot{fearTrackIndex}";
         Transform targetSlot = currentDashboard.transform.Find(slotName);

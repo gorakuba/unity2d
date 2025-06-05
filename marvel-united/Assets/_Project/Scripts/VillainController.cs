@@ -327,7 +327,10 @@ public IEnumerator MoveVillain(int steps)
         DashboardLoader.Instance.RemoveFirstHealthToken();
     }
         if (CurrentHealth <= 0)
+        {
             Debug.Log("💀 Villain pokonany!");
+            GameManager.Instance?.TriggerVictory();
+        }
         
     }
 }

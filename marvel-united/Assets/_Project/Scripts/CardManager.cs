@@ -98,6 +98,7 @@ public class CardManager : MonoBehaviour
         if (deck == null || deck.Count == 0)
         {
             Debug.LogWarning($"🛑 Brak kart do dobrania dla gracza {playerIndex}");
+            GameManager.Instance?.TriggerDefeat();
             return null;
         }
         var card = deck[0];

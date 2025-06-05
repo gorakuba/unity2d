@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public HeroCardDisplay    displayPlayer1;
     public HeroCardDisplay    displayPlayer2;
     public VillainCardDisplay villainDisplay;
+    public GameOverPanelController gameOverPanel;
 
     private void Awake()
     {
@@ -95,6 +96,9 @@ public class GameManager : MonoBehaviour
         if (locationManager == null)    locationManager   = FindAnyObjectByType<LocationManager>();
         if (threatCardSpawner == null)  threatCardSpawner = FindAnyObjectByType<ThreatCardSpawner>();
         if (cardManager == null)        cardManager       = FindAnyObjectByType<CardManager>();
+        if (gameOverPanel == null)
+            gameOverPanel =
+                FindAnyObjectByType<GameOverPanelController>(FindObjectsInactive.Include);
 
         GameObject hero1 = FindObjectInScene("Hero1CardsInfo");
         if (hero1 != null)
@@ -155,17 +159,41 @@ public GameObject FindObjectInScene(string name)
     }
     return null;
 }
-private GameObject FindChildRecursive(Transform parent, string name)
-{
-    if (parent.name == name)
-        return parent.gameObject;
-
-    foreach (Transform child in parent)
+    private GameObject FindChildRecursive(Transform parent, string name)
     {
-        GameObject result = FindChildRecursive(child, name);
-        if (result != null)
-            return result;
+        if (parent.name == name)
+            return parent.gameObject;
+
+        foreach (Transform child in parent)
+        {
+            GameObject result = FindChildRecursive(child, name);
+            if (result != null)
+                return result;
+                 }
+        return null;
     }
-    return null;
-}
+
+    /// <summary>
+    /// Call when heroes win the game.
+    /// </summary>
+    public void TriggerVictory()
+    {
+        if (gameOverPanel != null)
+            gameOverPanel.ShowVictory();
+        else
+            Debug.LogWarning("[GameManager] Victory triggered but GameOverPanel not assigned");
+    }
+
+    /// <summary>
+    /// Call when heroes lose the game.
+    /// </summary>
+    public void TriggerDefeat()
+    {
+        if (gameOverPanel != null)
+            gameOverPanel.ShowDefeat();
+        else
+            Debug.LogWarning("[GameManager] Defeat triggered but GameOverPanel not assigned");
+
+        }
+    
 }
