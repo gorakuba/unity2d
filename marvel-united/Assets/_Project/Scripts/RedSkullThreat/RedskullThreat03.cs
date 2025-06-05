@@ -20,7 +20,7 @@ public class RedskullThreat03 : MonoBehaviour, IThreatAbility
 
     private void OnStand(Transform slot)
     {
-        HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
+
         // 1) root lokacji (przechwycony assignedLocation)
         var locRoot = _threat.assignedLocation.transform;
 

@@ -208,6 +208,7 @@ public IEnumerator MoveVillain(int steps)
         int dmg = 0;
         if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
         if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
+        DashboardLoader.Instance.MoveFearTrack(2);
 
         IEnumerator RunDamage()
         {

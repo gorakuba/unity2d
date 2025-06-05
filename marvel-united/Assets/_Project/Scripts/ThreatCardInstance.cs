@@ -171,8 +171,6 @@ private void Start()
                 go.transform.localRotation = Quaternion.identity;
                 go.transform.localScale = Vector3.one;
 
-                HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
-
                 if (data.used_symbols == null)
                     data.used_symbols = new Dictionary<string, int>();
                 data.used_symbols[symbolId] = used + 1;
