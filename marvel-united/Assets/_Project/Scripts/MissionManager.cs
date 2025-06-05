@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Linq;
-
+using System.Collections;
 public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; } 
@@ -21,7 +21,8 @@ public class MissionManager : MonoBehaviour
     public int CompletedMissionsCount { get; private set; }
 
     private int completed = 0;
-
+    private bool reminderStarted = false;
+    private Coroutine reminderRoutine;
     /// <summary>
     /// Wywołuj po każdej akcji gracza, żeby zaktualizować statusy misji.
     /// </summary>
@@ -34,22 +35,40 @@ public class MissionManager : MonoBehaviour
             thugsCompleted = true;
             completed++;
             Debug.Log("🎉 ThugsMission completed!");
+            HUDMessageManager.Instance?.Enqueue("Misja Thugs zakonczona!");
         }
         if (!threatCompleted && CountFilledSlots(threatMissionRoot) >= threatSlotsCount)
         {
             threatCompleted = true;
             completed++;
             Debug.Log("🎉 ThreatMission completed!");
+            HUDMessageManager.Instance?.Enqueue("Misja Threats zakonczona!");
         }
         if (!civiliansCompleted && CountFilledSlots(civiliansMissionRoot) >= civiliansSlotsCount)
         {
             civiliansCompleted = true;
             completed++;
             Debug.Log("🎉 CivilliansMission completed!");
+            HUDMessageManager.Instance?.Enqueue("Misja Civilians zakonczona!");
         }
 
         CompletedMissionsCount = completed;
         Debug.Log($"🚩 Missions done: {CompletedMissionsCount}/3");
+        
+        if (CompletedMissionsCount >= 2 && !reminderStarted)
+        {
+            reminderStarted = true;
+            reminderRoutine = StartCoroutine(AttackReminder());
+        }
+    }
+
+    private IEnumerator AttackReminder()
+    {
+        while (true)
+        {
+            HUDMessageManager.Instance?.Enqueue("Można atakować przeciwnika!");
+            yield return new WaitForSeconds(10f);
+        }
     }
 
     private int CountFilledSlots(Transform parent)

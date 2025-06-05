@@ -24,6 +24,7 @@ public class RedskullThreat05 : MonoBehaviour, IThreatAbility
     private void OnStand(Transform slot)
     {
         // tylko jeśli zatrzymał się na karcie
+        HUDMessageManager.Instance?.Enqueue("Karta Threat sie aktywuje");
         var slotRoot = slot.GetComponentInParent<LocationController>()?.gameObject;
         if (slotRoot != _threat.assignedLocation)
             return;

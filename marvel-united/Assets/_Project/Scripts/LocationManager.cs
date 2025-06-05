@@ -111,6 +111,7 @@ public class LocationManager : MonoBehaviour
             {
                 var holder = newLocation.GetComponent<LocationDataHolder>();
                 if (holder != null) holder.data = data;
+                newLocation.name = data.name;
                 yield return LoadLocationSpriteAsync(data);
             }
 
@@ -154,8 +155,8 @@ public class LocationManager : MonoBehaviour
     {
         foreach (var loc in spawnedLocations)
         {
-            var id = loc.name.Replace("(Clone)", "");
-            if (locationDataDict.TryGetValue(id, out var data))
+            var data = loc.GetComponent<LocationDataHolder>()?.data;
+            if (data != null)
                 yield return StartCoroutine(SpawnTokens(loc, data));
         }
 

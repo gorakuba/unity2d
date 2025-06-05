@@ -49,7 +49,7 @@ public class TurnManager : MonoBehaviour
     [Header("Czasy (sekundy)")]
     public float pauseBeforeCardSpawn = 1f;
     public float pauseAfterCardSpawn = 1.5f;
-    public float pauseBetweenCardEffects = 1f;
+    public float pauseBetweenCardEffects = 2f;
     public float phaseTextDuration = 1.5f;
 
     [Header("Rodzic tekstu fazy")]
@@ -199,6 +199,8 @@ public class TurnManager : MonoBehaviour
 
         if (card != null)
         {
+            if (HUDMessageManager.Instance != null)
+                yield return HUDMessageManager.Instance.ShowAndWait("Przeciwnik zagrywa karte");
             villainCardFlashPanel.SetActive(true);
             villainCardFlashImage.sprite = _cardMgr.GetCardSprite(card);
             yield return new WaitForSeconds(villainCardFlashTime);

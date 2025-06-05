@@ -31,8 +31,14 @@ public class HeroDamageHandler : MonoBehaviour
     }
 
    public IEnumerator TakeDamageCoroutine()
-    {
-                var hero = GetComponent<HeroController>();
+   {
+        if (HUDMessageManager.Instance != null)
+        {
+            string name = GameManager.Instance.GetHeroName(heroId);
+            yield return HUDMessageManager.Instance.ShowAndWait($"Bohater {name} otrzymuje obrazenia");
+        }
+
+        var hero = GetComponent<HeroController>();
         if (hero != null && hero.IsStunned)
             yield break;
         var heroCtrl = GetComponent<HeroController>();
@@ -65,7 +71,7 @@ public class HeroDamageHandler : MonoBehaviour
         }
 
         BAMController.PlayerFinishedDamage();
-        Debug.Log($"[HeroDamageHandler] -> Gracz {(isPlayerTwo ? 2 : 1)} wybrał kartę i BAM idzie dalej");
+        Debug.Log($"[HeroDamageHandler] -> Gracz {(isPlayerTwo ? 2 : 1)} wybrał karte i BAM idzie dalej");
     }
 
 
@@ -75,7 +81,7 @@ public class HeroDamageHandler : MonoBehaviour
         {
             currentHand.Remove(selectedCard);
             currentDeck.Add(selectedCard);
-            Debug.Log($"❤️ Gracz {(isPlayerTwo ? 2 : 1)} odrzucił kartę {selectedCard.Id} → na spód talii");
+            Debug.Log($"❤️ Gracz {(isPlayerTwo ? 2 : 1)} odrzucił karte {selectedCard.Id} → na spód talii");
 
             if (currentHand.Count == 0)
             {
