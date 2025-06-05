@@ -87,13 +87,35 @@ public class TurnManager : MonoBehaviour
         _cardMgr = FindAnyObjectByType<CardManager>();
         _villainController = FindAnyObjectByType<VillainController>();
 
-        endTurnButton.onClick.AddListener(() => _endTurnClicked = true);
+                endTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
         confirmButton.onClick.AddListener(OnConfirmPlay);
         backgroundBlocker.onClick.AddListener(OnBackgroundClicked);
 
         currentSpawnIndex = 0;
     }
 
+        private void OnEndTurnButtonClicked()
+    {
+        _endTurnClicked = true;
+        DisableLocationButtons();
+    }
+
+    private void DisableLocationButtons()
+    {
+        var locMan = GameManager.Instance?.locationManager;
+        if (locMan != null)
+        {
+            foreach (var t in locMan.LocationRoots)
+            {
+                var ctrl = t.GetComponent<LocationController>();
+                if (ctrl != null)
+                    ctrl.DisableAllActionButtons();
+            }
+        }
+
+        var moveMgr = FindAnyObjectByType<HeroMovementManager>();
+        moveMgr?.CancelHeroMovement();
+    }
     public void OnPlayButtonClicked()
     {
         StartCoroutine(TurnLoop());

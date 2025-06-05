@@ -204,15 +204,21 @@ public IEnumerator MoveVillain(int steps)
         int dmg = 0;
         if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
         if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
-        BAMController.StartBAM(dmg);
-        if (dmg > 0)
+
+        IEnumerator RunDamage()
         {
-            if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
-                yield return StartCoroutine(h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
-            if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
-                yield return StartCoroutine(h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine());
+             if (dmg > 0)
+            {
+                if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
+                    yield return h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
+                if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
+                    yield return h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
+            }
         }
-        DashboardLoader.Instance.MoveFearTrack(2);
+        
+        bool startNow = BAMController.StartBAM(dmg, RunDamage);
+        if (startNow)
+            yield return StartCoroutine(RunDamage());
     }
 
     private void BAM_Taskmaster() { Debug.Log("🎯 BAM Taskmaster (przykład)"); }
