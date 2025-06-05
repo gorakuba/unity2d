@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class HeroController : MonoBehaviour
@@ -9,6 +10,7 @@ public class HeroController : MonoBehaviour
     private HeroDamageHandler heroDamageHandler;
     private string heroId;
     public string HeroId => heroId;
+    private IHeroSpecials specialHandler;
 
     public bool IsStunned { get; set; }
     /// <summary>
@@ -40,7 +42,17 @@ public class HeroController : MonoBehaviour
         heroDamageHandler = GetComponent<HeroDamageHandler>();
         if (heroDamageHandler != null)
             heroDamageHandler.Initialize(gameManager, cardManager, isPlayerTwo, heroId);
+
+        // assign special handler depending on hero
+        switch (heroId)
+        {
+            case "black_panther":
+                specialHandler = new BlackPantherSpecials();
+                break;
+                // add more heroes here
+        }
     }
+
 
     public void TakeDamage()
     {
@@ -51,7 +63,7 @@ public class HeroController : MonoBehaviour
         else
             Debug.LogWarning($"Brak HeroDamageHandler dla {heroId}!");
     }
-    
+
     public void Stun()
     {
         IsStunned = true;
@@ -62,5 +74,11 @@ public class HeroController : MonoBehaviour
     {
         IsStunned = false;
         Debug.Log($"[HeroController] {heroId} odzyskal przytomnosc");
+    }
+    
+    public IEnumerator ExecuteSpecialAbility(string abilityId, SymbolPanelUI panel)
+    {
+        if (specialHandler != null && !string.IsNullOrEmpty(abilityId))
+            yield return specialHandler.ExecuteSpecial(abilityId, this, panel);
     }
 }

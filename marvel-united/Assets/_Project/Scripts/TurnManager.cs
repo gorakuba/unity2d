@@ -372,9 +372,13 @@ public class TurnManager : MonoBehaviour
     private void OnConfirmPlay()
     {
         cardConfirmed = true;
+        string abilityId = null;
+        bool isSpecial = false;
 
         if (_pendingSelectedCard != null)
         {
+            abilityId = _pendingSelectedCard.SpecialAbility;
+            isSpecial = _pendingSelectedCard.Special;
             var hand = nextPlayer == 1 ? _cardMgr.playerOneHand : _cardMgr.playerTwoHand;
             hand.Remove(_pendingSelectedCard);
             _pendingSelectedCard = null;
@@ -395,6 +399,14 @@ public class TurnManager : MonoBehaviour
 
         if (_pendingSelectedSymbols != null && _pendingSelectedSymbols.Count > 0)
             symbolPanelUI.ShowCurrentSymbols(_pendingSelectedSymbols);
+        if (isSpecial)
+        {
+            var heroCtrl = nextPlayer == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+            if (heroCtrl != null)
+                StartCoroutine(heroCtrl.ExecuteSpecialAbility(abilityId, symbolPanelUI));
+        }
+
+        
 
         _lastSymbols = new List<string>(_pendingSelectedSymbols);
         endTurnButton.gameObject.SetActive(true);

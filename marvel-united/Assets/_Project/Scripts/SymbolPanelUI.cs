@@ -59,12 +59,27 @@ public Image currentlySelectedImage;
             InstantiateIcon(currentContainer, id);
         UpdateCrisisTokens();
     }
+        /// <summary>
+    /// Append extra symbols to the current symbol list and refresh UI.
+    /// </summary>
+    /// <param name="symbols">Symbols to add.</param>
+    public void AddCurrentSymbols(List<string> symbols)
+    {
+        if (symbols == null || symbols.Count == 0) return;
+        foreach (var id in symbols)
+        {
+            currentSymbolsList.Add(id);
+            InstantiateIcon(currentContainer, id);
+        }
+        UpdateCrisisTokens();
+    }
+
 
     // 2) Poprzednie symbole drugiego gracza
     public void ShowPreviousSymbols(List<string> symbols)
     {
         Clear(previousContainer);
-        foreach(var id in symbols)
+        foreach (var id in symbols)
             InstantiateIcon(previousContainer, id);
     }
 
