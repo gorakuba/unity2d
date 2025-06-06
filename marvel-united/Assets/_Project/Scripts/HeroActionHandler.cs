@@ -34,6 +34,18 @@ public class HeroActionHandler : MonoBehaviour
     private GameObject         pendingWildButton;
     private LocationController pendingWildLocation;
 
+    private void ConsumePersistentIfNeeded(GameObject button)
+    {
+        if (button == null) return;
+        var data = button.GetComponent<SymbolButtonData>();
+        if (data != null && data.IsPersistent)
+        {
+            var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+            hero?.RemovePersistentSymbol(data.SymbolId);
+            symbolPanelUI.UsePersistentSymbols(new List<string> { data.SymbolId });
+        }
+    }
+
     void Start()
     {
         if (punchUIButton != null)
@@ -63,6 +75,7 @@ public class HeroActionHandler : MonoBehaviour
                 loc.DisableAllActionButtons();
                 movementManager.OnMoveCompleted = () =>
                 {
+                    ConsumePersistentIfNeeded(symbolButton);
                     Destroy(symbolButton);
                     symbolPanelUI.ClearSelectedSymbol();
                     movementManager.OnMoveCompleted = null;
@@ -140,6 +153,7 @@ public class HeroActionHandler : MonoBehaviour
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
+            ConsumePersistentIfNeeded(symbolButton);
             Destroy(symbolButton);
         });
     }
@@ -163,6 +177,7 @@ public class HeroActionHandler : MonoBehaviour
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
+            ConsumePersistentIfNeeded(symbolButton);
             Destroy(symbolButton);
         });
     }
@@ -180,6 +195,7 @@ public class HeroActionHandler : MonoBehaviour
                 VillainController.Instance.DealDamageToVillain(1);
                 punchUIButton.gameObject.SetActive(false);
                 loc.DisableAllActionButtons();
+                ConsumePersistentIfNeeded(symbolButton);
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
@@ -225,7 +241,7 @@ public class HeroActionHandler : MonoBehaviour
                     {
                         Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
                     }
-
+                    ConsumePersistentIfNeeded(symbolButton);
                     Destroy(symbolButton);
                     loc.DisableAllActionButtons();
                     symbolPanelUI.ClearSelectedSymbol();
@@ -261,6 +277,7 @@ public class HeroActionHandler : MonoBehaviour
                         }
                 }
             }
+            ConsumePersistentIfNeeded(symbolButton);
             Destroy(symbolButton);
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
@@ -274,6 +291,7 @@ public class HeroActionHandler : MonoBehaviour
         pendingWildLocation.DisableAllActionButtons();
         movementManager.OnMoveCompleted = () =>
         {
+            ConsumePersistentIfNeeded(pendingWildButton);
             Destroy(pendingWildButton);
             symbolPanelUI.ClearSelectedSymbol();
             movementManager.OnMoveCompleted = null;

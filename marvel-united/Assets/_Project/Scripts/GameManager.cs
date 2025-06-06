@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public GameObject threatChoicePanel;
+    public GameObject heroSelectionPanel;
     [HideInInspector]
     public int CurrentPlayerIndex = 1;
     public static GameManager Instance;
@@ -33,14 +34,16 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
 
         TryBindThreatChoicePanel();
+        TryBindHeroSelectionPanel();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
     private void TryBindThreatChoicePanel()
     {
         if (threatChoicePanel == null)
         {
+            
             // Szukamy w Hierarchii obiektu o tej nazwie
-            var go = GameObject.Find("UI/ThreatChoicePanel");
+            var go = FindObjectInScene("ThreatChoicePanel");
             if (go != null)
             {
                 threatChoicePanel = go;
@@ -52,6 +55,24 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    private void TryBindHeroSelectionPanel()
+    {
+        if (heroSelectionPanel == null)
+        {
+            // Szukamy w Hierarchii obiektu o tej nazwie (również nieaktywnego)
+            var go = FindObjectInScene("HeroSelectionPanel");
+            if (go != null)
+            {
+                heroSelectionPanel = go;
+                Debug.Log("[GameManager] Podpięto HeroSelectionPanel automatycznie");
+            }
+            else
+            {
+                Debug.LogWarning("[GameManager] Nie znalazłem HeroSelectionPanel w scenie");
+            }
+        }
+    }
+
 
     /// <summary>
     /// Wywołaj np. z przycisku „Reset”
@@ -93,7 +114,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator AssignSceneReferences()
     {
         yield return null;
-        if (locationManager == null)    locationManager   = FindAnyObjectByType<LocationManager>();
+        TryBindHeroSelectionPanel();
+        if (locationManager == null) locationManager = FindAnyObjectByType<LocationManager>();
         if (threatCardSpawner == null)  threatCardSpawner = FindAnyObjectByType<ThreatCardSpawner>();
         if (cardManager == null)        cardManager       = FindAnyObjectByType<CardManager>();
         if (gameOverPanel == null)

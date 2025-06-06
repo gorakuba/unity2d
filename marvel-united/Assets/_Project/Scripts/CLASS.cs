@@ -199,5 +199,10 @@ public class VillainDashboard
 public class LocationSpawnSymbol
 {
     public string symbol;
-    public int    count;
+    public int count;
+}
+public class SymbolButtonData : MonoBehaviour
+{
+    public string SymbolId;
+    public bool   IsPersistent;
 }
