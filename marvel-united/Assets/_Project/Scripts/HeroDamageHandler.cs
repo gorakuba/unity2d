@@ -42,9 +42,9 @@ public class HeroDamageHandler : MonoBehaviour
         if (hero != null && hero.IsStunned)
             yield break;
         var heroCtrl = GetComponent<HeroController>();
-        if (heroCtrl != null && heroCtrl.IsStunned)
+        if (heroCtrl != null && (heroCtrl.IsStunned || heroCtrl.IsInvulnerable))
         {
-            Debug.Log($"[HeroDamageHandler] {heroId} is stunned - ignoring damage");
+            Debug.Log($"[HeroDamageHandler] {heroId} cannot be damaged");
             yield break;
         }
 

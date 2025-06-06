@@ -417,7 +417,7 @@ public class TurnManager : MonoBehaviour
             var heroCtrl = nextPlayer == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
             if (heroCtrl != null)
                             {
-                if (abilityId == "spider-man_special_2" && specialAbilityButton != null)
+                if ((abilityId == "spider-man_special_2" || abilityId.StartsWith("wasp_special_")) && specialAbilityButton != null)
                 {
                     pendingSpecialAbilityId = abilityId;
                     specialAbilityButton.gameObject.SetActive(true);

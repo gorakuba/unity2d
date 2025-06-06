@@ -16,6 +16,7 @@ public class HeroController : MonoBehaviour
     private readonly List<string> persistentSymbols = new();
     public IReadOnlyList<string> PersistentSymbols => persistentSymbols;
     public bool IsStunned { get; set; }
+    public bool IsInvulnerable { get; set; }
     /// <summary>
     /// Ustawiane przez HeroMovementManager po zakończeniu ruchu.
     /// </summary>
@@ -60,6 +61,9 @@ public class HeroController : MonoBehaviour
                 break;
             case "spider-man":
                 specialHandler = new SpiderManSpecials();
+                break;
+            case "wasp":
+                specialHandler = new WaspSpecials();
                 break;
                 // add more heroes here
         }

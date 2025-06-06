@@ -6,21 +6,21 @@ using System.Collections.Generic;
 
 public class HeroActionHandler : MonoBehaviour
 {
-    public MissionManager      missionManager;
+    public MissionManager missionManager;
     public HeroMovementManager movementManager;
-    public SymbolPanelUI       symbolPanelUI;
+    public SymbolPanelUI symbolPanelUI;
 
     [Header("Token Slots")]
     public List<Transform> missionTokenSlots;
-    public GameObject       civilianTokenPrefab;
+    public GameObject civilianTokenPrefab;
     public List<Transform> thugTokenSlots;
-    public GameObject       thugTokenPrefab;
+    public GameObject thugTokenPrefab;
 
     [Header("Wild Panel")]
     public GameObject wildSymbolPanel;
-    public Button     wildMoveButton;
-    public Button     wildHeroicButton;
-    public Button     wildAttackButton;
+    public Button wildMoveButton;
+    public Button wildHeroicButton;
+    public Button wildAttackButton;
 
     [Header("Global UI")]
     public Button punchUIButton;
@@ -31,7 +31,7 @@ public class HeroActionHandler : MonoBehaviour
     public GameObject moveTokenPrefab;
     public GameObject wildTokenPrefab;
 
-    private GameObject         pendingWildButton;
+    private GameObject pendingWildButton;
     private LocationController pendingWildLocation;
 
     private void ConsumePersistentIfNeeded(GameObject button)
@@ -93,12 +93,12 @@ public class HeroActionHandler : MonoBehaviour
                 break;
 
             case "wild":
-                pendingWildButton   = symbolButton;
+                pendingWildButton = symbolButton;
                 pendingWildLocation = loc;
                 loc.DisableAllActionButtons();
 
                 wildSymbolPanel.SetActive(true);
-                wildMoveButton.interactable   = true;
+                wildMoveButton.interactable = true;
                 wildHeroicButton.interactable = true;
                 wildAttackButton.interactable = true;
 
@@ -125,23 +125,23 @@ public class HeroActionHandler : MonoBehaviour
         // matchKey: wild jako Joker
         string matchKey = symbolId.Equals("wild", StringComparison.OrdinalIgnoreCase)
             ? threat.data.required_symbols.Keys
-                    .FirstOrDefault(k => threat.data.used_symbols.GetValueOrDefault(k,0)
+                    .FirstOrDefault(k => threat.data.used_symbols.GetValueOrDefault(k, 0)
                                         < threat.data.required_symbols[k])
             : threat.data.required_symbols.Keys
                     .FirstOrDefault(k => string.Equals(k, symbolId, StringComparison.OrdinalIgnoreCase));
         if (matchKey == null) return;
 
         int used = threat.data.used_symbols.GetValueOrDefault(matchKey, 0);
-        int req  = threat.data.required_symbols[matchKey];
+        int req = threat.data.required_symbols[matchKey];
         if (used >= req) return;
 
         GameObject tokenPrefab = matchKey.ToLower() switch
         {
             "heroic" => heroicTokenPrefab,
             "attack" => attackTokenPrefab,
-            "move"   => moveTokenPrefab,
-            "wild"   => wildTokenPrefab,
-            _        => null
+            "move" => moveTokenPrefab,
+            "wild" => wildTokenPrefab,
+            _ => null
         };
         if (tokenPrefab == null) return;
 
@@ -169,7 +169,7 @@ public class HeroActionHandler : MonoBehaviour
 
         // tylko dla ataku lub wild->attack
         bool isAttack = symbolId.Equals("attack", StringComparison.OrdinalIgnoreCase)
-                     || symbolId.Equals("wild",   StringComparison.OrdinalIgnoreCase);
+                     || symbolId.Equals("wild", StringComparison.OrdinalIgnoreCase);
         if (!isAttack) return;
 
         loc.minionButton.gameObject.SetActive(true);
@@ -212,57 +212,57 @@ public class HeroActionHandler : MonoBehaviour
             });
         }
         if (loc.HasThug())
+        {
+            loc.EnableAttackButton(() =>
             {
-                loc.EnableAttackButton(() =>
+                bool shouldRemoveThug = true;
+                bool defeatedThug = false;
+
+                // Sprawdź, czy Threat06 jest aktywny na tej lokacji
+                var threat = loc.threatInstance;
+                if (threat != null && threat.ability is RedskullThreat06 r06)
                 {
-                    bool shouldRemoveThug = true;
-                    bool defeatedThug = false;
+                    shouldRemoveThug = r06.RegisterAttackOnLocation(loc);
+                }
 
-                    // Sprawdź, czy Threat06 jest aktywny na tej lokacji
-                    var threat = loc.threatInstance;
-                    if (threat != null && threat.ability is RedskullThreat06 r06)
+                if (shouldRemoveThug)
+                {
+                    var thug = loc.RemoveFirstThug();
+                    if (thug != null)
                     {
-                        shouldRemoveThug = r06.RegisterAttackOnLocation(loc);
-                    }
-
-                    if (shouldRemoveThug)
-                    {
-                        var thug = loc.RemoveFirstThug();
-                        if (thug != null)
+                        defeatedThug = true;
+                        HUDMessageManager.Instance?.Enqueue($"Usunieto zbira w {loc.name}");
+                        if (missionManager.thugsCompleted) Destroy(thug);
+                        else
                         {
-                            defeatedThug = true;
-                            HUDMessageManager.Instance?.Enqueue($"Usunieto zbira w {loc.name}");
-                            if (missionManager.thugsCompleted) Destroy(thug);
-                            else
-                            {
-                                Vector3 ws = thug.transform.lossyScale;
-                                foreach (var slot in thugTokenSlots)
-                                    if (slot.childCount == 0)
-                                    {
-                                        Vector3 ps = slot.lossyScale;
-                                        thug.transform.SetParent(slot, false);
-                                        thug.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
-                                        thug.transform.localPosition = Vector3.zero;
-                                        thug.transform.localRotation = Quaternion.identity;
-                                        break;
-                                    }
-                            }
+                            Vector3 ws = thug.transform.lossyScale;
+                            foreach (var slot in thugTokenSlots)
+                                if (slot.childCount == 0)
+                                {
+                                    Vector3 ps = slot.lossyScale;
+                                    thug.transform.SetParent(slot, false);
+                                    thug.transform.localScale = new Vector3(ws.x / ps.x, ws.y / ps.y, ws.z / ps.z);
+                                    thug.transform.localPosition = Vector3.zero;
+                                    thug.transform.localRotation = Quaternion.identity;
+                                    break;
+                                }
                         }
                     }
-                    else
-                    {
-                        Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
-                    }
-                    ConsumePersistentIfNeeded(symbolButton);
-                    bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
-                    var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
-                    hero?.NotifyAttackUsed(defeatedThug, wasPersistent);
-                    Destroy(symbolButton);
-                    loc.DisableAllActionButtons();
-                    symbolPanelUI.ClearSelectedSymbol();
-                    missionManager.CheckMissions();
-                });
-            }
+                }
+                else
+                {
+                    Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
+                }
+                ConsumePersistentIfNeeded(symbolButton);
+                bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
+                var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+                hero?.NotifyAttackUsed(defeatedThug, wasPersistent);
+                Destroy(symbolButton);
+                loc.DisableAllActionButtons();
+                symbolPanelUI.ClearSelectedSymbol();
+                missionManager.CheckMissions();
+            });
+        }
 
     }
 
@@ -332,4 +332,26 @@ public class HeroActionHandler : MonoBehaviour
         TryEnableThreatButton("attack", pendingWildButton, pendingWildLocation);
         TryEnableMinionButton("attack", pendingWildButton, pendingWildLocation);
     }
+    
+    /// <summary>
+    /// Trigger an attack on the given location as part of a special ability.
+    /// This mimics spending an Attack symbol but does not require one to be
+    /// present on the UI. It will spawn a temporary dummy button so existing
+    /// logic can be reused.
+    /// </summary>
+    public void StartSpecialAttack(LocationController loc)
+    {
+        if (loc == null) return;
+
+        // create a temporary object so DoAttack can operate normally
+        var dummy = new GameObject("SpecialAttackButton");
+        var data = dummy.AddComponent<SymbolButtonData>();
+        data.SymbolId = "attack";
+        data.IsPersistent = false;
+
+        DoAttack(loc, dummy);
+        TryEnableThreatButton("attack", dummy, loc);
+        TryEnableMinionButton("attack", dummy, loc);
+    }
+    
 }

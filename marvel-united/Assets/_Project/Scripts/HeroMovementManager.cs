@@ -24,11 +24,26 @@ public class HeroMovementManager : MonoBehaviour
         foreach (var neighbor in currentLocation.neighbors)
             neighbor.EnableMoveButton(OnMoveSelected);
     }
+    public void PrepareHeroTeleport()
+    {
+        UpdateCurrentLocation();
 
+        if (currentLocation == null)
+        {
+            Debug.LogWarning("Nie znaleziono aktualnej lokacji gracza!");
+            return;
+        }
+
+        foreach (var loc in GameManager.Instance.locationManager.LocationRoots)
+        {
+            var ctrl = loc.GetComponent<LocationController>();
+            if (ctrl != null)
+                ctrl.EnableMoveButton(OnMoveSelected);
+        }
+    }
     private void OnMoveSelected(LocationController newLocation)
     {
-        foreach (var neighbor in currentLocation.neighbors)
-            neighbor.DisableMoveButton();
+        DisableAllMoveButtons();
 
         if (currentHero == null)
         {
@@ -55,6 +70,36 @@ public class HeroMovementManager : MonoBehaviour
         currentLocation = newLocation;
         OnMoveCompleted?.Invoke();
     }
+    private void DisableAllMoveButtons()
+    {
+        var locMan = GameManager.Instance?.locationManager;
+        if (locMan == null) return;
+
+        foreach (var loc in locMan.LocationRoots)
+        {
+            var ctrl = loc.GetComponent<LocationController>();
+            if (ctrl != null)
+                ctrl.DisableMoveButton();
+        }
+    }
+
+    public void TeleportHero(HeroController hero, LocationController newLocation)
+    {
+        if (hero == null || newLocation == null) return;
+
+        int index = hero == SetupManager.hero1Controller ? 1 : 2;
+        Transform slot = newLocation.GetHeroSlot(index);
+        hero.transform.SetParent(slot);
+        hero.transform.localPosition = Vector3.zero;
+        hero.transform.localRotation = Quaternion.identity;
+        hero.CurrentLocation = newLocation;
+
+        if (index == 1)
+            GameManager.Instance.locationManager.characterSlots.heroSlot1 = slot;
+        else
+            GameManager.Instance.locationManager.characterSlots.heroSlot2 = slot;
+    }
+
 
     private void UpdateCurrentLocation()
     {
@@ -79,8 +124,7 @@ public class HeroMovementManager : MonoBehaviour
     {
         if (currentLocation == null) return;
 
-        foreach (var neighbor in currentLocation.neighbors)
-            neighbor.DisableMoveButton();
+        DisableAllMoveButtons();
     }
         public LocationController GetCurrentLocation()
         {
