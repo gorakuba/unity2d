@@ -41,6 +41,7 @@ public class TurnManager : MonoBehaviour
     public HeroHandUI heroHandUI;
     public Button confirmButton;
     public Button endTurnButton;
+    public Button specialAbilityButton;
     public Button backgroundBlocker;
     public GameObject symbolPanel;
     public GameObject selectionPanel;
@@ -64,6 +65,7 @@ public class TurnManager : MonoBehaviour
     private VillainController _villainController;
     private int nextPlayer = 1;
     private bool _endTurnClicked;
+    private string pendingSpecialAbilityId;
     private int currentSpawnIndex;
     private Sprite _pendingSelectedSprite;
     private bool cardConfirmed = false;
@@ -90,14 +92,23 @@ public class TurnManager : MonoBehaviour
                 endTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
         confirmButton.onClick.AddListener(OnConfirmPlay);
         backgroundBlocker.onClick.AddListener(OnBackgroundClicked);
+        if (specialAbilityButton != null)
+        {
+            specialAbilityButton.gameObject.SetActive(false);
+        }
 
         currentSpawnIndex = 0;
     }
 
-        private void OnEndTurnButtonClicked()
+    private void OnEndTurnButtonClicked()
     {
         _endTurnClicked = true;
         DisableLocationButtons();
+        if (specialAbilityButton != null)
+        {
+            specialAbilityButton.gameObject.SetActive(false);
+            pendingSpecialAbilityId = null;
+        }
     }
 
     private void DisableLocationButtons()
@@ -405,7 +416,24 @@ public class TurnManager : MonoBehaviour
         {
             var heroCtrl = nextPlayer == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
             if (heroCtrl != null)
-                StartCoroutine(heroCtrl.ExecuteSpecialAbility(abilityId, symbolPanelUI));
+                            {
+                if (specialAbilityButton != null)
+                {
+                    pendingSpecialAbilityId = abilityId;
+                    specialAbilityButton.gameObject.SetActive(true);
+                    specialAbilityButton.onClick.RemoveAllListeners();
+                    specialAbilityButton.onClick.AddListener(() =>
+                    {
+                        specialAbilityButton.gameObject.SetActive(false);
+                        StartCoroutine(heroCtrl.ExecuteSpecialAbility(pendingSpecialAbilityId, symbolPanelUI));
+                        pendingSpecialAbilityId = null;
+                    });
+                }
+                else
+                {
+                    StartCoroutine(heroCtrl.ExecuteSpecialAbility(abilityId, symbolPanelUI));
+                }
+            }
         }
 
         
@@ -422,7 +450,14 @@ public class TurnManager : MonoBehaviour
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
     }
-
+        /// <summary>
+    /// Public wrapper used by external systems to display the hand and allow
+    /// card selection. Internally forwards to <see cref="OnPlayerCardSelected"/>.
+    /// </summary>
+    public void HandlePlayerCardSelected(HeroCard card)
+    {
+        OnPlayerCardSelected(card);
+    }
     // ============================================
     //               --- SPAWN + UTILS ---
     // ============================================
