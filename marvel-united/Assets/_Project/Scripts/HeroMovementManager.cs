@@ -100,7 +100,6 @@ public class HeroMovementManager : MonoBehaviour
             GameManager.Instance.locationManager.characterSlots.heroSlot2 = slot;
     }
 
-
     private void UpdateCurrentLocation()
     {
         var slot = playerIndex == 1
