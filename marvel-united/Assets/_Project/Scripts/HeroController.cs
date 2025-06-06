@@ -65,6 +65,9 @@ public class HeroController : MonoBehaviour
             case "wasp":
                 specialHandler = new WaspSpecials();
                 break;
+            case "captain_marvel":
+                specialHandler = new CaptainMarvelSpecials();
+                break;
                 // add more heroes here
         }
     }
