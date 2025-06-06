@@ -82,14 +82,32 @@ public Image currentlySelectedImage;
         foreach (var id in symbols)
             InstantiateIcon(previousContainer, id);
     }
+    
 
     // 3) Dodaj symbole trwałe
     public void AddPersistentSymbols(List<string> symbols)
     {
-        foreach(var id in symbols)
+        foreach (var id in symbols)
         {
             if (!persistentPool.ContainsKey(id)) persistentPool[id] = 0;
             persistentPool[id]++;
+        }
+        RefreshPersistent();
+    }
+        /// <summary>
+    /// Replace current persistent symbols display with the provided list.
+    /// This does not modify hero data; it only refreshes the UI state.
+    /// </summary>
+    public void SetPersistentSymbols(List<string> symbols)
+    {
+        persistentPool.Clear();
+        if (symbols != null)
+        {
+            foreach (var id in symbols)
+            {
+                if (!persistentPool.ContainsKey(id)) persistentPool[id] = 0;
+                persistentPool[id]++;
+            }
         }
         RefreshPersistent();
     }
@@ -97,7 +115,7 @@ public Image currentlySelectedImage;
     // 4) Jeśli zużywasz trwałe:
     public void UsePersistentSymbols(List<string> symbols)
     {
-        foreach(var id in symbols)
+        foreach (var id in symbols)
         {
             if (!persistentPool.ContainsKey(id)) continue;
             persistentPool[id]--;
@@ -124,6 +142,11 @@ void InstantiateIcon(Transform parent, string id)
 
     var go = Instantiate(symbolIconPrefab, parent);
     activeSymbolButtons.Add(go); // ← zapamiętaj button
+
+    var data = go.AddComponent<SymbolButtonData>();
+    data.SymbolId    = id;
+    data.IsPersistent = parent == persistentContainer;
+
 
     var img = go.GetComponent<Image>();
     img.sprite = sprite;

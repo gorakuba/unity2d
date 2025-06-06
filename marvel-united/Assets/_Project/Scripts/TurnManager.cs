@@ -308,6 +308,8 @@ public class TurnManager : MonoBehaviour
         else
         {
             OnStartHeroTurn?.Invoke(hero);
+            // Refresh persistent symbol display for the active hero
+            symbolPanelUI.SetPersistentSymbols(new List<string>(hero.PersistentSymbols));
             if (hero.IsStunned)
             {
                 for (int i = 0; i < 3; i++)

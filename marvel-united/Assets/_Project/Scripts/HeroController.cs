@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+using System.Collections.Generic;
 public class HeroController : MonoBehaviour
 {
     public SpriteRenderer visualRenderer;
@@ -12,6 +12,9 @@ public class HeroController : MonoBehaviour
     public string HeroId => heroId;
     private IHeroSpecials specialHandler;
 
+    // Persistent symbols granted by various abilities
+    private readonly List<string> persistentSymbols = new();
+    public IReadOnlyList<string> PersistentSymbols => persistentSymbols;
     public bool IsStunned { get; set; }
     /// <summary>
     /// Ustawiane przez HeroMovementManager po zakończeniu ruchu.
@@ -49,6 +52,9 @@ public class HeroController : MonoBehaviour
             case "black_panther":
                 specialHandler = new BlackPantherSpecials();
                 break;
+            case "captain_america":
+                specialHandler = new CaptainAmericaSpecials();
+                break;
                 // add more heroes here
         }
     }
@@ -75,10 +81,20 @@ public class HeroController : MonoBehaviour
         IsStunned = false;
         Debug.Log($"[HeroController] {heroId} odzyskal przytomnosc");
     }
-    
+
     public IEnumerator ExecuteSpecialAbility(string abilityId, SymbolPanelUI panel)
     {
         if (specialHandler != null && !string.IsNullOrEmpty(abilityId))
             yield return specialHandler.ExecuteSpecial(abilityId, this, panel);
+    }
+    
+    public void AddPersistentSymbol(string id)
+    {
+        persistentSymbols.Add(id);
+    }
+
+    public void RemovePersistentSymbol(string id)
+    {
+        persistentSymbols.Remove(id);
     }
 }
