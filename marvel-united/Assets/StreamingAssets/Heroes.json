@@ -498,7 +498,7 @@
           "id": "card_10",
           "special": true,
           "special_ability": "spider-man_special_1",
-          "special_description": "3 Attack tokens. For each Thug defeated with this Special Effect, gain 1 Heroic token",
+          "special_description": "Gain 3 Attack tokens. For each Thug defeated with this Special Effect, gain 1 Heroic token",
           "special_name": "Great Power",
           "symbols": ["Move"]
         },

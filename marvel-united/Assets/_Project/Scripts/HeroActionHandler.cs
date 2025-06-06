@@ -154,6 +154,10 @@ public class HeroActionHandler : MonoBehaviour
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
             ConsumePersistentIfNeeded(symbolButton);
+            bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
+            var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+            if (matchKey.Equals("attack", System.StringComparison.OrdinalIgnoreCase))
+                hero?.NotifyAttackUsed(false, wasPersistent);
             Destroy(symbolButton);
         });
     }
@@ -178,6 +182,9 @@ public class HeroActionHandler : MonoBehaviour
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
             ConsumePersistentIfNeeded(symbolButton);
+            bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
+            var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+            hero?.NotifyAttackUsed(false, wasPersistent);
             Destroy(symbolButton);
         });
     }
@@ -196,6 +203,9 @@ public class HeroActionHandler : MonoBehaviour
                 punchUIButton.gameObject.SetActive(false);
                 loc.DisableAllActionButtons();
                 ConsumePersistentIfNeeded(symbolButton);
+                bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
+                var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+                hero?.NotifyAttackUsed(false, wasPersistent);
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
@@ -206,6 +216,7 @@ public class HeroActionHandler : MonoBehaviour
                 loc.EnableAttackButton(() =>
                 {
                     bool shouldRemoveThug = true;
+                    bool defeatedThug = false;
 
                     // Sprawdź, czy Threat06 jest aktywny na tej lokacji
                     var threat = loc.threatInstance;
@@ -219,6 +230,7 @@ public class HeroActionHandler : MonoBehaviour
                         var thug = loc.RemoveFirstThug();
                         if (thug != null)
                         {
+                            defeatedThug = true;
                             HUDMessageManager.Instance?.Enqueue($"Usunieto zbira w {loc.name}");
                             if (missionManager.thugsCompleted) Destroy(thug);
                             else
@@ -242,6 +254,9 @@ public class HeroActionHandler : MonoBehaviour
                         Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
                     }
                     ConsumePersistentIfNeeded(symbolButton);
+                    bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
+                    var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
+                    hero?.NotifyAttackUsed(defeatedThug, wasPersistent);
                     Destroy(symbolButton);
                     loc.DisableAllActionButtons();
                     symbolPanelUI.ClearSelectedSymbol();

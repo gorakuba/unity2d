@@ -58,6 +58,9 @@ public class HeroController : MonoBehaviour
             case "iron_man":
                 specialHandler = new IronManSpecials();
                 break;
+            case "spider-man":
+                specialHandler = new SpiderManSpecials();
+                break;
                 // add more heroes here
         }
     }
@@ -90,7 +93,7 @@ public class HeroController : MonoBehaviour
         if (specialHandler != null && !string.IsNullOrEmpty(abilityId))
             yield return specialHandler.ExecuteSpecial(abilityId, this, panel);
     }
-    
+
     public void AddPersistentSymbol(string id)
     {
         persistentSymbols.Add(id);
@@ -99,5 +102,11 @@ public class HeroController : MonoBehaviour
     public void RemovePersistentSymbol(string id)
     {
         persistentSymbols.Remove(id);
+    }
+    
+    public void NotifyAttackUsed(bool defeatedThug, bool wasPersistent)
+    {
+        if (specialHandler is SpiderManSpecials sp)
+            sp.RegisterAttackUsage(this, defeatedThug, wasPersistent);
     }
 }

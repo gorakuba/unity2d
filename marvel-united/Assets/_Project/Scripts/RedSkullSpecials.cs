@@ -61,11 +61,14 @@ private IEnumerator Special_HailHydra()
         Debug.Log($"[LOCATION] Working in real location: {location.name}");
 
         List<GameObject> civiliansToRemove = new List<GameObject>();
-        foreach (Transform slot in location)
+        foreach (Transform slot in location.GetComponentsInChildren<Transform>())
         {
-            if (slot.name.StartsWith("Slot_") && slot.childCount > 0)
+                        if (!slot.name.StartsWith("Slot_"))
+                continue;
+
+            for (int i = slot.childCount - 1; i >= 0; i--)
             {
-                var token = slot.GetChild(0).gameObject;
+                var token = slot.GetChild(i).gameObject;
                 Debug.Log($"[CHECK] Found token: {token.name} in {slot.name}");
 
                 if (token.name.Contains("Civillian"))
@@ -104,7 +107,15 @@ private IEnumerator Special_HailHydra()
 
 private Transform FindRealLocation(Transform slotRoot)
 {
-    // Szukamy głębiej w slotRoot i wszystkich jego dzieciach
+    // Najpierw spróbuj znaleźć komponent LocationController w dzieciach
+    var locCtrl = slotRoot.GetComponentInChildren<LocationController>();
+    if (locCtrl != null)
+    {
+        Debug.Log($"[LOCATION] Found location via LocationController: {locCtrl.name}");
+        return locCtrl.transform;
+    }
+
+    // Jeśli go nie ma, szukamy po nazwie clone (na wszelki wypadek)
     foreach (Transform child in slotRoot.GetComponentsInChildren<Transform>())
     {
         if (child.name.Contains("(Clone)"))
@@ -114,8 +125,8 @@ private Transform FindRealLocation(Transform slotRoot)
         }
     }
 
-    Debug.LogWarning($"[LOCATION] No real location prefab found inside: {slotRoot.name}");
-    return null; // lepiej zwrócić null niż zły obiekt
+    Debug.LogWarning($"[LOCATION] No real location found inside: {slotRoot.name}");
+    return slotRoot;
 }
 
 
