@@ -422,7 +422,14 @@ public class TurnManager : MonoBehaviour
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
     }
-
+        /// <summary>
+    /// Public wrapper used by external systems to display the hand and allow
+    /// card selection. Internally forwards to <see cref="OnPlayerCardSelected"/>.
+    /// </summary>
+    public void HandlePlayerCardSelected(HeroCard card)
+    {
+        OnPlayerCardSelected(card);
+    }
     // ============================================
     //               --- SPAWN + UTILS ---
     // ============================================

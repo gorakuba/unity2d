@@ -55,6 +55,9 @@ public class HeroController : MonoBehaviour
             case "captain_america":
                 specialHandler = new CaptainAmericaSpecials();
                 break;
+            case "iron_man":
+                specialHandler = new IronManSpecials();
+                break;
                 // add more heroes here
         }
     }
