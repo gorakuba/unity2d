@@ -78,7 +78,7 @@ public class HeroController : MonoBehaviour
         if (IsStunned)
             return;
         if (heroDamageHandler != null)
-            heroDamageHandler.TakeDamageCoroutine();
+            StartCoroutine(heroDamageHandler.TakeDamageCoroutine(false));
         else
             Debug.LogWarning($"Brak HeroDamageHandler dla {heroId}!");
     }

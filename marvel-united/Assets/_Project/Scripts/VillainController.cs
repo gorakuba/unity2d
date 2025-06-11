@@ -175,28 +175,37 @@ public IEnumerator MoveVillain(int steps)
     {
         if (card.BAM_effect)
         {
-            if (HUDMessageManager.Instance != null)
-                yield return HUDMessageManager.Instance.ShowAndWait("Przeciwnik uzywa BAM");
-            Debug.Log("💥 BAM effect!");
-            if (OnBAMEffect != null)
-                foreach (Func<IEnumerator> handler in OnBAMEffect.GetInvocationList())
-                yield return StartCoroutine(handler());
-            
-            ExecuteBAM();
+         BAMController.QueueBamRoutine(BamSequence(card));
             yield return new WaitForSeconds(0.5f);
         }
     }
 
-    private void ExecuteBAM()
+    private IEnumerator ExecuteBAMRoutine()
     {
-        if (string.IsNullOrEmpty(currentBAMId)) return;
+        if (string.IsNullOrEmpty(currentBAMId)) yield break;
         if (bamEffects.TryGetValue(currentBAMId, out var func))
-            StartCoroutine(func.Invoke());
+         {
+            var routine = func.Invoke();
+            if (routine != null)
+                yield return StartCoroutine(routine);
+        }
+    }
+        private IEnumerator BamSequence(VillainCard card)
+    {
+        if (HUDMessageManager.Instance != null)
+            yield return HUDMessageManager.Instance.ShowAndWait("Przeciwnik uzywa BAM");
+        Debug.Log("💥 BAM effect!");
+        if (OnBAMEffect != null)
+        {
+            foreach (Func<IEnumerator> handler in OnBAMEffect.GetInvocationList())
+                yield return StartCoroutine(handler());
+        }
+        yield return StartCoroutine(ExecuteBAMRoutine());
     }
     
         public void TriggerBAM()
     {
-        ExecuteBAM();
+        BAMController.QueueBamRoutine(ExecuteBAMRoutine());
     }
 
     private IEnumerator BAM_RedSkull()
@@ -206,17 +215,17 @@ public IEnumerator MoveVillain(int steps)
         var h1 = SetupManager.hero1Controller;
         var h2 = SetupManager.hero2Controller;
         int dmg = 0;
-        if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned) dmg++;
-        if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned) dmg++;
+        if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned && !h1.IsInvulnerable) dmg++;
+        if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned && !h2.IsInvulnerable) dmg++;
         DashboardLoader.Instance.MoveFearTrack(2);
 
         IEnumerator RunDamage()
         {
-             if (dmg > 0)
+            if (dmg > 0)
             {
-                if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned)
+                if (h1 != null && GetLocationRoot(h1.transform) == root && !h1.IsStunned && !h1.IsInvulnerable)
                     yield return h1.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
-                if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned)
+                if (h2 != null && GetLocationRoot(h2.transform) == root && !h2.IsStunned && !h2.IsInvulnerable)
                     yield return h2.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
             }
         }

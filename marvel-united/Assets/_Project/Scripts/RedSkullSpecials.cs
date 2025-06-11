@@ -99,7 +99,7 @@ private IEnumerator Special_HailHydra()
     {
                 if (hero.GetComponent<HeroController>()?.IsStunned == true)
             continue;
-        yield return hero.GetComponent<HeroDamageHandler>().TakeDamageCoroutine();
+       yield return hero.GetComponent<HeroDamageHandler>().TakeDamageCoroutine(false);
     }
 }
 

@@ -27,7 +27,7 @@ public class RedskullThreat02 : MonoBehaviour, IThreatAbility
     {
         var heroes = UnityEngine.Object
             .FindObjectsByType<HeroController>(FindObjectsSortMode.None)
-            .Where(h => h.CurrentLocation?.gameObject == _threat.assignedLocation);
+            .Where(h => h.CurrentLocation?.gameObject == _threat.assignedLocation && !h.IsStunned && !h.IsInvulnerable);
 
         foreach (var hero in heroes)
             yield return HandleChoice(hero);
@@ -35,7 +35,7 @@ public class RedskullThreat02 : MonoBehaviour, IThreatAbility
 
 private IEnumerator HandleChoice(HeroController hero)
 {
-    if (hero.IsStunned) yield break;
+    if (hero.IsStunned || hero.IsInvulnerable) yield break;
     _choicePanel.SetActive(true);
     var ctrl = _choicePanel.GetComponent<ThreatChoicePanelController>();
 
@@ -64,8 +64,8 @@ private IEnumerator HandleChoice(HeroController hero)
         if (takeDamage.Value)
         {
             var dmg = hero.GetComponent<HeroDamageHandler>();
-            yield return dmg.TakeDamageCoroutine();
-            yield return dmg.TakeDamageCoroutine();
+            yield return dmg.TakeDamageCoroutine(false);
+            yield return dmg.TakeDamageCoroutine(false);
     }
         else
         {
