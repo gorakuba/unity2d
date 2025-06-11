@@ -26,12 +26,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
+            return;
         }
-        else Destroy(gameObject);
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         TryBindThreatChoicePanel();
         TryBindHeroSelectionPanel();
@@ -114,6 +116,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator AssignSceneReferences()
     {
         yield return null;
+        TryBindThreatChoicePanel();
         TryBindHeroSelectionPanel();
         if (locationManager == null) locationManager = FindAnyObjectByType<LocationManager>();
         if (threatCardSpawner == null)  threatCardSpawner = FindAnyObjectByType<ThreatCardSpawner>();
@@ -204,6 +207,21 @@ public GameObject FindObjectInScene(string name)
             gameOverPanel.ShowVictory();
         else
             Debug.LogWarning("[GameManager] Victory triggered but GameOverPanel not assigned");
+            
+        // Update progress and unlock heroes based on win count
+        ProgressManager.LoadProgress();
+        ProgressManager.Progress.wins++;
+        if (ProgressManager.Progress.wins == 1)
+        {
+            if (!ProgressManager.Progress.unlockedHeroes.Contains("wasp"))
+                ProgressManager.Progress.unlockedHeroes.Add("wasp");
+        }
+        else if (ProgressManager.Progress.wins == 2)
+        {
+            if (!ProgressManager.Progress.unlockedHeroes.Contains("spider-man"))
+                ProgressManager.Progress.unlockedHeroes.Add("spider-man");
+        }
+        ProgressManager.SaveProgress();
     }
 
     /// <summary>

@@ -30,7 +30,7 @@ public class HeroDamageHandler : MonoBehaviour
             villainController = SetupManager.villainController;
     }
 
-   public IEnumerator TakeDamageCoroutine()
+   public IEnumerator TakeDamageCoroutine(bool fromBam = true)
    {
         if (HUDMessageManager.Instance != null)
         {
@@ -69,8 +69,8 @@ public class HeroDamageHandler : MonoBehaviour
         {
             yield return null;
         }
-
-        BAMController.PlayerFinishedDamage();
+        if (fromBam)
+            BAMController.PlayerFinishedDamage();
         Debug.Log($"[HeroDamageHandler] -> Gracz {(isPlayerTwo ? 2 : 1)} wybrał karte i BAM idzie dalej");
     }
 

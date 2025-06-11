@@ -100,6 +100,9 @@ public class HeroToggleGenerator : MonoBehaviour
             Sprite loadedSprite = LoadSprite(hero.imagepath);
             heroImage.sprite = loadedSprite != null ? loadedSprite : defaultSprite;
         }
+        bool locked = (hero.id == "spider-man" || hero.id == "wasp") &&
+                        !ProgressManager.Progress.unlockedHeroes.Contains(hero.id);
+        toggle.interactable = !locked;
 
         toggle.onValueChanged.AddListener(delegate { OnToggleSelected(toggle); });
 
