@@ -79,6 +79,11 @@ public class TurnManager : MonoBehaviour
     private bool pendingBonusP1 = false;
     private bool pendingBonusP2 = false;
 
+    public List<HeroCard> PlayerOneStoryline { get; private set; } = new();
+    public List<GameObject> PlayerOneStorylineObjects { get; private set; } = new();
+    public List<HeroCard> PlayerTwoStoryline { get; private set; } = new();
+    public List<GameObject> PlayerTwoStorylineObjects { get; private set; } = new();
+
     // ============================================
     //               --- INIT ---
     // ============================================
@@ -391,12 +396,13 @@ public class TurnManager : MonoBehaviour
         string abilityId = null;
         bool isSpecial = false;
 
-        if (_pendingSelectedCard != null)
+        HeroCard playedCard = _pendingSelectedCard;
+        if (playedCard != null)
         {
-            abilityId = _pendingSelectedCard.SpecialAbility;
-            isSpecial = _pendingSelectedCard.Special;
+            abilityId = playedCard.SpecialAbility;
+            isSpecial = playedCard.Special;
             var hand = nextPlayer == 1 ? _cardMgr.playerOneHand : _cardMgr.playerTwoHand;
-            hand.Remove(_pendingSelectedCard);
+            hand.Remove(playedCard);
             _pendingSelectedCard = null;
         }
 
@@ -404,7 +410,23 @@ public class TurnManager : MonoBehaviour
         string heroId = nextPlayer == 1 ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
         heroHandUI.ShowHand(heroId, nextPlayer == 1 ? _cardMgr.playerOneHand : _cardMgr.playerTwoHand, OnPlayerCardSelected);
 
-        SpawnCardAtNextSlot(heroCardPrefab, _pendingSelectedSprite);
+        GameObject spawned = SpawnCardAtNextSlot(heroCardPrefab, _pendingSelectedSprite);
+        if (spawned != null && playedCard != null)
+        {
+            var inst = spawned.GetComponent<HeroCardInstance>() ?? spawned.AddComponent<HeroCardInstance>();
+            inst.card = playedCard;
+            inst.heroId = heroId;
+            if (nextPlayer == 1)
+            {
+                PlayerOneStoryline.Add(playedCard);
+                PlayerOneStorylineObjects.Add(spawned);
+            }
+            else
+            {
+                PlayerTwoStoryline.Add(playedCard);
+                PlayerTwoStorylineObjects.Add(spawned);
+            }
+        }
 
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
@@ -465,12 +487,12 @@ public class TurnManager : MonoBehaviour
     //               --- SPAWN + UTILS ---
     // ============================================
 
-    private void SpawnCardAtNextSlot(GameObject prefab, Sprite sprite)
+    private GameObject SpawnCardAtNextSlot(GameObject prefab, Sprite sprite)
     {
         if (cardSpawnPoints == null || cardSpawnPoints.Length == 0)
         {
             Debug.LogError("SpawnCardAtNextSlot: brak punktów spawnów!");
-            return;
+            return null;
         }
 
         if (currentSpawnIndex >= cardSpawnPoints.Length)
@@ -484,6 +506,7 @@ public class TurnManager : MonoBehaviour
             disp.frontTexture = ConvertSpriteToTexture(sprite);
             disp.ApplyTextures();
         }
+        return go;
     }
 
     private Texture2D ConvertSpriteToTexture(Sprite sprite)
@@ -493,6 +516,31 @@ public class TurnManager : MonoBehaviour
         tex.SetPixels(sprite.texture.GetPixels((int)sprite.rect.x, (int)sprite.rect.y, (int)sprite.rect.width, (int)sprite.rect.height));
         tex.Apply();
         return tex;
+    }
+
+        public void UpdateStorylineCard(bool isPlayerTwo, int index, HeroCard newCard, string heroId)
+    {
+        var objs = isPlayerTwo ? PlayerTwoStorylineObjects : PlayerOneStorylineObjects;
+        var cards = isPlayerTwo ? PlayerTwoStoryline : PlayerOneStoryline;
+        if (index < 0 || index >= objs.Count || index >= cards.Count)
+            return;
+
+        cards[index] = newCard;
+        var go = objs[index];
+        var disp = go.GetComponent<CardDisplay>();
+        if (disp != null)
+        {
+            var sprite = _cardMgr.GetCardSprite(heroId, newCard);
+            disp.frontTexture = ConvertSpriteToTexture(sprite);
+            disp.ApplyTextures();
+        }
+
+        var inst = go.GetComponent<HeroCardInstance>();
+        if (inst != null)
+        {
+            inst.card = newCard;
+            inst.heroId = heroId;
+        }
     }
 
     
