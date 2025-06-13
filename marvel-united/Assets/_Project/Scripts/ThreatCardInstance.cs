@@ -212,6 +212,18 @@ private void Start()
                     break;
                 }
         }
+        // Clear references on the owning location before destroying this card
+        if (assignedLocation != null)
+        {
+            var loc = assignedLocation.GetComponent<Location>();
+            if (loc != null && loc.currentThreat == this)
+                loc.currentThreat = null;
+
+            var locCtrl = assignedLocation.GetComponent<LocationController>();
+            if (locCtrl != null && locCtrl.threatInstance == this)
+                locCtrl.threatInstance = null;
+        }
+
 
         missionManager?.CheckMissions();
         Destroy(gameObject);

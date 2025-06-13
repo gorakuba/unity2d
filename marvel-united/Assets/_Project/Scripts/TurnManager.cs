@@ -79,6 +79,11 @@ public class TurnManager : MonoBehaviour
     private bool pendingBonusP1 = false;
     private bool pendingBonusP2 = false;
 
+    public List<HeroCard> PlayerOneStoryline { get; private set; } = new();
+    public List<GameObject> PlayerOneStorylineObjects { get; private set; } = new();
+    public List<HeroCard> PlayerTwoStoryline { get; private set; } = new();
+    public List<GameObject> PlayerTwoStorylineObjects { get; private set; } = new();
+
     // ============================================
     //               --- INIT ---
     // ============================================
@@ -338,7 +343,7 @@ public class TurnManager : MonoBehaviour
 
 
         yield return StartCoroutine(ShowPhaseText($"{heroName.ToUpper()} TURN", playerPhaseContainer, playerPhaseText));
-        
+
 
         _endTurnClicked = false;
         symbolPanel.SetActive(false);
@@ -356,6 +361,9 @@ public class TurnManager : MonoBehaviour
         confirmButton.gameObject.SetActive(false);
         endTurnButton.gameObject.SetActive(false);
         playerTurnUI.SetActive(false);
+        
+        if (hero != null)
+            yield return StartCoroutine(HandleLocationEndTurnAbility(hero));
     }
 
     // ============================================
@@ -388,12 +396,13 @@ public class TurnManager : MonoBehaviour
         string abilityId = null;
         bool isSpecial = false;
 
-        if (_pendingSelectedCard != null)
+        HeroCard playedCard = _pendingSelectedCard;
+        if (playedCard != null)
         {
-            abilityId = _pendingSelectedCard.SpecialAbility;
-            isSpecial = _pendingSelectedCard.Special;
+            abilityId = playedCard.SpecialAbility;
+            isSpecial = playedCard.Special;
             var hand = nextPlayer == 1 ? _cardMgr.playerOneHand : _cardMgr.playerTwoHand;
-            hand.Remove(_pendingSelectedCard);
+            hand.Remove(playedCard);
             _pendingSelectedCard = null;
         }
 
@@ -401,7 +410,23 @@ public class TurnManager : MonoBehaviour
         string heroId = nextPlayer == 1 ? GameManager.Instance.playerOneHero : GameManager.Instance.playerTwoHero;
         heroHandUI.ShowHand(heroId, nextPlayer == 1 ? _cardMgr.playerOneHand : _cardMgr.playerTwoHand, OnPlayerCardSelected);
 
-        SpawnCardAtNextSlot(heroCardPrefab, _pendingSelectedSprite);
+        GameObject spawned = SpawnCardAtNextSlot(heroCardPrefab, _pendingSelectedSprite);
+        if (spawned != null && playedCard != null)
+        {
+            var inst = spawned.GetComponent<HeroCardInstance>() ?? spawned.AddComponent<HeroCardInstance>();
+            inst.card = playedCard;
+            inst.heroId = heroId;
+            if (nextPlayer == 1)
+            {
+                PlayerOneStoryline.Add(playedCard);
+                PlayerOneStorylineObjects.Add(spawned);
+            }
+            else
+            {
+                PlayerTwoStoryline.Add(playedCard);
+                PlayerTwoStorylineObjects.Add(spawned);
+            }
+        }
 
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
@@ -462,12 +487,12 @@ public class TurnManager : MonoBehaviour
     //               --- SPAWN + UTILS ---
     // ============================================
 
-    private void SpawnCardAtNextSlot(GameObject prefab, Sprite sprite)
+    private GameObject SpawnCardAtNextSlot(GameObject prefab, Sprite sprite)
     {
         if (cardSpawnPoints == null || cardSpawnPoints.Length == 0)
         {
             Debug.LogError("SpawnCardAtNextSlot: brak punktów spawnów!");
-            return;
+            return null;
         }
 
         if (currentSpawnIndex >= cardSpawnPoints.Length)
@@ -481,6 +506,7 @@ public class TurnManager : MonoBehaviour
             disp.frontTexture = ConvertSpriteToTexture(sprite);
             disp.ApplyTextures();
         }
+        return go;
     }
 
     private Texture2D ConvertSpriteToTexture(Sprite sprite)
@@ -490,6 +516,72 @@ public class TurnManager : MonoBehaviour
         tex.SetPixels(sprite.texture.GetPixels((int)sprite.rect.x, (int)sprite.rect.y, (int)sprite.rect.width, (int)sprite.rect.height));
         tex.Apply();
         return tex;
+    }
+
+        public void UpdateStorylineCard(bool isPlayerTwo, int index, HeroCard newCard, string heroId)
+    {
+        var objs = isPlayerTwo ? PlayerTwoStorylineObjects : PlayerOneStorylineObjects;
+        var cards = isPlayerTwo ? PlayerTwoStoryline : PlayerOneStoryline;
+        if (index < 0 || index >= objs.Count || index >= cards.Count)
+            return;
+
+        cards[index] = newCard;
+        var go = objs[index];
+        var disp = go.GetComponent<CardDisplay>();
+        if (disp != null)
+        {
+            var sprite = _cardMgr.GetCardSprite(heroId, newCard);
+            disp.frontTexture = ConvertSpriteToTexture(sprite);
+            disp.ApplyTextures();
+        }
+
+        var inst = go.GetComponent<HeroCardInstance>();
+        if (inst != null)
+        {
+            inst.card = newCard;
+            inst.heroId = heroId;
+        }
+    }
+
+    
+    private IEnumerator HandleLocationEndTurnAbility(HeroController hero)
+    {
+        var loc = hero?.CurrentLocation;
+        if (loc == null) yield break;
+
+        var simple = loc.GetComponent<Location>();
+        if (simple != null && simple.IsBlockedByThreat()) yield break;
+
+        var data = loc.GetComponent<LocationDataHolder>()?.data;
+        var ability = loc.GetComponent<ILocationEndTurnAbility>();
+
+        if (ability == null || data == null || string.IsNullOrEmpty(data.end_turn))
+            yield break;
+
+        bool use = false;
+        yield return StartCoroutine(AskYesNo(data.end_turn, val => use = val));
+        if (use)
+            yield return ability.ExecuteEndTurn(hero);
+    }
+
+    private IEnumerator AskYesNo(string text, System.Action<bool> callback)
+    {
+        var panel = GameManager.Instance.heroSelectionPanel;
+        if (panel == null)
+        {
+            callback?.Invoke(false);
+            yield break;
+        }
+
+        panel.SetActive(true);
+        var ctrl = panel.GetComponent<HeroSelectionPanelController>();
+        bool? result = null;
+        ctrl.Init(text, "YES", "NO",
+            onHero1: () => { result = true; panel.SetActive(false); },
+            onHero2: () => { result = false; panel.SetActive(false); });
+
+        yield return new WaitUntil(() => result.HasValue);
+        callback?.Invoke(result.Value);
     }
     private HeroController FindHeroById(string heroId)
     {
