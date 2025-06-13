@@ -338,7 +338,7 @@ public class TurnManager : MonoBehaviour
 
 
         yield return StartCoroutine(ShowPhaseText($"{heroName.ToUpper()} TURN", playerPhaseContainer, playerPhaseText));
-        
+
 
         _endTurnClicked = false;
         symbolPanel.SetActive(false);
@@ -356,6 +356,9 @@ public class TurnManager : MonoBehaviour
         confirmButton.gameObject.SetActive(false);
         endTurnButton.gameObject.SetActive(false);
         playerTurnUI.SetActive(false);
+        
+        if (hero != null)
+            yield return StartCoroutine(HandleLocationEndTurnAbility(hero));
     }
 
     // ============================================
@@ -490,6 +493,47 @@ public class TurnManager : MonoBehaviour
         tex.SetPixels(sprite.texture.GetPixels((int)sprite.rect.x, (int)sprite.rect.y, (int)sprite.rect.width, (int)sprite.rect.height));
         tex.Apply();
         return tex;
+    }
+
+    
+    private IEnumerator HandleLocationEndTurnAbility(HeroController hero)
+    {
+        var loc = hero?.CurrentLocation;
+        if (loc == null) yield break;
+
+        var simple = loc.GetComponent<Location>();
+        if (simple != null && simple.IsBlockedByThreat()) yield break;
+
+        var data = loc.GetComponent<LocationDataHolder>()?.data;
+        var ability = loc.GetComponent<ILocationEndTurnAbility>();
+
+        if (ability == null || data == null || string.IsNullOrEmpty(data.end_turn))
+            yield break;
+
+        bool use = false;
+        yield return StartCoroutine(AskYesNo(data.end_turn, val => use = val));
+        if (use)
+            yield return ability.ExecuteEndTurn(hero);
+    }
+
+    private IEnumerator AskYesNo(string text, System.Action<bool> callback)
+    {
+        var panel = GameManager.Instance.heroSelectionPanel;
+        if (panel == null)
+        {
+            callback?.Invoke(false);
+            yield break;
+        }
+
+        panel.SetActive(true);
+        var ctrl = panel.GetComponent<HeroSelectionPanelController>();
+        bool? result = null;
+        ctrl.Init(text, "YES", "NO",
+            onHero1: () => { result = true; panel.SetActive(false); },
+            onHero2: () => { result = false; panel.SetActive(false); });
+
+        yield return new WaitUntil(() => result.HasValue);
+        callback?.Invoke(result.Value);
     }
     private HeroController FindHeroById(string heroId)
     {

@@ -113,6 +113,16 @@ public class LocationManager : MonoBehaviour
                 if (holder != null) holder.data = data;
                 newLocation.name = data.name;
                 yield return LoadLocationSpriteAsync(data);
+                if (!string.IsNullOrEmpty(data.script))
+                {
+                    var type = System.AppDomain.CurrentDomain.GetAssemblies()
+                        .Select(a => a.GetType(data.script))
+                        .FirstOrDefault(t => t != null);
+                    if (type != null && newLocation.GetComponent(type) == null)
+                        newLocation.AddComponent(type);
+                    else if (type == null)
+                        Debug.LogWarning($"[LocationManager] Script '{data.script}' not found for location '{data.name}'");
+                }
             }
 
             spawnedLocations.Add(newLocation);
