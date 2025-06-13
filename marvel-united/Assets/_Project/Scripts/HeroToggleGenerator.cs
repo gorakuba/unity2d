@@ -46,6 +46,7 @@ public class HeroToggleGenerator : MonoBehaviour
 
     private void Start()
     {
+        ProgressManager.LoadProgress();
         LoadHeroes();
         ResetToggles();
         ClearPreviousSelections();  
@@ -100,9 +101,7 @@ public class HeroToggleGenerator : MonoBehaviour
             Sprite loadedSprite = LoadSprite(hero.imagepath);
             heroImage.sprite = loadedSprite != null ? loadedSprite : defaultSprite;
         }
-        bool locked = (hero.id == "spider-man" || hero.id == "wasp") &&
-                        !ProgressManager.Progress.unlockedHeroes.Contains(hero.id);
-        toggle.interactable = !locked;
+        toggle.interactable = !IsHeroLocked(hero.id);
 
         toggle.onValueChanged.AddListener(delegate { OnToggleSelected(toggle); });
 
@@ -111,10 +110,10 @@ public class HeroToggleGenerator : MonoBehaviour
 
     private void ResetToggles()
     {
-        foreach (var toggle in heroToggles.Keys)
+        foreach (var pair in heroToggles)
         {
-            toggle.isOn = false;
-            toggle.interactable = true;
+            pair.Key.isOn = false;
+            pair.Key.interactable = !IsHeroLocked(pair.Value.id);
         }
 
         if (isSelectingPlayerOne && !string.IsNullOrEmpty(playerTwoSelectedHeroId))
@@ -137,11 +136,17 @@ public class HeroToggleGenerator : MonoBehaviour
             }
         }
     }
+    private bool IsHeroLocked(string heroId)
+    {
+        return (heroId == "spider-man" || heroId == "wasp") &&
+               !ProgressManager.Progress.unlockedHeroes.Contains(heroId);
+    }
+
 
     private void OnToggleSelected(Toggle selectedToggle)
     {
         if (!heroToggles.ContainsKey(selectedToggle)) return;
-        
+
         Hero selectedHero = heroToggles[selectedToggle];
 
         if (heroLargeImage != null)
