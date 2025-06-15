@@ -101,7 +101,6 @@ public class HeroToggleGenerator : MonoBehaviour
             Sprite loadedSprite = LoadSprite(hero.imagepath);
             heroImage.sprite = loadedSprite != null ? loadedSprite : defaultSprite;
         }
-
         toggle.interactable = !IsHeroLocked(hero.id);
 
         toggle.onValueChanged.AddListener(delegate { OnToggleSelected(toggle); });
@@ -137,6 +136,12 @@ public class HeroToggleGenerator : MonoBehaviour
             }
         }
     }
+    private bool IsHeroLocked(string heroId)
+    {
+        return (heroId == "spider-man" || heroId == "wasp") &&
+               !ProgressManager.Progress.unlockedHeroes.Contains(heroId);
+    }
+
 
     private bool IsHeroLocked(string heroId)
     {
@@ -146,7 +151,7 @@ public class HeroToggleGenerator : MonoBehaviour
     private void OnToggleSelected(Toggle selectedToggle)
     {
         if (!heroToggles.ContainsKey(selectedToggle)) return;
-        
+
         Hero selectedHero = heroToggles[selectedToggle];
 
         if (heroLargeImage != null)
