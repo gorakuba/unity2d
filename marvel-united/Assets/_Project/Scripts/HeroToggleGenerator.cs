@@ -143,6 +143,11 @@ public class HeroToggleGenerator : MonoBehaviour
     }
 
 
+    private bool IsHeroLocked(string heroId)
+    {
+        return (heroId == "spider-man" || heroId == "wasp") &&
+               !ProgressManager.Progress.unlockedHeroes.Contains(heroId);
+    }
     private void OnToggleSelected(Toggle selectedToggle)
     {
         if (!heroToggles.ContainsKey(selectedToggle)) return;

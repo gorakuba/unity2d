@@ -25,7 +25,7 @@ public class Location_2 : MonoBehaviour, ILocationEndTurnAbility
             yield break;
 
         int storyIndex = -1;
-        StorylinePanel.Open(storyline, idx => storyIndex = idx, cardMgr, hero.HeroId);
+        StorylinePanel.Open(storyline, idx => storyIndex = idx, cardMgr);
         while (StorylinePanel.IsActive)
             yield return null;
 

@@ -15,7 +15,6 @@ public class StorylinePanelUI : MonoBehaviour
 
     private Action<int> onCardSelected;
     private CardManager cardManager;
-    private string heroId;
 
     public bool IsActive { get; private set; } = false;
 
@@ -32,9 +31,8 @@ public class StorylinePanelUI : MonoBehaviour
         }
     }
 
-    public void Open(List<HeroCard> cards, Action<int> callback, CardManager cm, string heroId)
+    public void Open(List<HeroCard> cards, Action<int> callback, CardManager cm)
     {
-        this.heroId = heroId;
         cardManager = cm;
         onCardSelected = callback;
 
@@ -47,7 +45,7 @@ public class StorylinePanelUI : MonoBehaviour
             var btnImg = btnGO.GetComponent<Image>();
             var btn = btnGO.GetComponent<Button>();
 
-            var sprite = cardManager.GetCardSprite(heroId, cards[i]);
+            var sprite = cardManager.GetCardSprite(cards[i].heroId, cards[i]);
             btnImg.sprite = sprite;
 
             int idx = i;
