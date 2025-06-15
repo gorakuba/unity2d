@@ -150,6 +150,7 @@ public class HeroActionHandler : MonoBehaviour
         loc.threatCardButton.onClick.AddListener(() =>
         {
             threat.TryPlaceSymbol(matchKey, tokenPrefab);
+            punchUIButton?.gameObject.SetActive(false);
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
@@ -178,6 +179,7 @@ public class HeroActionHandler : MonoBehaviour
         {
             // Usuń token miniona z karty threata
             threat.TryRemoveMinionToken(); // implementuj w ThreatCardInstance
+            punchUIButton?.gameObject.SetActive(false);
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
@@ -253,6 +255,7 @@ public class HeroActionHandler : MonoBehaviour
                 {
                     Debug.Log("[RedskullThreat06] Pierwszy atak – jeszcze nie usuwamy Thuga.");
                 }
+                punchUIButton?.gameObject.SetActive(false);
                 ConsumePersistentIfNeeded(symbolButton);
                 bool wasPersistent = symbolButton.GetComponent<SymbolButtonData>()?.IsPersistent ?? false;
                 var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
