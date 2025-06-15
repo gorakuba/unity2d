@@ -24,7 +24,7 @@ public class GameOverPanelController : MonoBehaviour
         ownCanvas = GetComponentInParent<Canvas>(true);
         canvasesToHide = UnityEngine.Object
             .FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-            .Where(c => c != ownCanvas)
+            .Where(c => !transform.IsChildOf(c.transform))
             .ToArray();
     }
 

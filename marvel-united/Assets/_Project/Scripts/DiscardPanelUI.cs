@@ -13,6 +13,7 @@ public class DiscardPanelUI : MonoBehaviour
     public static DiscardPanelUI Instance;
 
     private Action<HeroCard> onCardSelected;
+    private Action<int> onIndexSelected;
     private CardManager cardManager;
     private string heroId;
 
@@ -30,6 +31,7 @@ public class DiscardPanelUI : MonoBehaviour
         this.heroId = heroId;
         cardManager = cm;
         onCardSelected = callback;
+        onIndexSelected = null;
         foreach (Transform child in buttonParent)
             Destroy(child.gameObject);
         panelRoot.SetActive(true);
@@ -59,7 +61,44 @@ public class DiscardPanelUI : MonoBehaviour
     {
         panelRoot.SetActive(false);
         IsActive = false;
+        onCardSelected = null;
+        onIndexSelected = null;
 
         Debug.Log("[DiscardPanelUI] -> Panel zamknięty");
+    }
+
+    public void OpenWithIndex(List<HeroCard> cards, Action<int> callback, CardManager cm, string heroId)
+    {
+        this.heroId = heroId;
+        cardManager = cm;
+        onIndexSelected = callback;
+        onCardSelected = null;
+
+        foreach (Transform child in buttonParent)
+        {
+            Destroy(child.gameObject);
+        }
+        
+        panelRoot.SetActive(true);
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            var btnGO = Instantiate(buttonPrefab, buttonParent);
+            var btnImg = btnGO.GetComponent<Image>();
+            var btn = btnGO.GetComponent<Button>();
+
+            var sprite = cardManager.GetCardSprite(heroId, cards[i]);
+            btnImg.sprite = sprite;
+            
+            int idx = i;
+            btn.onClick.AddListener(() =>
+            {
+                onIndexSelected?.Invoke(idx);
+                Close();
+            });
+        }
+        
+        panelRoot.SetActive(true);
+        IsActive = true;
     }
 }

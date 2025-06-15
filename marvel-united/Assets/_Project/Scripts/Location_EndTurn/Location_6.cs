@@ -20,17 +20,18 @@ public class Location_6 : MonoBehaviour, ILocationEndTurnAbility
         if (deck == null || deck.Count == 0)
             yield break;
 
-        HeroCard chosen = null;
+        int chosenIndex = -1;
         // Show entire deck and let player pick a card
-        DiscardPanel.Open(deck, card => { chosen = card; }, cardMgr, hero.HeroId);
+        DiscardPanel.OpenWithIndex(deck, idx => { chosenIndex = idx; }, cardMgr, hero.HeroId);
 
         while (DiscardPanel.IsActive)
             yield return null;
 
-        if (chosen == null)
+        if (chosenIndex < 0 || chosenIndex >= deck.Count)
             yield break;
 
-        deck.Remove(chosen);
+        HeroCard chosen = deck[chosenIndex];
+        deck.RemoveAt(chosenIndex);
         Shuffle(deck);
         deck.Insert(0, chosen); // place chosen card on top
     }
