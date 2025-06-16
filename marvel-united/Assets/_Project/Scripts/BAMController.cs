@@ -63,6 +63,13 @@ public class BAMController : MonoBehaviour
             }
         }
     }
+        public static IEnumerator QueueBamRoutineAndWait(IEnumerator routine)
+    {
+        QueueBamRoutine(routine);
+        while (BamInProgress || bamRoutineActive)
+            yield return null;
+    }
+
 
         public static bool StartBAM(int playersToDamage, Func<IEnumerator> damageRoutine = null)
     {
