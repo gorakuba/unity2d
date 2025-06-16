@@ -48,6 +48,12 @@ public class SetupManager : MonoBehaviour
         {
             Debug.LogError("SetupManager: Brakuje referencji do HeroMovementManager!");
         }
+        
+        // Configure turn cameras once characters are spawned
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.ConfigureTurnCameras(hero1Controller, hero2Controller, villainController);
+        }
     }
 
     private HeroController SpawnHero(string heroId, Transform slot, bool isPlayerTwo)

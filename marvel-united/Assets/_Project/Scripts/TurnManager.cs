@@ -75,6 +75,8 @@ public class TurnManager : MonoBehaviour
     private List<string> _pendingSelectedSymbols;
     private List<string> _lastSymbols;
     private VillainCard _currentVillainCard;
+    private Sprite lastCardPlayer1Sprite;
+    private Sprite lastCardPlayer2Sprite;
     private bool missionBonusScheduled = false;
     private bool pendingBonusP1 = false;
     private bool pendingBonusP2 = false;
@@ -193,6 +195,8 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator VillainTurnSequence()
     {
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.FocusVillain();
         villainTurnUI.SetActive(true);
         yield return StartCoroutine(ShowPhaseText("VILLAIN TURN", villainPhaseContainer, villainPhaseText));
 
@@ -270,6 +274,8 @@ public class TurnManager : MonoBehaviour
     private IEnumerator PlayerTurnSequence(int playerIndex)
     {
         playerTurnUI.SetActive(true);
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.FocusHero(playerIndex);
         var heroController = playerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
         if (heroController != null && heroController.IsStunned)
         {
@@ -427,6 +433,19 @@ public class TurnManager : MonoBehaviour
                 PlayerTwoStorylineObjects.Add(spawned);
             }
         }
+        // show last cards panel
+        var panel = LastCardsPanelUI.Instance;
+        if (panel != null)
+        {
+            Sprite previous = nextPlayer == 1 ? lastCardPlayer2Sprite : lastCardPlayer1Sprite;
+            panel.Show(_pendingSelectedSprite, previous);
+        }
+
+        if (nextPlayer == 1)
+            lastCardPlayer1Sprite = _pendingSelectedSprite;
+        else
+            lastCardPlayer2Sprite = _pendingSelectedSprite;
+
 
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
