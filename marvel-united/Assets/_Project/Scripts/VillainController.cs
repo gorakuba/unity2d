@@ -175,7 +175,7 @@ public IEnumerator MoveVillain(int steps)
     {
         if (card.BAM_effect)
         {
-         BAMController.QueueBamRoutine(BamSequence(card));
+            yield return BAMController.QueueBamRoutineAndWait(BamSequence(card));
             yield return new WaitForSeconds(0.5f);
         }
     }

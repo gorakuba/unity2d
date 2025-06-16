@@ -9,9 +9,9 @@ public class GameOverPanelController : MonoBehaviour
     public TextMeshProUGUI messageText;
     public Button playAgainButton;
     public Button backButton;
-
+    [Tooltip("Canvas containing the end game UI")] public Canvas endGameCanvas;
     private Canvas[] canvasesToHide;
-    private Canvas ownCanvas;
+
 
     private void Awake()
     {
@@ -21,10 +21,14 @@ public class GameOverPanelController : MonoBehaviour
         if (backButton != null)
             backButton.onClick.AddListener(LoadMainMenu);
 
-        ownCanvas = GetComponentInParent<Canvas>(true);
+        if (endGameCanvas == null)
+            endGameCanvas = GetComponentInChildren<Canvas>(true);
+
+        if (endGameCanvas != null)
+            endGameCanvas.gameObject.SetActive(false);
         canvasesToHide = UnityEngine.Object
             .FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-            .Where(c => !transform.IsChildOf(c.transform))
+            .Where(c => c != null && !endGameCanvas.transform.IsChildOf(c.transform) && c != endGameCanvas)
             .ToArray();
     }
 
@@ -50,7 +54,10 @@ public class GameOverPanelController : MonoBehaviour
                     canvas.gameObject.SetActive(false);
         }
 
-        gameObject.SetActive(true);
+        if (endGameCanvas != null)
+            endGameCanvas.gameObject.SetActive(true);
+        else
+            gameObject.SetActive(true);
     }
 
     private void LoadHeroSelection()
