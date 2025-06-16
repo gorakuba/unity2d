@@ -195,6 +195,9 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator VillainTurnSequence()
     {
+        var lastPanel = LastCardsPanelUI.Instance;
+        if (lastPanel != null)
+            lastPanel.Hide();
         if (CameraManager.Instance != null)
             CameraManager.Instance.FocusVillain();
         villainTurnUI.SetActive(true);
@@ -347,9 +350,19 @@ public class TurnManager : MonoBehaviour
             }
         }
 
+        var lastPanel = LastCardsPanelUI.Instance;
+        if (lastPanel != null)
+            lastPanel.Hide();
 
         yield return StartCoroutine(ShowPhaseText($"{heroName.ToUpper()} TURN", playerPhaseContainer, playerPhaseText));
 
+        if (lastPanel != null)
+        {
+            Sprite current = playerIndex == 1 ? lastCardPlayer2Sprite : lastCardPlayer1Sprite;
+            Sprite previous = playerIndex == 1 ? lastCardPlayer1Sprite : lastCardPlayer2Sprite;
+            if (current != null)
+                lastPanel.Show(current, previous);
+        }
 
         _endTurnClicked = false;
         symbolPanel.SetActive(false);
@@ -433,7 +446,6 @@ public class TurnManager : MonoBehaviour
                 PlayerTwoStorylineObjects.Add(spawned);
             }
         }
-        // show last cards panel
         var panel = LastCardsPanelUI.Instance;
         if (panel != null)
         {
@@ -445,12 +457,10 @@ public class TurnManager : MonoBehaviour
             lastCardPlayer1Sprite = _pendingSelectedSprite;
         else
             lastCardPlayer2Sprite = _pendingSelectedSprite;
-
-
         selectionPanel.SetActive(false);
         confirmButton.gameObject.SetActive(false);
         symbolPanel.SetActive(true);
-
+        
         if (_lastSymbols != null && _lastSymbols.Count > 0)
             symbolPanelUI.ShowPreviousSymbols(_lastSymbols);
 
