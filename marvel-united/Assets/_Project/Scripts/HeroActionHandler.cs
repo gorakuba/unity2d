@@ -80,6 +80,7 @@ public class HeroActionHandler : MonoBehaviour
                     symbolPanelUI.ClearSelectedSymbol();
                     movementManager.OnMoveCompleted = null;
                     missionManager.CheckMissions();
+                    CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
                 };
                 movementManager.PrepareHeroMovement();
                 break;
@@ -160,6 +161,7 @@ public class HeroActionHandler : MonoBehaviour
             if (matchKey.Equals("attack", System.StringComparison.OrdinalIgnoreCase))
                 hero?.NotifyAttackUsed(false, wasPersistent);
             Destroy(symbolButton);
+            CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
         });
     }
 
@@ -188,6 +190,7 @@ public class HeroActionHandler : MonoBehaviour
             var hero = GameManager.Instance.CurrentPlayerIndex == 1 ? SetupManager.hero1Controller : SetupManager.hero2Controller;
             hero?.NotifyAttackUsed(false, wasPersistent);
             Destroy(symbolButton);
+            CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
         });
     }
 
@@ -211,6 +214,7 @@ public class HeroActionHandler : MonoBehaviour
                 Destroy(symbolButton);
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
+                CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
             });
         }
         if (loc.HasThug())
@@ -264,6 +268,7 @@ public class HeroActionHandler : MonoBehaviour
                 loc.DisableAllActionButtons();
                 symbolPanelUI.ClearSelectedSymbol();
                 missionManager.CheckMissions();
+                CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
             });
         }
 
@@ -300,6 +305,7 @@ public class HeroActionHandler : MonoBehaviour
             loc.DisableAllActionButtons();
             symbolPanelUI.ClearSelectedSymbol();
             missionManager.CheckMissions();
+            CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
         });
     }
 
@@ -316,6 +322,7 @@ public class HeroActionHandler : MonoBehaviour
             missionManager.CheckMissions();
             TryEnableThreatButton("move", pendingWildButton, pendingWildLocation);
             TryEnableMinionButton("move", pendingWildButton, pendingWildLocation);
+            CameraManager.Instance?.FocusHero(GameManager.Instance.CurrentPlayerIndex);
         };
         movementManager.PrepareHeroMovement();
     }
@@ -345,6 +352,8 @@ public class HeroActionHandler : MonoBehaviour
     public void StartSpecialAttack(LocationController loc)
     {
         if (loc == null) return;
+
+        CameraManager.Instance?.FocusBoard();
 
         // create a temporary object so DoAttack can operate normally
         var dummy = new GameObject("SpecialAttackButton");

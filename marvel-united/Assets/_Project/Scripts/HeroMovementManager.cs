@@ -20,6 +20,7 @@ public class HeroMovementManager : MonoBehaviour
             Debug.LogWarning("Nie znaleziono aktualnej lokacji gracza!");
             return;
         }
+        CameraManager.Instance?.FocusBoard();
 
         foreach (var neighbor in currentLocation.neighbors)
             neighbor.EnableMoveButton(OnMoveSelected);
@@ -33,6 +34,8 @@ public class HeroMovementManager : MonoBehaviour
             Debug.LogWarning("Nie znaleziono aktualnej lokacji gracza!");
             return;
         }
+
+        CameraManager.Instance?.FocusBoard();
 
         foreach (var loc in GameManager.Instance.locationManager.LocationRoots)
         {
@@ -57,10 +60,10 @@ public class HeroMovementManager : MonoBehaviour
         currentHero.localRotation = Quaternion.identity; // ← reset rotacji jeśli trzeba
 
         var heroCtrl = currentHero.GetComponent<HeroController>();
-        
+
         if (heroCtrl != null)
             heroCtrl.CurrentLocation = newLocation;
-            Debug.Log($"[HeroMovement] Bohater {heroCtrl.HeroId} przesunięty do lokacji {newLocation.name}");
+        Debug.Log($"[HeroMovement] Bohater {heroCtrl.HeroId} przesunięty do lokacji {newLocation.name}");
 
         if (playerIndex == 1)
             GameManager.Instance.locationManager.characterSlots.heroSlot1 = slot;
@@ -69,6 +72,8 @@ public class HeroMovementManager : MonoBehaviour
 
         currentLocation = newLocation;
         OnMoveCompleted?.Invoke();
+        
+        CameraManager.Instance?.FocusHero(playerIndex);
     }
     private void DisableAllMoveButtons()
     {
@@ -124,6 +129,8 @@ public class HeroMovementManager : MonoBehaviour
         if (currentLocation == null) return;
 
         DisableAllMoveButtons();
+
+        CameraManager.Instance?.FocusHero(playerIndex);
     }
         public LocationController GetCurrentLocation()
         {

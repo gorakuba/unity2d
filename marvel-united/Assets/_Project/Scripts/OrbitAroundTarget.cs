@@ -19,7 +19,9 @@ public class OrbitAroundTarget : MonoBehaviour
         if (angle > 360f) angle -= 360f;
 
         float radians = angle * Mathf.Deg2Rad;
-        Vector3 offset = new Vector3(Mathf.Sin(radians), 0, Mathf.Cos(radians)) * distance;
+        Vector3 offset = target.forward * Mathf.Sin(radians) +
+                         target.right * Mathf.Cos(radians);
+        offset *= distance;
 
         // Dodaj wysokość w osi Y
         Vector3 orbitPosition = target.position + offset + new Vector3(0, height, 0);
