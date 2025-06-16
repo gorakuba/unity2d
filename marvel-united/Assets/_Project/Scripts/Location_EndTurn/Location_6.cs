@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Location_6 : MonoBehaviour, ILocationEndTurnAbility
 {
-    private DiscardPanelUI DiscardPanel => DiscardPanelUI.Instance;
+    private StorylinePanelUI StorylinePanel => StorylinePanelUI.Instance;
 
     public IEnumerator ExecuteEndTurn(HeroController hero)
     {
@@ -12,7 +12,7 @@ public class Location_6 : MonoBehaviour, ILocationEndTurnAbility
             yield break;
 
         var cardMgr = GameManager.Instance?.cardManager;
-        if (cardMgr == null || DiscardPanel == null)
+        if (cardMgr == null || StorylinePanel == null)
             yield break;
 
         bool isPlayerTwo = hero == SetupManager.hero2Controller;
@@ -21,10 +21,10 @@ public class Location_6 : MonoBehaviour, ILocationEndTurnAbility
             yield break;
 
         int chosenIndex = -1;
-        // Show entire deck and let player pick a card
-        DiscardPanel.OpenWithIndex(deck, idx => { chosenIndex = idx; }, cardMgr, hero.HeroId);
 
-        while (DiscardPanel.IsActive)
+        StorylinePanel.Open(deck, idx => { chosenIndex = idx; }, cardMgr);
+
+        while (StorylinePanel.IsActive)
             yield return null;
 
         if (chosenIndex < 0 || chosenIndex >= deck.Count)
