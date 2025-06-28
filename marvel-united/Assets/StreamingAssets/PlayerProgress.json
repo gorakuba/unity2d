@@ -1,7 +1,8 @@
 {
-    "wins": 1,
+    "wins": 2,
     "unlockedHeroes": [
-        "wasp"
+        "wasp",
+        "spider-man"
     ],
     "unlockedVillains": []
 }
